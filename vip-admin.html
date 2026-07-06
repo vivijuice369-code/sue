@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>VIP管理 - 运营后台</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;background:#f4f5f7;color:#1a1a2e;display:flex;min-height:100vh;font-size:14px}
+
+  /* ── Sidebar ── */
+  .sidebar{width:200px;min-height:100vh;background:#1a1d2e;color:#aab0c0;flex-shrink:0;display:flex;flex-direction:column}
+  .sidebar-logo{padding:18px 20px;display:flex;align-items:center;gap:10px;border-bottom:1px solid #2a2d3e}
+  .logo-badge{width:32px;height:32px;background:#4f6ef7;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;font-size:12px}
+  .logo-text{font-size:14px;font-weight:600;color:#fff}
+  .sidebar-nav{flex:1;padding:16px 0}
+  .nav-item{display:flex;align-items:center;gap:10px;padding:10px 20px;cursor:pointer;font-size:13px;transition:all .15s;border-left:3px solid transparent}
+  .nav-item:hover{background:#252840;color:#c8cede}
+  .nav-item.active{background:#252840;color:#fff;border-left-color:#4f6ef7}
+  .nav-item.sub{padding-left:36px;font-size:12.5px}
+  .nav-item.sub.active{background:#2e3150;border-left-color:#4f6ef7;color:#fff}
+  .nav-group{font-size:11px;color:#5a6080;padding:14px 20px 6px;letter-spacing:.05em;text-transform:uppercase}
+
+  /* ── Main ── */
+  .main{flex:1;display:flex;flex-direction:column;min-width:0}
+
+  /* ── Topbar ── */
+  .topbar{height:52px;background:#fff;border-bottom:1px solid #e8eaf0;display:flex;align-items:center;padding:0 28px;gap:8px;font-size:13px;color:#8891a8}
+  .topbar a{color:#8891a8;text-decoration:none}
+  .topbar a:hover{color:#4f6ef7}
+  .topbar-sep{margin:0 4px;color:#ccd0de}
+  .topbar-right{margin-left:auto;display:flex;align-items:center;gap:16px}
+  .topbar-select{background:#f4f5f7;border:1px solid #e0e2ec;border-radius:6px;padding:4px 10px;font-size:13px;color:#444;cursor:pointer}
+  .avatar{width:30px;height:30px;background:#e85d5d;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:700}
+
+  /* ── Page content ── */
+  .content{flex:1;padding:28px 32px;overflow-y:auto}
+  .page-title{font-size:20px;font-weight:600;color:#1a1a2e;margin-bottom:4px}
+  .page-desc{font-size:13px;color:#8891a8;margin-bottom:24px}
+
+  /* ── Tabs ── */
+  .tabs{display:flex;gap:0;border-bottom:2px solid #e8eaf0;margin-bottom:28px}
+  .tab{padding:10px 20px;font-size:14px;cursor:pointer;color:#8891a8;border-bottom:2px solid transparent;margin-bottom:-2px;transition:.15s}
+  .tab:hover{color:#4f6ef7}
+  .tab.active{color:#4f6ef7;border-bottom-color:#4f6ef7;font-weight:500}
+
+  /* ── Cards ── */
+  .card{background:#fff;border-radius:10px;border:1px solid #e8eaf0;padding:24px;margin-bottom:20px}
+  .card-title{font-size:15px;font-weight:600;color:#1a1a2e;margin-bottom:4px}
+  .card-desc{font-size:12.5px;color:#8891a8;margin-bottom:20px}
+  .divider{height:1px;background:#f0f2f7;margin:20px 0}
+
+  /* ── Toggle ── */
+  .row{display:flex;align-items:center;justify-content:space-between}
+  .toggle-wrap{display:flex;align-items:center;gap:8px}
+  .toggle{position:relative;width:44px;height:24px;cursor:pointer}
+  .toggle input{opacity:0;width:0;height:0}
+  .slider{position:absolute;inset:0;background:#c8cede;border-radius:12px;transition:.25s}
+  .slider:before{content:'';position:absolute;width:18px;height:18px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.25s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+  input:checked + .slider{background:#4f6ef7}
+  input:checked + .slider:before{transform:translateX(20px)}
+  .toggle-label{font-size:13px;color:#444;font-weight:500}
+
+  /* ── Radio ── */
+  .radio-group{display:flex;gap:24px;margin-top:12px}
+  .radio-item{display:flex;align-items:center;gap:6px;cursor:pointer;font-size:13px;color:#555}
+  .radio-item input[type=radio]{accent-color:#4f6ef7;width:14px;height:14px}
+
+  /* ── Checkbox group ── */
+  .checkbox-group{display:flex;flex-wrap:wrap;gap:16px;margin-top:10px}
+  .checkbox-item{display:flex;align-items:center;gap:6px;font-size:13px;color:#555;cursor:pointer}
+  .checkbox-item input[type=checkbox]{accent-color:#4f6ef7;width:14px;height:14px}
+
+  /* ── Form fields ── */
+  .form-row{display:flex;gap:40px;align-items:flex-start;margin-top:18px}
+  .form-group{display:flex;flex-direction:column;gap:6px}
+  .form-label{font-size:12.5px;color:#666;font-weight:500}
+  .form-input{border:1px solid #dde1ec;border-radius:6px;padding:7px 12px;font-size:13px;color:#333;width:100px;outline:none;transition:.15s}
+  .form-input:focus{border-color:#4f6ef7;box-shadow:0 0 0 3px rgba(79,110,247,.1)}
+  .form-hint{font-size:11.5px;color:#9099b0;line-height:1.6;max-width:320px;margin-top:4px}
+
+  /* ── Platform button ── */
+  .btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:6px;font-size:13px;cursor:pointer;border:1px solid transparent;transition:.15s;font-weight:500}
+  .btn-outline{background:#fff;border-color:#dde1ec;color:#555}
+  .btn-outline:hover{border-color:#4f6ef7;color:#4f6ef7}
+  .btn-primary{background:#4f6ef7;color:#fff;border-color:#4f6ef7}
+  .btn-primary:hover{background:#3d5ce0}
+  .badge{background:#e8edf7;color:#4f6ef7;border-radius:4px;padding:1px 7px;font-size:11.5px;font-weight:600;margin-left:6px}
+
+  /* ── VIP table ── */
+  .table-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+  .table-wrap{overflow-x:auto;border-radius:8px;border:1px solid #e8eaf0}
+  table{width:100%;border-collapse:collapse;font-size:12.5px;min-width:1100px}
+  thead tr{background:#f8f9fc}
+  th{padding:11px 14px;text-align:left;font-weight:500;color:#666;border-bottom:1px solid #e8eaf0;white-space:nowrap}
+  td{padding:10px 14px;border-bottom:1px solid #f0f2f7;color:#444;white-space:nowrap}
+  tr:last-child td{border-bottom:none}
+  tr:hover td{background:#fafbff}
+  .vip-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#4f6ef7;margin-right:6px}
+  .vip-dot.v0{background:#c8cede}
+  .td-dash{color:#c8cede}
+
+  /* ── Inline edit state ── */
+  .edit-input{border:1px solid #4f6ef7;border-radius:4px;padding:3px 7px;font-size:12.5px;width:72px;outline:none;color:#333}
+  .editing td{background:#f0f4ff}
+
+  /* ── Toast ── */
+  .toast{position:fixed;bottom:28px;right:28px;background:#1a1d2e;color:#fff;padding:12px 20px;border-radius:8px;font-size:13px;display:none;align-items:center;gap:8px;box-shadow:0 4px 20px rgba(0,0,0,.2);z-index:999}
+  .toast.show{display:flex}
+  .toast-icon{color:#4ade80;font-size:16px}
+</style>
+</head>
+<body>
+
+<!-- ── Sidebar ── -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-badge">DD</div>
+    <div class="logo-text">DD.GG 运营后台</div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-item">平台概况</div>
+    <div class="nav-item">系统管理</div>
+    <div class="nav-item">商户游戏管理</div>
+    <div class="nav-item">会员管理</div>
+    <div class="nav-item">商户财务管理</div>
+    <div class="nav-item">报表查询</div>
+    <div class="nav-item">代理中心</div>
+    <div class="nav-item">消息管理</div>
+    <div class="nav-group">福利中心</div>
+    <div class="nav-item sub active">VIP管理</div>
+    <div class="nav-item sub">活动列表</div>
+    <div class="nav-item sub">活动列表（新）</div>
+    <div class="nav-item sub">活动统计</div>
+  </nav>
+</aside>
+
+<!-- ── Main ── -->
+<div class="main">
+
+  <!-- Topbar -->
+  <div class="topbar">
+    <a href="#">福利中心</a>
+    <span class="topbar-sep">/</span>
+    <span style="color:#1a1a2e;font-weight:500">VIP管理</span>
+    <div class="topbar-right">
+      <select class="topbar-select"><option>地区：巴西</option></select>
+      <select class="topbar-select"><option>商户 762</option></select>
+      <div class="avatar">CL</div>
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div class="content">
+    <div class="page-title">VIP管理</div>
+    <div class="page-desc">配置会员等级体系、升级 / 保级条件、日周月礼金与积核规则</div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <div class="tab active" onclick="switchTab(this)">基础配置</div>
+      <div class="tab" onclick="switchTab(this)">等级奖励记录</div>
+      <div class="tab" onclick="switchTab(this)">查看会员</div>
+    </div>
+
+    <!-- Card 1: 系统总活动开关 -->
+    <div class="card">
+      <div class="row">
+        <div>
+          <div class="card-title">VIP 系统总活动开关</div>
+          <div class="card-desc" style="margin-bottom:0">关闭后，本商户的 VIP 体系整体停用；开启 / 关闭时需二次确认是否清理历史数据</div>
+        </div>
+        <div class="toggle-wrap">
+          <label class="toggle">
+            <input type="checkbox" checked onchange="handleToggle(this,'VIP 系统')">
+            <span class="slider"></span>
+          </label>
+          <span class="toggle-label" id="sys-label">开启</span>
+        </div>
+      </div>
+      <div class="divider"></div>
+      <div style="font-size:13px;color:#555;margin-bottom:8px;font-weight:500">是否在活动列表中展示</div>
+      <div class="radio-group">
+        <label class="radio-item"><input type="radio" name="show" value="no"> 否</label>
+        <label class="radio-item"><input type="radio" name="show" value="yes" checked> 是</label>
+      </div>
+    </div>
+
+    <!-- Card 2: 等级条件与流水积核 -->
+    <div class="card">
+      <div class="card-title">等级条件与流水积核</div>
+      <div class="card-desc">控制升级 / 保级依据的条件项，以及流水如何折算计入 VIP 考核</div>
+
+      <div style="font-size:13px;color:#555;font-weight:500;margin-bottom:8px">等级条件开关</div>
+      <div class="checkbox-group">
+        <label class="checkbox-item"><input type="checkbox" checked> 累计存款（升级条件）</label>
+        <label class="checkbox-item"><input type="checkbox" checked> 累计有效流水（升级条件）</label>
+        <label class="checkbox-item"><input type="checkbox" checked> 日礼金</label>
+        <label class="checkbox-item"><input type="checkbox" checked> 周礼金</label>
+        <label class="checkbox-item"><input type="checkbox" checked> 月礼金</label>
+        <label class="checkbox-item"><input type="checkbox" checked> 保级 新</label>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <div class="form-label">积核倍数</div>
+          <input class="form-input" type="number" value="2" min="1"/>
+          <div class="form-hint">仅支持整数。所需积核流水 = 奖励金额 × 积核倍数（如2倍：奖励50，需积核流水100）。全局统一配置，同商户下所有等级共用同一倍数。</div>
+        </div>
+        <div class="form-group" style="margin-top:0">
+          <div class="form-label">积核限定平台</div>
+          <div class="radio-group" style="margin-top:8px">
+            <label class="radio-item"><input type="radio" name="platform" value="all"> 不限制</label>
+            <label class="radio-item"><input type="radio" name="platform" value="limit" checked> 仅限以下平台</label>
+          </div>
+          <button class="btn btn-outline" style="margin-top:12px" onclick="showToast('打开平台配置弹窗')">
+            配置限定平台 <span class="badge">已选 6 个游戏商</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 3: VIP 等级配置 -->
+    <div class="card">
+      <div class="table-header">
+        <div>
+          <div class="card-title">VIP 等级配置</div>
+          <div class="card-desc" style="margin-bottom:0">表格为只读展示，如需修改请点击「编辑」进入编辑态（新增/删除等级从末位开始）</div>
+        </div>
+        <button class="btn btn-primary" id="edit-btn" onclick="toggleEdit()">编辑</button>
+      </div>
+      <div class="table-wrap">
+        <table id="vip-table">
+          <thead>
+            <tr>
+              <th>等级</th>
+              <th>晋级需充值</th>
+              <th>晋级需流水</th>
+              <th>晋级奖励</th>
+              <th>日奖励所需流水</th>
+              <th>日奖励</th>
+              <th>周奖励所需流水</th>
+              <th>周奖励</th>
+              <th>月奖励所需流水</th>
+              <th>月奖励</th>
+              <th>保级需充值</th>
+              <th>保级需流水</th>
+            </tr>
+          </thead>
+          <tbody id="vip-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast">
+  <span class="toast-icon">✓</span>
+  <span id="toast-msg">操作成功</span>
+</div>
+
+<script>
+// ── Tab switch ──
+function switchTab(el) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// ── Toggle label sync ──
+function handleToggle(el, name) {
+  const label = document.getElementById('sys-label');
+  label.textContent = el.checked ? '开启' : '关闭';
+  showToast(name + (el.checked ? ' 已开启' : ' 已关闭'));
+}
+
+// ── VIP table data ──
+const vipData = [
+  { level:'VIP0', rechargeUp:'–', flowUp:'–', bonusUp:'–', flowDay:'–', day:'–', flowWeek:'–', week:'–', flowMonth:'–', month:'–', rechargePro:'–', flowPro:'–' },
+  { level:'VIP1', rechargeUp:'10', flowUp:'10', bonusUp:'8', flowDay:'0', day:'0.1', flowWeek:'0', week:'0', flowMonth:'0', month:'0', rechargePro:'0', flowPro:'0' },
+  { level:'VIP2', rechargeUp:'500', flowUp:'500', bonusUp:'18', flowDay:'200', day:'1', flowWeek:'500', week:'5', flowMonth:'1000', month:'18', rechargePro:'100', flowPro:'200' },
+  { level:'VIP3', rechargeUp:'2000', flowUp:'2000', bonusUp:'38', flowDay:'500', day:'3', flowWeek:'1500', week:'18', flowMonth:'3000', month:'58', rechargePro:'500', flowPro:'800' },
+  { level:'VIP4', rechargeUp:'10000', flowUp:'10000', bonusUp:'88', flowDay:'2000', day:'8', flowWeek:'5000', week:'58', flowMonth:'10000', month:'188', rechargePro:'2000', flowPro:'3000' },
+  { level:'VIP5', rechargeUp:'30000', flowUp:'30000', bonusUp:'188', flowDay:'5000', day:'18', flowWeek:'15000', week:'128', flowMonth:'30000', month:'388', rechargePro:'5000', flowPro:'8000' },
+];
+
+let editing = false;
+
+function renderTable() {
+  const tbody = document.getElementById('vip-tbody');
+  const keys = ['rechargeUp','flowUp','bonusUp','flowDay','day','flowWeek','week','flowMonth','month','rechargePro','flowPro'];
+  tbody.innerHTML = vipData.map((row, ri) => `
+    <tr class="${editing && ri > 0 ? 'editing' : ''}">
+      <td><span class="vip-dot ${row.level==='VIP0'?'v0':''}"></span>${row.level}</td>
+      ${keys.map((k, ki) => {
+        const val = row[k];
+        if (editing && ri > 0) {
+          return `<td><input class="edit-input" value="${val}" onchange="vipData[${ri}]['${k}']=this.value"></td>`;
+        }
+        return `<td class="${val==='–'?'td-dash':''}">${val}</td>`;
+      }).join('')}
+    </tr>
+  `).join('');
+}
+
+function toggleEdit() {
+  editing = !editing;
+  const btn = document.getElementById('edit-btn');
+  btn.textContent = editing ? '保存' : '编辑';
+  btn.style.background = editing ? '#16a34a' : '';
+  btn.style.borderColor = editing ? '#16a34a' : '';
+  renderTable();
+  if (!editing) showToast('VIP 配置已保存');
+}
+
+// ── Toast ──
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('toast-msg').textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+renderTable();
+</script>
+</body>
+</html>
