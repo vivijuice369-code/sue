@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>幸运大转盘 · 产品需求文档</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif;background:#f7f8fc;color:#2d2f3e;display:flex;min-height:100vh;font-size:14px;line-height:1.7}
+
+/* ── LEFT NAV ── */
+.sidenav{width:240px;min-height:100vh;background:#fff;border-right:1px solid #e8eaf0;position:fixed;top:0;left:0;bottom:0;overflow-y:auto;padding:28px 0 40px}
+.nav-logo{padding:0 24px 24px;border-bottom:1px solid #f0f2f7;margin-bottom:16px}
+.nav-logo-title{font-size:15px;font-weight:700;color:#1a1a2e}
+.nav-logo-sub{font-size:12px;color:#8891a8;margin-top:2px}
+.nav-section{padding:6px 24px 2px;font-size:11px;font-weight:600;color:#9099b0;letter-spacing:.06em;text-transform:uppercase;margin-top:10px}
+.nav-link{display:block;padding:7px 24px;font-size:13px;color:#555e7a;text-decoration:none;cursor:pointer;transition:.15s;border-left:3px solid transparent}
+.nav-link:hover{color:#4f6ef7;background:#f5f6ff}
+.nav-link.active{color:#4f6ef7;background:#f0f3ff;border-left-color:#4f6ef7;font-weight:500}
+.nav-link.sub{padding-left:38px;font-size:12.5px;color:#8891a8}
+.nav-link.sub:hover,.nav-link.sub.active{color:#4f6ef7}
+
+/* ── MAIN ── */
+.main{margin-left:240px;flex:1;padding:48px 60px 80px;max-width:1100px}
+
+/* ── TOPBAR ── */
+.topbar{position:fixed;top:0;left:240px;right:0;height:48px;background:#fff;border-bottom:1px solid #e8eaf0;display:flex;align-items:center;padding:0 60px;z-index:100;gap:8px;font-size:13px;color:#8891a8}
+.topbar-sep{color:#ccd0de}
+.badge-status{background:#fef3c7;color:#b45309;border-radius:4px;padding:2px 8px;font-size:11.5px;font-weight:600}
+
+/* ── CONTENT ── */
+.content{margin-top:64px}
+
+/* ── COVER ── */
+.cover-card{background:linear-gradient(135deg,#1e2a5e 0%,#3a4fd4 100%);border-radius:16px;padding:40px 48px;color:#fff;margin-bottom:36px;position:relative;overflow:hidden}
+.cover-card::after{content:'✦';position:absolute;right:48px;top:32px;font-size:80px;opacity:.08}
+.cover-tag{display:inline-block;background:rgba(255,255,255,.15);border-radius:6px;padding:3px 10px;font-size:12px;margin-bottom:16px}
+.cover-title{font-size:28px;font-weight:700;margin-bottom:8px}
+.cover-sub{font-size:14px;opacity:.75;margin-bottom:28px}
+.cover-table{width:100%;border-collapse:collapse}
+.cover-table td{padding:8px 0;font-size:13px;border-bottom:1px solid rgba(255,255,255,.12)}
+.cover-table td:first-child{color:rgba(255,255,255,.6);width:120px}
+.cover-table td:last-child{color:#fff;font-weight:500}
+
+/* ── SECTION HEADINGS ── */
+.section-block{margin-bottom:48px;scroll-margin-top:72px}
+.section-h1{font-size:22px;font-weight:700;color:#1a1a2e;padding-bottom:12px;border-bottom:2px solid #e8eaf0;margin-bottom:20px}
+.section-h2{font-size:16px;font-weight:600;color:#1a1a2e;margin:24px 0 12px;display:flex;align-items:center;gap:8px}
+.section-h2::before{content:'';display:inline-block;width:4px;height:16px;background:#4f6ef7;border-radius:2px}
+.section-h3{font-size:14px;font-weight:600;color:#3a4060;margin:16px 0 8px}
+p{color:#4a5070;margin-bottom:12px;line-height:1.8}
+
+/* ── NOTE BOX ── */
+.note{border-radius:8px;padding:14px 18px;margin:16px 0;font-size:13px;line-height:1.7}
+.note-blue{background:#eff4ff;border-left:4px solid #4f6ef7;color:#3a4fd4}
+.note-yellow{background:#fffbeb;border-left:4px solid #f59e0b;color:#92400e}
+.note-label{font-weight:600;margin-bottom:4px}
+
+/* ── TABLE ── */
+.doc-table{width:100%;border-collapse:collapse;margin:16px 0;font-size:13px}
+.doc-table th{background:#f0f3ff;color:#3a4fd4;padding:10px 14px;text-align:left;font-weight:600;border:1px solid #e0e6ff}
+.doc-table td{padding:10px 14px;border:1px solid #eaedf5;color:#4a5070;vertical-align:top}
+.doc-table tr:nth-child(even) td{background:#fafbff}
+
+/* ── PHONE MOCKUP ── */
+.mockup-wrap{display:flex;gap:48px;align-items:flex-start;margin:24px 0}
+.mockup-desc{flex:1;min-width:0}
+.mockup-phone-outer{flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:16px}
+.phone{width:280px;height:560px;background:#1a1a2e;border-radius:36px;padding:10px;box-shadow:0 24px 60px rgba(0,0,0,.25),0 0 0 1px #333,inset 0 0 0 1px rgba(255,255,255,.05);position:relative}
+.phone-notch{width:80px;height:22px;background:#1a1a2e;border-radius:0 0 14px 14px;position:absolute;top:10px;left:50%;transform:translateX(-50%);z-index:10}
+.phone-screen{width:100%;height:100%;border-radius:28px;overflow:hidden;background:#fff;position:relative;display:flex;flex-direction:column}
+
+/* phone content */
+.ph-topbar{background:#ff6b00;padding:28px 14px 10px;display:flex;justify-content:space-between;align-items:center}
+.ph-topbar span{color:#fff;font-size:12px;font-weight:600}
+.ph-chances{background:#ff5500;padding:6px 14px;display:flex;justify-content:space-between}
+.ph-chances span{color:#ffe0b0;font-size:10px}
+.ph-wheel-area{background:#ff8c00;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px 0}
+.ph-marquee{background:#ff5500;padding:4px 10px;font-size:9px;color:#ffe8c0;white-space:nowrap;overflow:hidden}
+
+/* canvas wheel */
+#wheel-canvas{border-radius:50%;cursor:pointer;transition:transform .1s}
+#wheel-canvas:hover{transform:scale(1.03)}
+.ph-spin-btn{margin-top:8px;background:#fff;border:none;border-radius:20px;padding:6px 22px;font-size:11px;font-weight:700;color:#ff6b00;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.2)}
+.ph-spin-btn:active{transform:scale(.97)}
+
+.ph-tasks{background:#fff;padding:8px 10px}
+.ph-task-title{font-size:9px;font-weight:700;color:#ff6b00;margin-bottom:4px}
+.ph-task-row{display:flex;justify-content:space-between;align-items:center;background:#fff8f0;border-radius:6px;padding:5px 8px;margin-bottom:3px}
+.ph-task-row span{font-size:9px;color:#555}
+.ph-task-tag{background:#ff6b00;color:#fff;font-size:8px;border-radius:4px;padding:1px 6px}
+
+.spin-result{position:absolute;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;z-index:20;border-radius:28px}
+.spin-result-box{background:#fff;border-radius:14px;padding:24px 32px;text-align:center}
+.spin-result-box h3{font-size:16px;font-weight:700;color:#1a1a2e;margin-bottom:6px}
+.spin-result-box p{font-size:13px;color:#666;margin-bottom:14px}
+.spin-result-box button{background:#ff6b00;color:#fff;border:none;border-radius:8px;padding:8px 24px;font-size:13px;font-weight:600;cursor:pointer}
+
+/* annotation */
+.annotation{background:#eff4ff;border:1px solid #c7d7ff;border-radius:8px;padding:12px 16px;font-size:12.5px;color:#3a4fd4;margin-top:8px}
+.annotation strong{display:block;margin-bottom:4px;font-size:13px}
+
+/* ── RULES ── */
+.rules-list{list-style:none;padding:0}
+.rules-list li{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid #f0f2f7;font-size:13px;color:#4a5070}
+.rules-list li:last-child{border-bottom:none}
+.rule-num{flex-shrink:0;width:22px;height:22px;background:#4f6ef7;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;margin-top:1px}
+
+/* ── PRIZE TABLE ── */
+.prize-row-top{background:#4f6ef7;color:#fff}
+</style>
+</head>
+<body>
+
+<!-- ── LEFT NAV ── -->
+<nav class="sidenav">
+  <div class="nav-logo">
+    <div class="nav-logo-title">幸运大转盘</div>
+    <div class="nav-logo-sub">产品需求文档 · PRD</div>
+  </div>
+  <a class="nav-link active" onclick="scrollTo('cover')">封面 / 文档信息</a>
+  <div class="nav-section">需求说明</div>
+  <a class="nav-link" onclick="scrollTo('bg')">一、需求背景与目标</a>
+  <a class="nav-link sub" onclick="scrollTo('bg-1')">1.1 背景</a>
+  <a class="nav-link sub" onclick="scrollTo('bg-2')">1.2 目标</a>
+  <a class="nav-link sub" onclick="scrollTo('bg-3')">1.3 名词解释</a>
+  <a class="nav-link" onclick="scrollTo('scope')">二、功能范围概览</a>
+  <a class="nav-link" onclick="scrollTo('role')">三、角色与权限</a>
+  <div class="nav-section">设计详情</div>
+  <a class="nav-link" onclick="scrollTo('design')">四、功能详细设计</a>
+  <a class="nav-link sub" onclick="scrollTo('d1')">4.1 转盘主页面</a>
+  <a class="nav-link sub" onclick="scrollTo('d2')">4.2 抽奖次数获取</a>
+  <a class="nav-link sub" onclick="scrollTo('d3')">4.3 奖品说明</a>
+  <a class="nav-link sub" onclick="scrollTo('d4')">4.4 中奖与发放</a>
+  <div class="nav-section">规则</div>
+  <a class="nav-link" onclick="scrollTo('rules')">五、活动规则</a>
+  <a class="nav-link" onclick="scrollTo('exception')">六、异常处理</a>
+</nav>
+
+<!-- ── TOPBAR ── -->
+<div class="topbar">
+  <span>福利中心</span>
+  <span class="topbar-sep">/</span>
+  <span>活动管理</span>
+  <span class="topbar-sep">/</span>
+  <span style="color:#1a1a2e;font-weight:500">幸运大转盘 PRD</span>
+  <span style="margin-left:12px" class="badge-status">待评审</span>
+</div>
+
+<!-- ── MAIN CONTENT ── -->
+<div class="main">
+<div class="content">
+
+<!-- COVER -->
+<div id="cover" class="section-block">
+  <div class="cover-card">
+    <div class="cover-tag">产品需求文档（PRD）</div>
+    <div class="cover-title">幸运大转盘</div>
+    <div class="cover-sub">App 内消费抽奖活动 · 现金红包奖励体系设计</div>
+    <table class="cover-table">
+      <tr><td>文档名称</td><td>幸运大转盘产品需求文档（PRD）</td></tr>
+      <tr><td>所属模块</td><td>福利中心 / 活动管理</td></tr>
+      <tr><td>版本号</td><td>V1.0</td></tr>
+      <tr><td>状态</td><td>待评审</td></tr>
+      <tr><td>关联原型</td><td>幸运大转盘交互设计稿.html（高保真可交互原型）</td></tr>
+      <tr><td>创建日期</td><td>2026年7月</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- 一、需求背景与目标 -->
+<div id="bg" class="section-block">
+  <div class="section-h1">一、需求背景与目标</div>
+
+  <div id="bg-1" class="section-h2">1.1 背景</div>
+  <p>当前平台用户在完成消费/下单后缺乏即时的激励反馈机制，用户留存率和复购率有待提升。通过引入趣味性的转盘抽奖活动，将消费行为与随机奖励结合，可有效提升用户参与感与平台粘性。</p>
+  <p>竞品平台普遍存在此类活动，用户对该玩法接受度高、参与门槛低，适合作为常态化福利活动上线。</p>
+
+  <div id="bg-2" class="section-h2">1.2 目标</div>
+  <table class="doc-table">
+    <tr><th>目标维度</th><th>具体描述</th><th>预期指标</th></tr>
+    <tr><td>用户留存</td><td>通过每日抽奖机会刺激用户每日回访</td><td>次日留存率提升 10%</td></tr>
+    <tr><td>消费促进</td><td>以消费/下单作为获取抽奖机会的条件</td><td>人均订单量提升 15%</td></tr>
+    <tr><td>用户体验</td><td>提供即时现金奖励，增强用户满足感</td><td>活动参与率 ≥ 30%</td></tr>
+    <tr><td>风险控制</td><td>设置每日/活动期间中奖上限，控制成本</td><td>奖励成本在预算范围内</td></tr>
+  </table>
+
+  <div id="bg-3" class="section-h2">1.3 名词解释</div>
+  <table class="doc-table">
+    <tr><th>名词</th><th>解释</th></tr>
+    <tr><td>抽奖次数</td><td>用户通过消费/下单获得的可参与转盘抽奖的次数，有时效限制</td></tr>
+    <tr><td>现金红包</td><td>中奖后发放至用户账户余额/钱包的现金奖励，可提现</td></tr>
+    <tr><td>有效消费</td><td>订单完成支付且未发生全额退款的消费行为</td></tr>
+    <tr><td>中奖概率</td><td>系统预设的每个奖项被抽中的随机概率，全局公示</td></tr>
+  </table>
+</div>
+
+<!-- 二、功能范围 -->
+<div id="scope" class="section-block">
+  <div class="section-h1">二、功能范围概览</div>
+  <table class="doc-table">
+    <tr><th>功能模块</th><th>功能点</th><th>优先级</th><th>说明</th></tr>
+    <tr><td>转盘主页</td><td>转盘展示与旋转动画</td><td>P0</td><td>核心功能，必须上线</td></tr>
+    <tr><td>转盘主页</td><td>剩余次数展示</td><td>P0</td><td>实时显示可用次数</td></tr>
+    <tr><td>转盘主页</td><td>中奖播报滚动</td><td>P1</td><td>增强氛围感</td></tr>
+    <tr><td>次数获取</td><td>消费/下单触发次数发放</td><td>P0</td><td>核心激励机制</td></tr>
+    <tr><td>次数获取</td><td>次数到账通知</td><td>P2</td><td>可后期迭代</td></tr>
+    <tr><td>奖品发放</td><td>现金红包实时到账</td><td>P0</td><td>中奖后自动发放</td></tr>
+    <tr><td>奖品发放</td><td>中奖弹窗展示</td><td>P1</td><td>提升用户体验</td></tr>
+    <tr><td>记录查询</td><td>抽奖记录列表</td><td>P1</td><td>供用户查看历史</td></tr>
+    <tr><td>后台管理</td><td>奖池配置与概率设置</td><td>P0</td><td>运营侧必须</td></tr>
+  </table>
+</div>
+
+<!-- 三、角色与权限 -->
+<div id="role" class="section-block">
+  <div class="section-h1">三、角色与权限</div>
+  <table class="doc-table">
+    <tr><th>角色</th><th>可操作内容</th><th>限制</th></tr>
+    <tr><td>普通会员</td><td>查看活动、消耗次数参与抽奖、查看中奖记录、提现奖励</td><td>需登录；账号状态正常</td></tr>
+    <tr><td>运营人员</td><td>配置奖池、设置概率、调整活动时间、查看数据报表</td><td>需后台权限</td></tr>
+    <tr><td>系统</td><td>自动发放次数、随机生成抽奖结果、自动发放奖励</td><td>–</td></tr>
+  </table>
+</div>
+
+<!-- 四、功能详细设计 -->
+<div id="design" class="section-block">
+  <div class="section-h1">四、功能详细设计</div>
+
+  <!-- 4.1 转盘主页面 -->
+  <div id="d1" class="section-h2">4.1 转盘主页面</div>
+  <div class="note note-blue">
+    <div class="note-label">💡 设计说明</div>
+    蓝色高亮为后台动态配置内容；标注说明具体数据来源，正式上线页面不显示标注。
+  </div>
+
+  <div class="mockup-wrap">
+    <div class="mockup-desc">
+      <div class="section-h3">页面构成</div>
+      <table class="doc-table">
+        <tr><th>区域</th><th>内容</th><th>说明</th></tr>
+        <tr><td>顶部导航</td><td>标题「幸运大转盘」+ 抽奖记录入口</td><td>固定顶部</td></tr>
+        <tr><td>弹幕区</td><td>滚动播报其他用户中奖信息</td><td>手机号脱敏处理</td></tr>
+        <tr><td>剩余次数</td><td>显示当前可用抽奖次数</td><td>实时更新</td></tr>
+        <tr><td>转盘</td><td>8扇区转盘，含奖品+谢谢参与</td><td>点击中心按钮触发</td></tr>
+        <tr><td>任务区</td><td>任务列表，完成即可获得次数</td><td>已完成/待完成状态</td></tr>
+        <tr><td>活动规则</td><td>规则文案折叠展示</td><td>可展开收起</td></tr>
+      </table>
+
+      <div class="section-h3" style="margin-top:20px">交互说明</div>
+      <ul class="rules-list">
+        <li><span class="rule-num">1</span><span>用户点击转盘中心「开始抽奖」按钮，转盘开始旋转，约3秒后停止并显示中奖结果</span></li>
+        <li><span class="rule-num">2</span><span>剩余次数为0时，按钮置灰，点击后引导用户前往完成任务获取次数</span></li>
+        <li><span class="rule-num">3</span><span>中奖后弹出结果弹窗，显示奖品名称和金额，点击「收下」关闭弹窗，奖励自动到账</span></li>
+        <li><span class="rule-num">4</span><span>抽中「谢谢参与」时弹窗提示「感谢参与，下次好运」</span></li>
+      </ul>
+
+      <div class="annotation">
+        <strong>📌 数据绑定标注</strong>
+        转盘扇区奖品名称和金额来源：后台「活动管理 → 奖池配置」；剩余次数来源：用户账户次数余额实时接口。
+      </div>
+    </div>
+
+    <!-- PHONE MOCKUP -->
+    <div class="mockup-phone-outer">
+      <div class="phone">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <div class="ph-topbar">
+            <span>‹</span>
+            <span>幸运大转盘</span>
+            <span style="font-size:9px">抽奖记录</span>
+          </div>
+          <div class="ph-marquee" id="marquee">🎉 会员138****2231 获得¥8.88 | 会员159****0087 获得¥1.88 | 会员136****5521 获得¥88 | 会员177****3309 获得¥5</div>
+          <div class="ph-chances">
+            <span>全天不限时</span>
+            <span>剩余抽奖次数：<strong id="chances-count" style="color:#FFD700">3</strong> 次</span>
+          </div>
+          <div class="ph-wheel-area">
+            <canvas id="wheel-canvas" width="200" height="200"></canvas>
+            <button class="ph-spin-btn" onclick="spinWheel()">点击抽奖</button>
+          </div>
+          <div class="ph-tasks">
+            <div class="ph-task-title">完成任务 获得抽奖次数</div>
+            <div class="ph-task-row">
+              <span>单次消费 ≥ 100元</span>
+              <span class="ph-task-tag">待完成</span>
+            </div>
+            <div class="ph-task-row" style="background:#f0fff8">
+              <span>单次消费 ≥ 500元</span>
+              <span class="ph-task-tag" style="background:#1D9E75">已完成</span>
+            </div>
+          </div>
+          <!-- 中奖弹窗 -->
+          <div class="spin-result" id="spin-result">
+            <div class="spin-result-box">
+              <h3 id="result-title">恭喜获得！</h3>
+              <p id="result-body">现金红包 ¥8.88</p>
+              <button onclick="closeResult()">收下奖励</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="font-size:12px;color:#8891a8;text-align:center">↑ 可点击「点击抽奖」体验交互</div>
+    </div>
+  </div>
+
+  <!-- 4.2 抽奖次数获取 -->
+  <div id="d2" class="section-h2">4.2 抽奖次数获取规则</div>
+  <table class="doc-table">
+    <tr><th>获取方式</th><th>条件</th><th>获得次数</th><th>备注</th></tr>
+    <tr><td>单次消费</td><td>实付金额 ≥ 100元</td><td>1次</td><td>订单完成支付后实时到账</td></tr>
+    <tr><td>单次消费</td><td>实付金额 ≥ 500元</td><td>3次</td><td>叠加档位，取最高档</td></tr>
+    <tr><td>单次消费</td><td>实付金额 ≥ 1,000元</td><td>5次</td><td>叠加档位，取最高档</td></tr>
+  </table>
+  <div class="note note-yellow">
+    <div class="note-label">⚠️ 注意</div>
+    抽奖次数自发放之日起 <strong>7天</strong> 内有效，逾期自动清零，不予补发。订单发生全额退款后，对应次数同步扣回。
+  </div>
+
+  <!-- 4.3 奖品说明 -->
+  <div id="d3" class="section-h2">4.3 奖品说明</div>
+  <table class="doc-table">
+    <tr><th>奖项</th><th>奖励金额</th><th>参考概率</th><th>说明</th></tr>
+    <tr><td>特等奖</td><td>¥88</td><td>0.5%</td><td>现金红包实时到账</td></tr>
+    <tr><td>一等奖</td><td>¥18.88</td><td>2%</td><td>现金红包实时到账</td></tr>
+    <tr><td>二等奖</td><td>¥8.88</td><td>5%</td><td>现金红包实时到账</td></tr>
+    <tr><td>三等奖</td><td>¥5</td><td>10%</td><td>现金红包实时到账</td></tr>
+    <tr><td>四等奖</td><td>¥1.88</td><td>20%</td><td>现金红包实时到账</td></tr>
+    <tr><td>幸运奖</td><td>¥0.88</td><td>30%</td><td>现金红包实时到账</td></tr>
+    <tr><td>谢谢参与</td><td>–</td><td>32.5%</td><td>无奖励，显示鼓励文案</td></tr>
+  </table>
+
+  <!-- 4.4 中奖与发放 -->
+  <div id="d4" class="section-h2">4.4 中奖与发放流程</div>
+  <p>抽奖结果由系统按既定概率随机生成，全程自动化处理，无需人工干预。</p>
+  <table class="doc-table">
+    <tr><th>步骤</th><th>触发条件</th><th>系统行为</th><th>用户侧展示</th></tr>
+    <tr><td>1. 发起抽奖</td><td>用户点击「开始抽奖」</td><td>校验次数余额；扣减1次；生成随机结果</td><td>转盘开始旋转</td></tr>
+    <tr><td>2. 结果展示</td><td>旋转动画结束</td><td>转盘停止在对应扇区</td><td>弹出中奖/未中奖弹窗</td></tr>
+    <tr><td>3. 奖励发放</td><td>中奖且非谢谢参与</td><td>写入奖励记录；发放至账户余额</td><td>弹窗显示奖励金额</td></tr>
+    <tr><td>4. 用户确认</td><td>用户点击「收下」</td><td>弹窗关闭；剩余次数更新</td><td>返回转盘页面</td></tr>
+  </table>
+</div>
+
+<!-- 五、活动规则 -->
+<div id="rules" class="section-block">
+  <div class="section-h1">五、活动规则</div>
+  <div class="note note-blue">
+    <div class="note-label">说明</div>
+    以下规则为面向用户展示的完整规则文案，可直接用于活动页面。
+  </div>
+
+  <div class="section-h2">活动时间</div>
+  <p>202X年X月X日 00:00:00 — 202X年X月X日 23:59:59（具体以页面显示倒计时为准）</p>
+
+  <div class="section-h2">参与方式</div>
+  <ul class="rules-list">
+    <li><span class="rule-num">1</span><span>活动期间，用户在App内完成消费/下单，即可获得抽奖机会，可在【我的-幸运转盘】页面参与抽奖</span></li>
+    <li><span class="rule-num">2</span><span>单笔订单实付金额满X元，获得1次抽奖机会；每提升一个消费档位，可叠加获得更多抽奖机会</span></li>
+    <li><span class="rule-num">3</span><span>订单需完成支付且未发生全额退款，方可计入有效消费并获得抽奖机会</span></li>
+    <li><span class="rule-num">4</span><span>抽奖机会自订单支付成功后实时到账，可在【我的转盘次数】中查看剩余次数</span></li>
+    <li><span class="rule-num">5</span><span>抽奖机会自发放之日起X天内有效，逾期未使用将自动清零，不再补发</span></li>
+  </ul>
+
+  <div class="section-h2">奖品说明</div>
+  <ul class="rules-list">
+    <li><span class="rule-num">1</span><span>本次活动奖品为现金红包，奖池金额及中奖概率详见活动页面公示</span></li>
+    <li><span class="rule-num">2</span><span>现金红包将于中奖后实时发放至用户账户余额/钱包，用户可在【我的钱包】查看到账记录</span></li>
+    <li><span class="rule-num">3</span><span>现金红包提现规则、到账时间以平台钱包相关规则为准</span></li>
+  </ul>
+
+  <div class="section-h2">违规处理</div>
+  <ul class="rules-list">
+    <li><span class="rule-num">1</span><span>利用虚假交易、恶意刷单、退款套现等方式骗取抽奖机会的，平台有权取消资格并追回奖励</span></li>
+    <li><span class="rule-num">2</span><span>使用外挂、脚本、模拟器等非正常手段参与活动的，平台有权封禁账号</span></li>
+    <li><span class="rule-num">3</span><span>注册或操控多个账号重复参与活动的，视为违规处理</span></li>
+    <li><span class="rule-num">4</span><span>本活动最终解释权归平台所有</span></li>
+  </ul>
+</div>
+
+<!-- 六、异常处理 -->
+<div id="exception" class="section-block">
+  <div class="section-h1">六、异常处理</div>
+  <table class="doc-table">
+    <tr><th>异常场景</th><th>处理方式</th><th>用户提示</th></tr>
+    <tr><td>抽奖时网络中断</td><td>结果以后台记录为准，前端重新拉取结果展示</td><td>「网络异常，正在重新获取结果…」</td></tr>
+    <tr><td>余额不足发放</td><td>记录发放失败日志，人工补发</td><td>「奖励发放中，请稍后查看钱包」</td></tr>
+    <tr><td>次数扣减失败</td><td>回滚操作，不消耗次数，不生成中奖结果</td><td>「系统繁忙，请稍后重试」</td></tr>
+    <tr><td>并发重复抽奖</td><td>接口幂等处理，同一请求只处理一次</td><td>前端按钮点击后立即置灰防重复</td></tr>
+    <tr><td>用户投诉未到账</td><td>客服凭订单号和抽奖记录核实后手动补发</td><td>引导联系客服并提供抽奖记录</td></tr>
+  </table>
+</div>
+
+</div><!-- /content -->
+</div><!-- /main -->
+
+<script>
+// ── Nav active state ──
+document.querySelectorAll('.nav-link').forEach(link => {
+  link.addEventListener('click', () => {
+    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+    link.classList.add('active');
+  });
+});
+
+function scrollTo(id) {
+  const el = document.getElementById(id);
+  if (el) el.scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+// ── Marquee scroll ──
+const marquee = document.getElementById('marquee');
+let mPos = 0;
+setInterval(() => {
+  mPos -= 1;
+  if (mPos < -marquee.scrollWidth / 2) mPos = 0;
+  marquee.style.transform = `translateX(${mPos}px)`;
+}, 20);
+
+// ── Spin Wheel ──
+const canvas = document.getElementById('wheel-canvas');
+const ctx = canvas.getContext('2d');
+const segments = [
+  {label:'谢谢参与', color:'#F5F5F5', text:'#999'},
+  {label:'¥88',     color:'#FFF0F0', text:'#CC2200'},
+  {label:'¥18.88',  color:'#F0FFF0', text:'#007700'},
+  {label:'¥8.88',   color:'#FFF8E0', text:'#AA6600'},
+  {label:'谢谢参与', color:'#F0F0FF', text:'#3300AA'},
+  {label:'¥5',      color:'#FFF0F0', text:'#CC2200'},
+  {label:'¥1.88',   color:'#F0FFF0', text:'#007700'},
+  {label:'¥0.88',   color:'#FFF8E0', text:'#AA6600'},
+];
+const N = segments.length;
+let currentAngle = 0, spinning = false;
+
+function drawWheel(angle) {
+  const cx = 100, cy = 100, r = 90;
+  ctx.clearRect(0, 0, 200, 200);
+  segments.forEach((seg, i) => {
+    const start = angle + (i / N) * Math.PI * 2;
+    const end   = angle + ((i + 1) / N) * Math.PI * 2;
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.arc(cx, cy, r, start, end);
+    ctx.closePath();
+    ctx.fillStyle = seg.color;
+    ctx.fill();
+    ctx.strokeStyle = '#ddd';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+    // text
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.rotate(start + Math.PI / N);
+    ctx.textAlign = 'right';
+    ctx.fillStyle = seg.text;
+    ctx.font = `bold ${seg.label.length > 4 ? 9 : 10}px sans-serif`;
+    ctx.fillText(seg.label, r - 8, 4);
+    ctx.restore();
+  });
+  // pointer
+  ctx.beginPath();
+  ctx.moveTo(cx, cy - r - 6);
+  ctx.lineTo(cx - 7, cy - r + 10);
+  ctx.lineTo(cx + 7, cy - r + 10);
+  ctx.closePath();
+  ctx.fillStyle = '#CC2200';
+  ctx.fill();
+  // center
+  ctx.beginPath();
+  ctx.arc(cx, cy, 22, 0, Math.PI * 2);
+  ctx.fillStyle = '#ff6b00';
+  ctx.fill();
+  ctx.fillStyle = '#fff';
+  ctx.font = 'bold 8px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('开始', cx, cy - 3);
+  ctx.fillText('抽奖', cx, cy + 8);
+}
+
+drawWheel(0);
+
+const prizes = ['谢谢参与','¥88','¥18.88','¥8.88','谢谢参与','¥5','¥1.88','¥0.88'];
+
+function spinWheel() {
+  if (spinning) return;
+  const countEl = document.getElementById('chances-count');
+  let count = parseInt(countEl.textContent);
+  if (count <= 0) { alert('抽奖次数不足，请先完成任务！'); return; }
+  spinning = true;
+  const extraSpins = 5 + Math.random() * 5;
+  const landSegment = Math.floor(Math.random() * N);
+  const targetAngle = currentAngle + extraSpins * Math.PI * 2 + (Math.PI * 2 - (landSegment / N) * Math.PI * 2 - Math.PI / N);
+  const duration = 3500;
+  const start = performance.now();
+  const startAngle = currentAngle;
+
+  function ease(t) { return 1 - Math.pow(1 - t, 4); }
+
+  function animate(now) {
+    const elapsed = now - start;
+    const progress = Math.min(elapsed / duration, 1);
+    currentAngle = startAngle + (targetAngle - startAngle) * ease(progress);
+    drawWheel(currentAngle);
+    if (progress < 1) {
+      requestAnimationFrame(animate);
+    } else {
+      spinning = false;
+      countEl.textContent = count - 1;
+      const prize = prizes[landSegment];
+      document.getElementById('result-title').textContent = prize === '谢谢参与' ? '感谢参与！' : '恭喜获得！';
+      document.getElementById('result-body').textContent = prize === '谢谢参与' ? '下次好运 🍀' : `现金红包 ${prize}，已发放至您的钱包`;
+      document.getElementById('spin-result').style.display = 'flex';
+    }
+  }
+  requestAnimationFrame(animate);
+}
+
+function closeResult() {
+  document.getElementById('spin-result').style.display = 'none';
+}
+</script>
+</body>
+</html>
