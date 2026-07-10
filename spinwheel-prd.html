@@ -118,23 +118,23 @@ p{color:#4a5070;margin-bottom:12px;line-height:1.8}
     <div class="nav-logo-title">幸运大转盘</div>
     <div class="nav-logo-sub">产品需求文档 · PRD</div>
   </div>
-  <a class="nav-link active" onclick="scrollTo('cover')">封面 / 文档信息</a>
+  <a class="nav-link active" onclick="goToSection('cover')">封面 / 文档信息</a>
   <div class="nav-section">需求说明</div>
-  <a class="nav-link" onclick="scrollTo('bg')">一、需求背景与目标</a>
-  <a class="nav-link sub" onclick="scrollTo('bg-1')">1.1 背景</a>
-  <a class="nav-link sub" onclick="scrollTo('bg-2')">1.2 目标</a>
-  <a class="nav-link sub" onclick="scrollTo('bg-3')">1.3 名词解释</a>
-  <a class="nav-link" onclick="scrollTo('scope')">二、功能范围概览</a>
-  <a class="nav-link" onclick="scrollTo('role')">三、角色与权限</a>
+  <a class="nav-link" onclick="goToSection('bg')">一、需求背景与目标</a>
+  <a class="nav-link sub" onclick="goToSection('bg-1')">1.1 背景</a>
+  <a class="nav-link sub" onclick="goToSection('bg-2')">1.2 目标</a>
+  <a class="nav-link sub" onclick="goToSection('bg-3')">1.3 名词解释</a>
+  <a class="nav-link" onclick="goToSection('scope')">二、功能范围概览</a>
+  <a class="nav-link" onclick="goToSection('role')">三、角色与权限</a>
   <div class="nav-section">设计详情</div>
-  <a class="nav-link" onclick="scrollTo('design')">四、功能详细设计</a>
-  <a class="nav-link sub" onclick="scrollTo('d1')">4.1 转盘主页面</a>
-  <a class="nav-link sub" onclick="scrollTo('d2')">4.2 抽奖次数获取</a>
-  <a class="nav-link sub" onclick="scrollTo('d3')">4.3 奖品说明</a>
-  <a class="nav-link sub" onclick="scrollTo('d4')">4.4 中奖与发放</a>
+  <a class="nav-link" onclick="goToSection('design')">四、功能详细设计</a>
+  <a class="nav-link sub" onclick="goToSection('d1')">4.1 转盘主页面</a>
+  <a class="nav-link sub" onclick="goToSection('d2')">4.2 抽奖次数获取</a>
+  <a class="nav-link sub" onclick="goToSection('d3')">4.3 奖品说明</a>
+  <a class="nav-link sub" onclick="goToSection('d4')">4.4 中奖与发放</a>
   <div class="nav-section">规则</div>
-  <a class="nav-link" onclick="scrollTo('rules')">五、活动规则</a>
-  <a class="nav-link" onclick="scrollTo('exception')">六、异常处理</a>
+  <a class="nav-link" onclick="goToSection('rules')">五、活动规则</a>
+  <a class="nav-link" onclick="goToSection('exception')">六、异常处理</a>
 </nav>
 
 <!-- ── TOPBAR ── -->
@@ -396,18 +396,37 @@ p{color:#4a5070;margin-bottom:12px;line-height:1.8}
 </div><!-- /main -->
 
 <script>
-// ── Nav active state ──
-document.querySelectorAll('.nav-link').forEach(link => {
-  link.addEventListener('click', () => {
-    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-    link.classList.add('active');
+// ── Nav scroll ──
+function goToSection(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const top = el.getBoundingClientRect().top + window.scrollY - 72;
+  window.scrollTo({top, behavior:'smooth'});
+  // 立即更新高亮
+  document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+  // 找到对应的 nav-link
+  document.querySelectorAll('.nav-link').forEach(l => {
+    if (l.getAttribute('onclick') && l.getAttribute('onclick').includes("'" + id + "'")) {
+      l.classList.add('active');
+    }
+  });
+}
+
+// ── Scroll spy：滚动时自动高亮对应导航项 ──
+const sectionIds = ['cover','bg','bg-1','bg-2','bg-3','scope','role','design','d1','d2','d3','d4','rules','exception'];
+window.addEventListener('scroll', () => {
+  let current = 'cover';
+  sectionIds.forEach(id => {
+    const el = document.getElementById(id);
+    if (el && el.getBoundingClientRect().top <= 100) current = id;
+  });
+  document.querySelectorAll('.nav-link').forEach(l => {
+    l.classList.remove('active');
+    if (l.getAttribute('onclick') && l.getAttribute('onclick').includes("'" + current + "'")) {
+      l.classList.add('active');
+    }
   });
 });
-
-function scrollTo(id) {
-  const el = document.getElementById(id);
-  if (el) el.scrollIntoView({behavior:'smooth', block:'start'});
-}
 
 // ── Marquee scroll ──
 const marquee = document.getElementById('marquee');
