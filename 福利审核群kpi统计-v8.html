@@ -406,19 +406,24 @@
     padding: 18px 20px; margin-bottom: 22px;
   }
   .filter-grid {
-    display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px 18px;
+    display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 14px 18px;
   }
-  .filter-item { display: flex; flex-direction: column; gap: 5px; }
+  .filter-item { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
   .filter-item.wide { grid-column: span 2; }
   .filter-item label { font-size: 12px; color: #6b7280; }
   .filter-item input {
     font-size: 13px; padding: 7px 10px; border-radius: 6px; border: 1px solid #d8dce2; outline: none;
   }
   .filter-item input:focus { border-color: #85b7eb; }
+  .filter-item select {
+    font-size: 13px; padding: 7px 10px; border-radius: 6px; border: 1px solid #d8dce2; outline: none;
+    background: #ffffff; color: #1c2430;
+  }
+  .filter-item select:focus { border-color: #85b7eb; }
   .range-inputs { display: flex; align-items: center; gap: 6px; }
   .range-inputs input { flex: 1; min-width: 0; }
   .range-inputs span { color: #9ca3af; font-size: 12px; }
-  .filter-actions-inline { justify-content: flex-end; }
+  .filter-actions-inline { justify-content: flex-end; grid-column: 1 / -1; }
   .filter-actions-inline label { visibility: hidden; }
   .filter-actions { display: flex; justify-content: flex-end; gap: 10px; }
   .btn-primary, .btn-secondary {
@@ -439,21 +444,24 @@
   .dr-trigger .dr-text { flex: 1; white-space: nowrap; }
   #dr-top-mount .dr-trigger { background: #fff; }
   .dr-popover {
-    display: none; position: absolute; top: calc(100% + 6px); left: 0; z-index: 50;
+    display: none; position: fixed; z-index: 999;
     background: #ffffff; border: 1px solid #e2e5ea; border-radius: 10px;
-    box-shadow: 0 10px 28px rgba(0,0,0,0.14); padding: 16px; width: 560px;
+    box-shadow: 0 10px 28px rgba(0,0,0,0.14); padding: 16px; width: 560px; max-width: calc(100vw - 24px);
   }
   .dr-wrap.open .dr-popover { display: block; }
-  #dr-top-mount .dr-popover { left: auto; right: 0; }
   .dr-cal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; font-size: 13px; font-weight: 600; color: #1c2430; }
   .dr-nav { background: none; border: none; cursor: pointer; color: #6b7280; font-size: 14px; padding: 2px 8px; }
   .dr-nav:hover { color: #3390ec; }
-  .dr-cals { display: flex; gap: 24px; }
-  .dr-cal { flex: 1; }
-  .dr-cal table { width: 100%; border-collapse: collapse; font-size: 12px; text-align: center; }
-  .dr-cal th { color: #9ca3af; font-weight: 400; padding: 4px 0; }
-  .dr-cal td { padding: 1px; }
-  .dr-day { width: 28px; height: 28px; line-height: 28px; border-radius: 6px; cursor: pointer; margin: 0 auto; color: #374151; }
+  .dr-cals { display: flex; gap: 20px; }
+  .dr-cal { flex: 1; min-width: 0; }
+  .dr-grid { display: grid; grid-template-columns: repeat(7, minmax(0,1fr)); }
+  .dr-grid-head { margin-bottom: 4px; }
+  .dr-head-cell { font-size: 12px; color: #9ca3af; text-align: center; padding: 4px 0; }
+  .dr-grid-body { row-gap: 2px; }
+  .dr-day {
+    width: 100%; height: 28px; line-height: 28px; border-radius: 6px; cursor: pointer;
+    color: #374151; font-size: 12px; text-align: center; box-sizing: border-box;
+  }
   .dr-day:hover { background: #eef2f7; }
   .dr-day.dr-day-out { color: #d1d5db; }
   .dr-day.dr-day-in-range { background: #eaf2fe; border-radius: 0; }
@@ -702,7 +710,7 @@
       <h4>规则说明</h4>
       <div class="anno-card" style="--anno-color:#3390ec; margin-bottom:10px;">
         <div class="anno-head"><span class="anno-badge">5</span><span class="anno-title">筛选条件</span></div>
-        <div class="anno-body">订单ID/审核人/彩金类型/送分人员为精确或模糊文本匹配；彩金金额/流水倍数/处理时长为区间过滤；创建/完成时间为日期范围过滤；点击搜索后三处数据（指标卡/排行/明细）联动刷新。</div>
+        <div class="anno-body">订单ID/审核人/彩金类型/送分人员/会员账号为精确或模糊文本匹配；状态为下拉选择；彩金金额/流水倍数为区间过滤；创建/完成时间为日期范围过滤；点击搜索后三处数据（指标卡/排行/明细）联动刷新。</div>
       </div>
       <div class="anno-card" style="--anno-color:#1a56c4; margin-bottom:10px;">
         <div class="anno-head"><span class="anno-badge">6</span><span class="anno-title">统计指标</span></div>
@@ -749,6 +757,18 @@
           <input type="text" id="flt-sender" placeholder="请输入送分人员">
         </div>
         <div class="filter-item">
+          <label>会员账号</label>
+          <input type="text" id="flt-account" placeholder="请输入会员账号">
+        </div>
+        <div class="filter-item">
+          <label>状态</label>
+          <select id="flt-status">
+            <option value="">全部状态</option>
+            <option value="pending">待处理</option>
+            <option value="done">已完成</option>
+          </select>
+        </div>
+        <div class="filter-item">
           <label>彩金金额</label>
           <div class="range-inputs">
             <input type="text" id="flt-amount-min" placeholder="最小值">
@@ -772,7 +792,7 @@
           <label>完成时间</label>
           <div id="dr-completed-mount"></div>
         </div>
-        <div class="filter-item wide filter-actions-inline">
+        <div class="filter-item filter-actions-inline">
           <label>&nbsp;</label>
           <div class="filter-actions">
             <button id="flt-reset" class="btn-secondary">重置</button>
@@ -1362,22 +1382,19 @@ function createDateRangePicker(mountEl) {
       cells.push({ date: next, out: true });
       if (cells.length >= 42) break;
     }
-    let html = '<table><thead><tr>' +
-      ['日','一','二','三','四','五','六'].map(d => '<th>'+d+'</th>').join('') + '</tr></thead><tbody>';
-    for (let r = 0; r < 6; r++) {
-      html += '<tr>';
-      for (let c = 0; c < 7; c++) {
-        const cell = cells[r*7+c];
-        const classes = ['dr-day'];
-        if (cell.out) classes.push('dr-day-out');
-        if (rangeStart && sameDay(cell.date, rangeStart)) classes.push('dr-day-edge');
-        if (rangeEnd && sameDay(cell.date, rangeEnd)) classes.push('dr-day-edge');
-        if (rangeStart && rangeEnd && cell.date > rangeStart && cell.date < rangeEnd) classes.push('dr-day-in-range');
-        html += '<td><div class="' + classes.join(' ') + '" data-time="' + cell.date.getTime() + '">' + cell.date.getDate() + '</div></td>';
-      }
-      html += '</tr>';
+    let html = '<div class="dr-grid dr-grid-head">' +
+      ['日','一','二','三','四','五','六'].map(d => '<span class="dr-head-cell">'+d+'</span>').join('') + '</div>';
+    html += '<div class="dr-grid dr-grid-body">';
+    for (let i = 0; i < 42; i++) {
+      const cell = cells[i];
+      const classes = ['dr-day'];
+      if (cell.out) classes.push('dr-day-out');
+      if (rangeStart && sameDay(cell.date, rangeStart)) classes.push('dr-day-edge');
+      if (rangeEnd && sameDay(cell.date, rangeEnd)) classes.push('dr-day-edge');
+      if (rangeStart && rangeEnd && cell.date > rangeStart && cell.date < rangeEnd) classes.push('dr-day-in-range');
+      html += '<div class="' + classes.join(' ') + '" data-time="' + cell.date.getTime() + '">' + cell.date.getDate() + '</div>';
     }
-    html += '</tbody></table>';
+    html += '</div>';
     return html;
   }
 
@@ -1433,9 +1450,23 @@ function createDateRangePicker(mountEl) {
 
   trigger.addEventListener('click', (e) => {
     document.querySelectorAll('.dr-wrap.open').forEach(w => { if (w !== wrap) w.classList.remove('open'); });
+    const willOpen = !wrap.classList.contains('open');
     wrap.classList.toggle('open');
+    if (willOpen) {
+      const popover = wrap.querySelector('.dr-popover');
+      const tRect = trigger.getBoundingClientRect();
+      const popW = Math.min(560, window.innerWidth - 24);
+      let left = tRect.left;
+      if (left + popW > window.innerWidth - 12) {
+        left = Math.max(12, tRect.right - popW);
+      }
+      popover.style.top = (tRect.bottom + 6) + 'px';
+      popover.style.left = left + 'px';
+    }
     e.stopPropagation();
   });
+
+  window.addEventListener('scroll', () => { wrap.classList.remove('open'); }, true);
 
   wrap.querySelector('.dr-confirm').addEventListener('click', () => {
     if (rangeStart && !rangeEnd) rangeEnd = rangeStart;
@@ -1464,8 +1495,9 @@ document.getElementById('flt-search').addEventListener('click', () => {
   renderDashboard();
 });
 document.getElementById('flt-reset').addEventListener('click', () => {
-  ['flt-id','flt-auditor','flt-type','flt-sender','flt-amount-min','flt-amount-max','flt-turnover-min','flt-turnover-max']
+  ['flt-id','flt-auditor','flt-type','flt-sender','flt-account','flt-amount-min','flt-amount-max','flt-turnover-min','flt-turnover-max']
     .forEach(id => { document.getElementById(id).value = ''; });
+  document.getElementById('flt-status').value = '';
   document.querySelectorAll('.dr-text').forEach(el => { el.textContent = '开始时间 - 结束时间'; });
   renderDashboard();
 });
