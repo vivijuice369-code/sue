@@ -406,9 +406,9 @@
     padding: 18px 20px; margin-bottom: 22px;
   }
   .filter-grid {
-    display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px 18px;
+    display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 14px 18px;
   }
-  .filter-item { display: flex; flex-direction: column; gap: 5px; }
+  .filter-item { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
   .filter-item.wide { grid-column: span 2; }
   .filter-item label { font-size: 12px; color: #6b7280; }
   .filter-item input {
@@ -423,7 +423,7 @@
   .range-inputs { display: flex; align-items: center; gap: 6px; }
   .range-inputs input { flex: 1; min-width: 0; }
   .range-inputs span { color: #9ca3af; font-size: 12px; }
-  .filter-actions-inline { justify-content: flex-end; }
+  .filter-actions-inline { justify-content: flex-end; grid-column: 1 / -1; }
   .filter-actions-inline label { visibility: hidden; }
   .filter-actions { display: flex; justify-content: flex-end; gap: 10px; }
   .btn-primary, .btn-secondary {
