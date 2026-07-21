@@ -526,7 +526,21 @@
 <div class="switcher">
   <button class="tab-btn active" data-target="chat">代理存取审核群聊</button>
   <button class="tab-btn" data-target="dashboard">代理存取审核后台看板</button>
+  <button class="flowchart-open-btn" id="bg-btn">代理存取审核需求背景说明</button>
   <button class="flowchart-open-btn" id="flowchart-btn">代理存取审核查看完整流程图</button>
+</div>
+
+<div id="bg-modal" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.55); z-index:9999; align-items:center; justify-content:center; padding:30px;">
+  <div style="background:#fff; border-radius:12px; max-width:720px; width:96%; max-height:88vh; overflow:auto; padding:32px; position:relative;">
+    <button id="bg-close" style="position:absolute; top:12px; right:12px; background:#f0f0ee; border:none; border-radius:50%; width:30px; height:30px; cursor:pointer; font-size:16px; color:#4b5563;">✕</button>
+    <h2 style="margin:0 0 6px; font-size:20px; color:#1c2430;">需求背景</h2>
+    <p style="margin:0 0 22px; font-size:13px; color:#9ca3af;">代理存取审核群 · 机器人辅助审核原型</p>
+    <ol style="margin:0; padding-left:20px; display:flex; flex-direction:column; gap:16px;">
+      <li style="font-size:14.5px; line-height:1.8; color:#374151;">风控团队希望在「代理存取审核群」中同样引入机器人辅助审核，相较于之前财务出入款审核群的机器人，本场景功能相对简单，聚焦于订单创建与一步式审核。</li>
+      <li style="font-size:14.5px; line-height:1.8; color:#374151;">客服人员在群内发送关键文本信息触发机器人识别，并创建对应的订单数据；审核人员完成线下核实后，仅需回复机器人「1」即可直接完成该订单审核，同时该审核人的处理计数 +1，用于后续效率统计。</li>
+      <li style="font-size:14.5px; line-height:1.8; color:#374151;">后台同步记录客服发送的原始信息与每笔订单的审核结果，支持按条件搜索，对数据进行过滤与统计展示。</li>
+    </ol>
+  </div>
 </div>
 
 <div id="flowchart-modal" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.55); z-index:9999; align-items:center; justify-content:center; padding:30px;">
@@ -1221,16 +1235,31 @@ allAnnotateToggles.forEach(btn => {
   });
 });
 
-/* ---------- 完整流程图弹窗 ---------- */
+/* ---------- 完整流程图弹窗 & 需求背景弹窗（互斥，同时只开一个） ---------- */
 const flowchartModal = document.getElementById('flowchart-modal');
+const bgModal = document.getElementById('bg-modal');
+
+function closeAllTopModals() {
+  flowchartModal.style.display = 'none';
+  bgModal.style.display = 'none';
+}
+
 document.getElementById('flowchart-btn').addEventListener('click', () => {
+  closeAllTopModals();
   flowchartModal.style.display = 'flex';
 });
-document.getElementById('flowchart-close').addEventListener('click', () => {
-  flowchartModal.style.display = 'none';
-});
+document.getElementById('flowchart-close').addEventListener('click', closeAllTopModals);
 flowchartModal.addEventListener('click', (e) => {
-  if (e.target === flowchartModal) flowchartModal.style.display = 'none';
+  if (e.target === flowchartModal) closeAllTopModals();
+});
+
+document.getElementById('bg-btn').addEventListener('click', () => {
+  closeAllTopModals();
+  bgModal.style.display = 'flex';
+});
+document.getElementById('bg-close').addEventListener('click', closeAllTopModals);
+bgModal.addEventListener('click', (e) => {
+  if (e.target === bgModal) closeAllTopModals();
 });
 
 /* ---------- 右侧快速填写面板 ---------- */
