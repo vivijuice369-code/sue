@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>网站配置 · Telegram 多语言配置 · PRD 原型 v4</title>
+<style>
+  :root{
+    --bg:#f4f6f9; --panel:#fff; --border:#e5e8ee; --border-strong:#d9dce3;
+    --text:#1f2430; --text-dim:#6b7280; --text-faint:#9aa1ac;
+    --blue:#2f6bff; --blue-dim:#eaf0ff; --red:#e5484d; --green:#17a673; --amber:#f5a524;
+    font-size:14px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--text);height:100%;
+    font-family:-apple-system,"PingFang SC","Microsoft YaHei","Segoe UI",Helvetica,Arial,sans-serif;}
+  ::-webkit-scrollbar{width:8px;height:8px;}
+  ::-webkit-scrollbar-thumb{background:#d0d5dd;border-radius:4px;}
+
+  .app{display:flex;height:100vh;overflow:hidden;}
+  .sidebar{width:200px;flex:none;background:#fff;border-right:1px solid var(--border);overflow-y:auto;}
+  .brand{padding:14px 16px;font-weight:800;font-size:16px;color:#ff8a00;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;}
+  .brand .dot{width:20px;height:20px;border-radius:50%;background:radial-gradient(circle at 30% 30%,#4facff,#2f6bff);}
+  .nav-item{display:flex;align-items:center;gap:10px;padding:9px 16px;color:#525866;font-size:13px;}
+  .nav-item.active{background:var(--blue-dim);color:var(--blue);font-weight:600;border-right:3px solid var(--blue);}
+  .nav-sub{padding-left:36px;}
+  .nav-sub .nav-item{padding:7px 16px;font-size:12.5px;}
+
+  .main{flex:1;display:flex;flex-direction:column;min-width:0;}
+  .topbar{height:46px;flex:none;background:#fff;border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 16px;font-size:13px;color:#8a92a3;}
+  .topbar b{color:var(--text);font-weight:600;}
+  .tabbar{height:38px;flex:none;background:#fff;border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 12px;gap:8px;}
+  .tabbar .tab{padding:6px 12px;border-radius:6px;font-size:13px;color:#6b7280;background:#f2f4f7;}
+  .tabbar .tab.active{background:var(--blue);color:#fff;}
+
+  /* ============ SPLIT LAYOUT ============ */
+  .split{flex:1;display:flex;min-height:0;}
+  .left-col{
+    width:50%; max-width:660px; flex:none; overflow-y:auto; padding:16px 24px 60px;
+    border-right:1px solid var(--border); background:#fff;
+  }
+  /* 右侧容器：未展开时纯白，展开时承载抽屉滑入动画 */
+  .right-col{
+    flex:1; min-width:0; position:relative; overflow:hidden; background:#fff;
+  }
+
+  .subtabs{display:flex;gap:22px;border-bottom:1px solid var(--border);padding:0 2px 10px;margin-bottom:16px;}
+  .subtabs .st{font-size:13.5px;color:var(--text-dim);cursor:default;padding-bottom:6px;}
+  .subtabs .st.active{color:var(--blue);font-weight:700;border-bottom:2px solid var(--blue);}
+
+  .page-head{display:flex;align-items:center;justify-content:flex-end;margin-bottom:14px;}
+  .btn{border:1px solid var(--border-strong);background:#fff;color:var(--text);padding:7px 14px;border-radius:7px;
+    font-size:13px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:.15s;white-space:nowrap;}
+  .btn:hover{border-color:var(--blue);color:var(--blue);}
+  .btn.primary{background:var(--blue);border-color:var(--blue);color:#fff;}
+  .btn.primary:hover{background:#1f57e0;color:#fff;}
+  .btn.multi-lang{border-color:var(--blue);color:var(--blue);font-weight:600;background:#fff;}
+  .btn.multi-lang.on{background:var(--blue);color:#fff;}
+  .btn.multi-lang .flagstack{display:flex;margin-right:2px;}
+  .btn.multi-lang .flagstack span{margin-left:-6px;font-size:13px;background:#fff;border-radius:50%;}
+  .btn.multi-lang .flagstack span:first-child{margin-left:0;}
+  .btn.sm{padding:4px 9px;font-size:12px;}
+
+  .field{margin-bottom:16px;}
+  .field label{display:block;font-size:13px;color:var(--text);margin-bottom:6px;}
+  .field label .cmd{color:var(--text-faint);font-size:11.5px;margin-left:4px;}
+  .field .value-box, .field input.value-box{
+    width:100%;background:#f7f8fa;border:1px solid var(--border);border-radius:7px;padding:9px 12px;
+    font-size:13px;color:var(--text-dim);font-family:inherit;
+  }
+  .field textarea.value-box{min-height:150px;line-height:1.7;resize:vertical;background:#f7f8fa;color:var(--text);}
+  .field .value-box.mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px;white-space:pre;}
+  .avatar-box{width:74px;height:74px;border-radius:50%;background:#e14545;display:flex;align-items:center;justify-content:center;font-size:32px;}
+
+  /* ============ DRAWER：在 right-col 内做滑入动画 ============ */
+  .drawer{
+    position:absolute; top:0; right:0; bottom:0; width:100%;
+    background:#fff; display:flex; flex-direction:column;
+    transform:translateX(100%); transition:transform .28s cubic-bezier(.4,0,.2,1);
+    box-shadow:-6px 0 18px rgba(20,24,34,.06);
+  }
+  .drawer.show{transform:translateX(0);}
+
+  .drawer-head{padding:16px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex:none;background:#fff;}
+  .drawer-head h3{margin:0;font-size:15px;}
+  .drawer-head .sub{font-size:11.5px;color:var(--text-faint);margin-top:3px;font-weight:400;}
+  .drawer-close{width:28px;height:28px;border-radius:6px;border:none;background:#f2f4f7;color:#6b7280;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;flex:none;}
+  .drawer-close:hover{background:#e8ebef;}
+
+  .lang-strip{display:flex;gap:6px;padding:12px 22px;border-bottom:1px solid var(--border);flex:none;overflow-x:auto;background:#fff;}
+  .lang-pill{
+    display:flex;align-items:center;gap:6px;padding:7px 12px;border-radius:9px;border:1.5px solid var(--border);
+    font-size:12.5px;color:var(--text-dim);cursor:pointer;flex:none;position:relative;white-space:nowrap;
+  }
+  .lang-pill .flag{font-size:14px;}
+  .lang-pill.active{border-color:var(--blue);background:var(--blue-dim);color:var(--blue);font-weight:700;}
+  .lang-pill .status-dot{width:7px;height:7px;border-radius:50%;background:var(--red);display:none;position:absolute;top:-3px;right:-3px;border:2px solid #fff;}
+  .lang-pill.incomplete .status-dot{display:block;}
+  .lang-pill .status-dot.ok{background:var(--green);}
+
+  .drawer-progress{padding:9px 22px;background:#fafbfd;border-bottom:1px solid var(--border);flex:none;display:flex;align-items:center;gap:10px;}
+  .drawer-progress .bar{flex:1;height:6px;border-radius:4px;background:#eef0f3;overflow:hidden;}
+  .drawer-progress .bar-fill{height:100%;background:var(--green);border-radius:4px;transition:.3s;}
+  .drawer-progress .pct{font-size:12px;color:var(--text-dim);font-weight:600;flex:none;}
+
+  .drawer-body{flex:1;overflow-y:auto;padding:18px 22px 24px;min-height:0;}
+  .drawer-note{display:flex;gap:8px;background:#f0f6ff;border:1px solid #d7e6ff;color:#1f4fbf;padding:9px 12px;
+    border-radius:8px;font-size:12px;line-height:1.6;margin-bottom:16px;}
+
+  .section-divider{display:flex;align-items:center;gap:10px;margin:22px 0 12px;}
+  .section-divider:first-child{margin-top:0;}
+  .section-divider .lb{font-size:12px;font-weight:700;color:var(--text-faint);letter-spacing:.5px;white-space:nowrap;}
+  .section-divider .ln{flex:1;height:1px;background:var(--border);}
+
+  .di-field{margin-bottom:14px;}
+  .di-field-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}
+  .di-field-head label{font-size:13px;color:var(--text);display:flex;align-items:center;gap:6px;}
+  .di-field-head label .cmd{color:var(--text-faint);font-size:11.5px;}
+  .di-field-head .empty-flag{font-size:11px;color:var(--red);background:#fdeeee;padding:1px 7px;border-radius:10px;display:none;}
+  .di-field-head .empty-flag.show{display:inline-block;}
+  .di-actions{display:flex;gap:6px;}
+  .link-btn{font-size:11.5px;color:var(--blue);background:none;border:none;cursor:pointer;padding:2px 4px;}
+  .link-btn:hover{text-decoration:underline;}
+
+  input.di-input-line{
+    width:100%;border:1px solid var(--border-strong);border-radius:7px;padding:9px 12px;font-size:13px;
+    font-family:inherit;color:var(--text);background:#fbfcfe;
+  }
+  input.di-input-line:focus{outline:none;border-color:var(--blue);background:#fff;box-shadow:0 0 0 3px var(--blue-dim);}
+  input.di-input-line.warn{border-color:#f3c6c7;background:#fffafa;}
+  input.di-input-line.mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px;}
+
+  textarea.di-input{
+    width:100%;min-height:150px;resize:vertical;border:1px solid var(--border-strong);border-radius:7px;
+    padding:10px 12px;font-size:13px;line-height:1.7;font-family:inherit;color:var(--text);background:#fbfcfe;
+  }
+  textarea.di-input.mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px;}
+  textarea.di-input:focus{outline:none;border-color:var(--blue);background:#fff;box-shadow:0 0 0 3px var(--blue-dim);}
+  textarea.di-input::placeholder{color:#c2c8d2;}
+  textarea.di-input.warn{border-color:#f3c6c7;background:#fffafa;}
+
+  .img-upload{
+    width:100%;border:1px dashed var(--border-strong);border-radius:8px;padding:14px;display:flex;align-items:center;gap:14px;background:#fbfcfe;
+  }
+  .img-upload .thumb{width:56px;height:56px;border-radius:50%;background:#eef1f6;display:flex;align-items:center;justify-content:center;font-size:22px;color:#b7bec9;flex:none;}
+  .img-upload .thumb.filled{background:#e14545;color:#fff;}
+  .img-upload .txt{flex:1;font-size:12px;color:var(--text-faint);}
+  .img-upload .txt b{color:var(--text);font-weight:600;display:block;font-size:12.5px;margin-bottom:2px;}
+  .img-upload .actions2{display:flex;flex-direction:column;gap:6px;align-items:flex-end;}
+
+  .btn-groups{display:flex;flex-direction:column;gap:8px;}
+  .btn-group{border:1px solid var(--border-strong);border-radius:8px;overflow:hidden;}
+  .btn-group-label{font-size:10.5px;color:var(--text-faint);background:#f7f8fb;padding:5px 10px;border-bottom:1px solid var(--border);font-weight:700;}
+  .btn-row{display:grid;grid-template-columns:1fr 78px 1fr;gap:8px;padding:8px 10px;align-items:center;border-bottom:1px solid var(--border);}
+  .btn-row:last-child{border-bottom:none;}
+  .btn-row input{width:100%;border:1px solid var(--border-strong);border-radius:6px;padding:6px 8px;font-size:12.5px;font-family:inherit;}
+  .btn-row input:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-dim);}
+  .btn-row input.warn{border-color:#f3c6c7;background:#fffafa;}
+  .type-tag{font-size:10px;padding:2px 6px;border-radius:10px;text-align:center;font-weight:700;white-space:nowrap;}
+  .type-tag.cb{background:#eef2ff;color:#4f5fd6;}
+  .type-tag.url{background:#fff4e5;color:#c07a05;}
+  .type-tag.webapp{background:#eafaf3;color:#0e8f5f;}
+  .btn-row-head{display:grid;grid-template-columns:1fr 78px 1fr;gap:8px;padding:6px 10px;background:#fcfcfd;
+    font-size:10.5px;color:var(--text-faint);font-weight:700;border-bottom:1px solid var(--border);}
+
+  .editable-tag{font-size:10px;color:var(--green);background:#eafaf3;padding:1px 7px;border-radius:10px;font-weight:700;margin-left:6px;}
+
+  .drawer-foot{flex:none;padding:12px 22px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;background:#fbfcfe;}
+  .drawer-foot .meta{font-size:11px;color:var(--text-faint);}
+
+  .toast{position:fixed;top:20px;left:50%;transform:translateX(-50%) translateY(-20px);background:#1f2430;color:#fff;
+    padding:10px 20px;border-radius:8px;font-size:13px;display:flex;align-items:center;gap:8px;opacity:0;pointer-events:none;
+    transition:.25s;z-index:999;}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+  .toast .ic{color:#4ade80;}
+</style>
+</head>
+<body>
+
+<div class="app">
+  <!-- ================= SIDEBAR ================= -->
+  <div class="sidebar">
+    <div class="brand"><div class="dot"></div>JUAN365</div>
+    <div class="nav-item"><span>🏠</span>&nbsp;首页</div>
+    <div class="nav-item"><span>👤</span>&nbsp;会员</div>
+    <div class="nav-item"><span>✅</span>&nbsp;审核</div>
+    <div class="nav-item"><span>📊</span>&nbsp;报表</div>
+    <div class="nav-item"><span>🖥</span>&nbsp;界面</div>
+    <div class="nav-item active"><span>⚙️</span>&nbsp;系统</div>
+    <div class="nav-sub">
+      <div class="nav-item active" style="background:var(--blue-dim);color:var(--blue);font-weight:700;border-right:3px solid var(--blue);">网站配置</div>
+      <div class="nav-item">APP下载日志</div>
+      <div class="nav-item">建议反馈</div>
+      <div class="nav-item">语言货币配置</div>
+      <div class="nav-item">签到配置</div>
+    </div>
+    <div class="nav-item"><span>📈</span>&nbsp;LTV</div>
+    <div class="nav-item"><span>🔀</span>&nbsp;渠道</div>
+    <div class="nav-item"><span>🀄</span>&nbsp;棋牌管理</div>
+  </div>
+
+  <!-- ================= MAIN ================= -->
+  <div class="main">
+    <div class="topbar">仪表盘 &nbsp;/&nbsp; <b>网站配置</b></div>
+    <div class="tabbar">
+      <div class="tab">仪表盘</div>
+      <div class="tab active">网站配置 ✕</div>
+    </div>
+
+    <!-- ================= SPLIT VIEW ================= -->
+    <div class="split">
+
+      <!-- ---------- LEFT: 中文源配置（半屏） ---------- -->
+      <div class="left-col">
+        <div class="subtabs">
+          <div class="st">基本配置</div>
+          <div class="st">联系信息</div>
+          <div class="st">充值账号</div>
+          <div class="st">安全配置</div>
+          <div class="st">合作伙伴</div>
+          <div class="st">APP下载配置</div>
+          <div class="st active">Telegram</div>
+        </div>
+
+        <div class="page-head">
+          <button class="btn multi-lang" id="multiLangBtn" onclick="toggleDrawer()">
+            <span class="flagstack"><span>🇬🇧</span><span>🇻🇳</span><span>🇰🇷</span><span>🇷🇺</span></span>
+            🌐 多语言配置
+          </button>
+        </div>
+
+        <div class="field">
+          <label>Telegram 注册Bot名称</label>
+          <div class="value-box">Tg_bet_play_bot</div>
+        </div>
+        <div class="field">
+          <label>Telegram 注册BotId</label>
+          <div class="value-box">7158144508</div>
+        </div>
+        <div class="field">
+          <label>Telegram 注册BotToken</label>
+          <div class="value-box">AAEMMtj_UEBm4emrribp2rOcOoSaNVgeAYQ</div>
+        </div>
+        <div class="field">
+          <label>Telegram 快捷登录名</label>
+          <div class="value-box">https://u8-global-h5-test.cijefbmn.com</div>
+        </div>
+        <div class="field">
+          <label>Telegram 自动回复图片 <span class="cmd">(/start)</span></label>
+          <div class="avatar-box">🐂</div>
+        </div>
+        <div class="field">
+          <label>Telegram 自动回复 <span class="cmd">(/start)</span></label>
+          <textarea class="value-box" readonly>【U8 国际】拥有超过2亿美金的奖金池，下注即有机会赢取高达8888U奖金！！
+【U8.com】携手全网第一飞投频道KK国际联手打造最强平台
+【玩老虎机】中奖超过30倍，领取5%奖金
+【成为代理】股东占层模式：享受高达七层的股东占层
+
+✅ 免注册、免实名
+✅ Telegram小程序直接玩
+✅ 公平、公正、透明
+
+官方频道：&lt;a href="t.me/U8COM_CN"&gt;@U8COM_CN&lt;/a&gt;
+官方网址：&lt;a href="https://www.u8.com"&gt;https://www.u8.com&lt;/a&gt;
+官方客服：&lt;a href="t.me/U8kefu6"&gt;@U8kefu6&lt;/a&gt;</textarea>
+        </div>
+        <div class="field">
+          <label>Telegram 按钮 <span class="cmd">(/start)</span></label>
+          <textarea class="value-box mono" readonly>[
+ [
+  { "text": "分享U8", "callback_data": "agent_button" },
+  { "text": "官方频道", "url": "https://t.me/U8COM_CN" }
+ ],
+ [
+  { "text": "官方客服", "url": "https://t.me/U8kefu6" }
+ ],
+ [
+  { "text": "立即玩游戏", "web_app": { "url": "https://u8-idc-h5-test.cijefbmn.com/?chatId=7158144508" } }
+ ]
+]</textarea>
+        </div>
+        <div class="field">
+          <label>Telegram 代理文案</label>
+          <textarea class="value-box" readonly>【U8 国际】拥有超过2亿美金的奖金池，下注即有机会赢取高达8888U奖金！！
+【U8.com】携手全网第一飞投频道KK国际联手打造最强平台
+【玩老虎机】中奖超过30倍 领取5%奖金
+【成为代理】股东占层模式：享受高达七层的股东占层
+
+✅ 免注册、免实名
+✅ Telegram/小程序直接玩
+✅ 公平、公正、透明</textarea>
+        </div>
+        <div class="field">
+          <label>Telegram 代理文案下面按钮</label>
+          <div class="value-box mono">{"text":"立即玩游戏","web_app":{"url":"https://u8-idc-h5-test.cijefbmn.com/?chatId=7158144508"}}</div>
+        </div>
+      </div>
+
+      <!-- ---------- RIGHT: 未展开=纯白；展开=抽屉滑入 ---------- -->
+      <div class="right-col">
+        <div class="drawer" id="drawer">
+          <div class="drawer-head">
+            <div>
+              <h3>Telegram 多语言配置</h3>
+              <div class="sub">每种语言对应独立注册的 Telegram Bot，请分别填写完整信息</div>
+            </div>
+            <button class="drawer-close" onclick="toggleDrawer()">✕</button>
+          </div>
+
+          <div class="lang-strip" id="langStrip"></div>
+
+          <div class="drawer-progress">
+            <span style="font-size:12px;color:var(--text-dim);flex:none;" id="progressLabel">English</span>
+            <div class="bar"><div class="bar-fill" id="progressFill" style="width:0%"></div></div>
+            <span class="pct" id="progressPct">0%</span>
+          </div>
+
+          <div class="drawer-body" id="drawerBody"></div>
+
+          <div class="drawer-foot">
+            <span class="meta">修改会在切换语言时自动暂存，点击保存后才写入 Bot 配置</span>
+            <button class="btn sm primary" onclick="saveAll()">保存全部语言</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"><span class="ic">✓</span><span id="toastText"></span></div>
+
+<script>
+/* ============================================================
+   DATA MODEL
+   ============================================================ */
+const LANGS = [
+  {code:'en', name:'English', flag:'🇬🇧'},
+  {code:'vi', name:'Tiếng Việt', flag:'🇻🇳'},
+  {code:'ko', name:'한국어', flag:'🇰🇷'},
+  {code:'ru', name:'Русский', flag:'🇷🇺'},
+];
+
+const ZH_AUTO_REPLY = `【U8 国际】拥有超过2亿美金的奖金池，下注即有机会赢取高达8888U奖金！！
+【U8.com】携手全网第一飞投频道KK国际联手打造最强平台
+【玩老虎机】中奖超过30倍，领取5%奖金
+【成为代理】股东占层模式：享受高达七层的股东占层
+
+✅ 免注册、免实名
+✅ Telegram小程序直接玩
+✅ 公平、公正、透明
+
+官方频道：<a href="t.me/U8COM_CN">@U8COM_CN</a>
+官方网址：<a href="https://www.u8.com">https://www.u8.com</a>
+官方客服：<a href="t.me/U8kefu6">@U8kefu6</a>`;
+
+const ZH_AGENT_COPY = `【U8 国际】拥有超过2亿美金的奖金池，下注即有机会赢取高达8888U奖金！！
+【U8.com】携手全网第一飞投频道KK国际联手打造最强平台
+【玩老虎机】中奖超过30倍 领取5%奖金
+【成为代理】股东占层模式：享受高达七层的股东占层
+
+✅ 免注册、免实名
+✅ Telegram/小程序直接玩
+✅ 公平、公正、透明`;
+
+const EN_AUTO_REPLY = `【U8 International】Prize pool over 200M USD — bet now for a chance to win up to 8888U!!
+【U8.com】Partnering with KK International, the No.1 live-betting channel
+【Slots】Win over 30x, claim a 5% bonus
+【Become an Agent】Tiered shareholder model: up to 7 levels of rewards
+
+✅ No registration, no real-name required
+✅ Play directly via Telegram Mini App
+✅ Fair, just, transparent
+
+Official channel: <a href="t.me/U8COM_CN">@U8COM_CN</a>
+Official website: <a href="https://www.u8.com">https://www.u8.com</a>
+Official support: <a href="t.me/U8kefu6">@U8kefu6</a>`;
+
+// 全部按钮的跳转值 / 回调值均可按语言编辑（含 callback_data）
+function defaultStartButtons(){
+  return [
+    [
+      {id:'sb1', type:'callback', value:'', text:''},
+      {id:'sb2', type:'url',      value:'', text:''},
+    ],
+    [
+      {id:'sb3', type:'url',      value:'', text:''},
+    ],
+    [
+      {id:'sb4', type:'webapp',   value:'', text:''},
+    ],
+  ];
+}
+function defaultAgentButtons(){
+  return [
+    [ {id:'ab1', type:'webapp', value:'', text:''} ]
+  ];
+}
+
+const store = {};
+LANGS.forEach(l => {
+  store[l.code] = {
+    botName: '',
+    botId: '',
+    botToken: '',
+    quickLoginUrl: '',
+    autoReplyImage: false,
+    autoReplyText: l.code === 'en' ? EN_AUTO_REPLY : '',
+    startButtons: defaultStartButtons(),
+    agentCopy: '',
+    agentButtons: defaultAgentButtons(),
+  };
+});
+// 预填一份英语演示数据
+store.en.botName = 'Tg_bet_play_bot_en';
+store.en.botId = '7158144601';
+store.en.botToken = 'AAEXn2_9fK7mLpQ3rTz8VvNbUoDyR1jHhE';
+store.en.quickLoginUrl = 'https://u8-global-h5-test.cijefbmn.com/en';
+store.en.autoReplyImage = true;
+store.en.startButtons[0][0].value = 'agent_button_en';
+store.en.startButtons[0][0].text = 'Share U8';
+store.en.startButtons[0][1].value = 'https://t.me/U8COM_EN';
+store.en.startButtons[0][1].text = 'Official Channel';
+store.en.startButtons[1][0].value = 'https://t.me/U8kefu_en';
+store.en.startButtons[1][0].text = 'Official Support';
+store.en.startButtons[2][0].value = 'https://u8-idc-h5-test.cijefbmn.com/en?chatId=7158144601';
+store.en.startButtons[2][0].text = 'Play Now';
+store.en.agentButtons[0][0].value = 'https://u8-idc-h5-test.cijefbmn.com/en?chatId=7158144601';
+store.en.agentButtons[0][0].text = 'Play Now';
+
+let activeLangCode = 'en';
+let drawerOpen = false;
+
+/* ============================================================
+   COMPLETION CALC
+   ============================================================ */
+function fieldsForLang(code){
+  const d = store[code];
+  const list = [
+    !!d.botName.trim(), !!d.botId.trim(), !!d.botToken.trim(), !!d.quickLoginUrl.trim(),
+    !!d.autoReplyImage, !!d.autoReplyText.trim(), !!d.agentCopy.trim(),
+  ];
+  d.startButtons.flat().forEach(b => { list.push(!!b.text.trim()); list.push(!!b.value.trim()); });
+  d.agentButtons.flat().forEach(b => { list.push(!!b.text.trim()); list.push(!!b.value.trim()); });
+  return list;
+}
+function completionPct(code){
+  const fs = fieldsForLang(code);
+  const filled = fs.filter(Boolean).length;
+  return Math.round(filled / fs.length * 100);
+}
+
+/* ============================================================
+   RENDER: LANG STRIP + PROGRESS
+   ============================================================ */
+function renderLangStrip(){
+  const wrap = document.getElementById('langStrip');
+  wrap.innerHTML = LANGS.map(l=>{
+    const pct = completionPct(l.code);
+    const cls = ['lang-pill'];
+    if(l.code === activeLangCode) cls.push('active');
+    if(pct < 100) cls.push('incomplete');
+    return `<div class="${cls.join(' ')}" onclick="switchLang('${l.code}')">
+      <span class="flag">${l.flag}</span>${l.name}
+      <span class="status-dot ${pct===100?'ok':''}"></span>
+    </div>`;
+  }).join('');
+}
+function renderProgress(){
+  const l = LANGS.find(x=>x.code===activeLangCode);
+  const pct = completionPct(activeLangCode);
+  document.getElementById('progressLabel').textContent = l.flag + ' ' + l.name;
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressFill').style.background = pct===100 ? 'var(--green)' : (pct===0 ? '#e5484d' : '#f5a524');
+  document.getElementById('progressPct').textContent = pct + '%';
+}
+
+/* ============================================================
+   RENDER: BODY
+   ============================================================ */
+function esc(s){ return (s||'').replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])); }
+function escAttr(s){ return (s||'').replace(/"/g,'&quot;'); }
+function typeTag(type){
+  if(type==='callback') return `<span class="type-tag cb">callback</span>`;
+  if(type==='url') return `<span class="type-tag url">url</span>`;
+  return `<span class="type-tag webapp">web_app</span>`;
+}
+
+function renderDrawerBody(){
+  const d = store[activeLangCode];
+  const l = LANGS.find(x=>x.code===activeLangCode);
+
+  document.getElementById('drawerBody').innerHTML = `
+    <div class="drawer-note">
+      💡 每种语言对应新注册的一个独立 Telegram Bot，需单独填写 Bot 名称 / BotId / BotToken；下方全部按钮的显示文字与跳转值 / 回调值均可按语言单独填写。
+    </div>
+
+    <div class="section-divider"><span class="lb">BOT 注册信息</span><div class="ln"></div></div>
+
+    <div class="di-field">
+      <div class="di-field-head"><label>Telegram 注册Bot名称</label><span class="empty-flag ${d.botName.trim()?'':'show'}">未填写</span></div>
+      <input class="di-input-line ${d.botName.trim()?'':'warn'}" placeholder="例如 Tg_bet_play_bot_${activeLangCode}" value="${escAttr(d.botName)}" oninput="onInput('botName', this.value)">
+    </div>
+    <div class="di-field">
+      <div class="di-field-head"><label>Telegram 注册BotId</label><span class="empty-flag ${d.botId.trim()?'':'show'}">未填写</span></div>
+      <input class="di-input-line mono ${d.botId.trim()?'':'warn'}" placeholder="Bot 的数字 ID" value="${escAttr(d.botId)}" oninput="onInput('botId', this.value)">
+    </div>
+    <div class="di-field">
+      <div class="di-field-head"><label>Telegram 注册BotToken</label><span class="empty-flag ${d.botToken.trim()?'':'show'}">未填写</span></div>
+      <input class="di-input-line mono ${d.botToken.trim()?'':'warn'}" placeholder="BotFather 生成的 Token" value="${escAttr(d.botToken)}" oninput="onInput('botToken', this.value)">
+    </div>
+    <div class="di-field">
+      <div class="di-field-head"><label>Telegram 快捷登录名</label><span class="empty-flag ${d.quickLoginUrl.trim()?'':'show'}">未填写</span></div>
+      <input class="di-input-line ${d.quickLoginUrl.trim()?'':'warn'}" placeholder="快捷登录跳转地址" value="${escAttr(d.quickLoginUrl)}" oninput="onInput('quickLoginUrl', this.value)">
+    </div>
+
+    <div class="section-divider"><span class="lb">自动回复 /start</span><div class="ln"></div></div>
+
+    <div class="di-field">
+      <div class="di-field-head">
+        <label>Telegram 自动回复图片</label>
+        <span class="empty-flag ${d.autoReplyImage?'':'show'}">未设置</span>
+      </div>
+      <div class="img-upload">
+        <div class="thumb ${d.autoReplyImage?'filled':''}">${d.autoReplyImage?'🐂':'＋'}</div>
+        <div class="txt">
+          <b>${d.autoReplyImage ? '已使用图片' : '未设置，将沿用中文默认图片'}</b>
+          支持 PNG / JPG，建议 512×512
+        </div>
+        <div class="actions2">
+          ${!d.autoReplyImage ? `<button class="link-btn" style="padding:2px 0;" onclick="draftImageFromZh()">📋 带入中文图片</button>` : ''}
+          <button class="btn sm" onclick="toggleImage()">${d.autoReplyImage ? '移除' : '上传新图片'}</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="di-field">
+      <div class="di-field-head">
+        <label>Telegram 自动回复</label>
+        <span class="empty-flag ${d.autoReplyText.trim()?'':'show'}">未翻译，回退显示中文</span>
+      </div>
+      <div class="di-actions" style="margin-bottom:6px;">
+        <button class="link-btn" onclick="draftFrom('autoReplyText')">📋 带入中文草稿</button>
+        <button class="link-btn" onclick="showToast('已校验链接与变量一致性（原型演示）')">🔍 校验链接一致性</button>
+      </div>
+      <textarea class="di-input ${d.autoReplyText.trim()?'':'warn'}" placeholder="填写 ${l.name} 版本自动回复文案"
+        oninput="onInput('autoReplyText', this.value)">${esc(d.autoReplyText)}</textarea>
+    </div>
+
+    <div class="di-field">
+      <div class="di-field-head">
+        <label>Telegram 按钮 <span class="editable-tag">全部字段可编辑</span></label>
+      </div>
+      ${renderButtonGroups(d.startButtons, 'startButtons')}
+    </div>
+
+    <div class="section-divider"><span class="lb">代理文案</span><div class="ln"></div></div>
+
+    <div class="di-field">
+      <div class="di-field-head">
+        <label>Telegram 代理文案</label>
+        <span class="empty-flag ${d.agentCopy.trim()?'':'show'}">未翻译，回退显示中文</span>
+      </div>
+      <div class="di-actions" style="margin-bottom:6px;">
+        <button class="link-btn" onclick="draftFrom('agentCopy')">📋 带入中文草稿</button>
+      </div>
+      <textarea class="di-input ${d.agentCopy.trim()?'':'warn'}" placeholder="填写 ${l.name} 版本代理文案"
+        oninput="onInput('agentCopy', this.value)">${esc(d.agentCopy)}</textarea>
+    </div>
+
+    <div class="di-field">
+      <div class="di-field-head">
+        <label>Telegram 代理文案下面按钮 <span class="editable-tag">全部字段可编辑</span></label>
+      </div>
+      ${renderButtonGroups(d.agentButtons, 'agentButtons')}
+    </div>
+  `;
+}
+
+function renderButtonGroups(groups, storeKey){
+  return `<div class="btn-groups">${groups.map((group, gi) => `
+    <div class="btn-group">
+      <div class="btn-group-label">按钮组 ${gi+1}${group.length>1?'（同一行并排展示）':''}</div>
+      <div class="btn-row-head"><div>显示文字</div><div>类型</div><div>跳转值 / 回调值</div></div>
+      ${group.map(btn => {
+        const emptyText = !btn.text.trim();
+        const emptyValue = !btn.value.trim();
+        return `<div class="btn-row">
+          <input value="${escAttr(btn.text)}" class="${emptyText?'warn':''}" placeholder="按钮显示文字"
+            oninput="onBtnInput('${storeKey}','${btn.id}','text', this.value)">
+          ${typeTag(btn.type)}
+          <input value="${escAttr(btn.value)}" class="${emptyValue?'warn':''}" placeholder="${btn.type==='callback' ? '填写回调标识' : '填写该语言对应的链接'}"
+            oninput="onBtnInput('${storeKey}','${btn.id}','value', this.value)">
+        </div>`;
+      }).join('')}
+    </div>
+  `).join('')}</div>`;
+}
+
+/* ============================================================
+   EVENTS
+   ============================================================ */
+function toggleDrawer(){
+  drawerOpen = !drawerOpen;
+  const drawer = document.getElementById('drawer');
+  const btn = document.getElementById('multiLangBtn');
+  if(drawerOpen){
+    drawer.classList.add('show');
+    btn.classList.add('on');
+    switchLang(activeLangCode);
+  } else {
+    drawer.classList.remove('show');
+    btn.classList.remove('on');
+  }
+}
+function switchLang(code){
+  activeLangCode = code;
+  renderLangStrip();
+  renderProgress();
+  renderDrawerBody();
+}
+function onInput(field, value){
+  store[activeLangCode][field] = value;
+  renderLangStrip();
+  renderProgress();
+  syncEmptyFlags();
+}
+function onBtnInput(storeKey, btnId, prop, value){
+  store[activeLangCode][storeKey].flat().forEach(b=>{ if(b.id===btnId) b[prop] = value; });
+  renderLangStrip();
+  renderProgress();
+  syncWarnClassesForButtons();
+}
+function syncEmptyFlags(){
+  const d = store[activeLangCode];
+  const map = [
+    !!d.botName.trim(), !!d.botId.trim(), !!d.botToken.trim(), !!d.quickLoginUrl.trim(),
+    !!d.autoReplyImage, !!d.autoReplyText.trim(), !!d.agentCopy.trim(),
+  ];
+  const flags = document.querySelectorAll('#drawerBody .empty-flag');
+  flags.forEach((el,i)=>{ if(map[i]) el.classList.remove('show'); else el.classList.add('show'); });
+}
+function syncWarnClassesForButtons(){
+  const d = store[activeLangCode];
+  const container = document.getElementById('drawerBody');
+  const groupsBlocks = container.querySelectorAll('.btn-groups');
+  if(groupsBlocks[0]) groupsBlocks[0].outerHTML = renderButtonGroups(d.startButtons, 'startButtons');
+  if(groupsBlocks[1]) groupsBlocks[1].outerHTML = renderButtonGroups(d.agentButtons, 'agentButtons');
+}
+function toggleImage(){
+  const d = store[activeLangCode];
+  d.autoReplyImage = !d.autoReplyImage;
+  renderDrawerBody();
+  renderLangStrip();
+  renderProgress();
+  showToast(d.autoReplyImage ? '已上传该语言专属图片（原型演示）' : '已移除，改为沿用中文默认图片');
+}
+function draftImageFromZh(){
+  store[activeLangCode].autoReplyImage = true;
+  renderDrawerBody();
+  renderLangStrip();
+  renderProgress();
+  showToast('已带入中文默认图片，可在此基础上替换');
+}
+function draftFrom(field){
+  const zhMap = { autoReplyText: ZH_AUTO_REPLY, agentCopy: ZH_AGENT_COPY };
+  store[activeLangCode][field] = zhMap[field];
+  renderDrawerBody();
+  renderLangStrip();
+  renderProgress();
+  showToast('已带入中文草稿，请在此基础上翻译');
+}
+function saveAll(){
+  showToast('已保存全部语言的 Telegram 配置 ✓');
+}
+let toastTimer;
+function showToast(msg){
+  const t = document.getElementById('toast');
+  document.getElementById('toastText').textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=> t.classList.remove('show'), 2200);
+}
+
+renderLangStrip();
+</script>
+</body>
+</html>
