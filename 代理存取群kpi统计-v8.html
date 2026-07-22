@@ -1031,7 +1031,7 @@ function appendOrderCard(order) {
   const textEl = document.createElement('p');
   textEl.className = 'text';
   textEl.textContent =
-    '代理存取审核工单已创建，请@机器人并回复「1」完成审核。\n' +
+    '代理存取审核工单已创建，请回复该消息发送「1」完成绑定审核。\n' +
     '工单ID：#' + pad4(order.id) + '\n' +
     '提交账户：' + order.submitAccount + '\n' +
     '来源账号：' + order.sourceAccount + '\n' +
