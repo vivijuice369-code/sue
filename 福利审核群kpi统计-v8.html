@@ -1022,7 +1022,7 @@ function appendOrderCard(order) {
   const textEl = document.createElement('p');
   textEl.className = 'text';
   textEl.textContent =
-    '福利审核订单已创建，请@机器人并回复「1」来绑定审核人。\n' +
+    '福利审核订单已创建，请回复该消息发送「1」完成绑定审核。\n' +
     '订单ID：#' + pad4(order.id) + '\n' +
     '账号：' + order.account + '\n' +
     '彩金类型：' + order.bonusType + '\n' +
