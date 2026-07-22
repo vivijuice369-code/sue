@@ -165,8 +165,14 @@
 
   .editable-tag{font-size:10px;color:var(--green);background:#eafaf3;padding:1px 7px;border-radius:10px;font-weight:700;margin-left:6px;}
 
-  .drawer-foot{flex:none;padding:12px 22px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;background:#fbfcfe;}
+  .drawer-foot{flex:none;padding:12px 22px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;background:#fbfcfe;gap:12px;}
+  .drawer-foot .foot-left{display:flex;flex-direction:column;gap:2px;min-width:0;}
   .drawer-foot .meta{font-size:11px;color:var(--text-faint);}
+  .drawer-foot .meta.warn-meta{color:var(--amber);font-weight:600;display:none;}
+  .drawer-foot .meta.warn-meta.show{display:block;}
+  #saveBtn{flex:none;}
+  #saveBtn:disabled{opacity:.5;cursor:not-allowed;background:#b9c6e6;border-color:#b9c6e6;}
+  #saveBtn:disabled:hover{background:#b9c6e6;border-color:#b9c6e6;color:#fff;}
 
   .toast{position:fixed;top:20px;left:50%;transform:translateX(-50%) translateY(-20px);background:#1f2430;color:#fff;
     padding:10px 20px;border-radius:8px;font-size:13px;display:flex;align-items:center;gap:8px;opacity:0;pointer-events:none;
@@ -318,8 +324,11 @@
           <div class="drawer-body" id="drawerBody"></div>
 
           <div class="drawer-foot">
-            <span class="meta">修改会在切换语言时自动暂存，点击保存后才写入 Bot 配置</span>
-            <button class="btn sm primary" onclick="saveAll()">保存全部语言</button>
+            <div class="foot-left">
+              <span class="meta">修改会在切换语言时自动暂存，点击保存后才写入 Bot 配置</span>
+              <span class="meta warn-meta" id="saveWarnHint"></span>
+            </div>
+            <button class="btn sm primary" id="saveBtn" onclick="saveCurrentLang()">保存 English 配置</button>
           </div>
         </div>
       </div>
@@ -473,6 +482,32 @@ function renderProgress(){
   document.getElementById('progressFill').style.width = pct + '%';
   document.getElementById('progressFill').style.background = pct===100 ? 'var(--green)' : (pct===0 ? '#e5484d' : '#f5a524');
   document.getElementById('progressPct').textContent = pct + '%';
+  updateSaveButton(l, pct);
+}
+
+function updateSaveButton(l, pct){
+  const btn = document.getElementById('saveBtn');
+  const hint = document.getElementById('saveWarnHint');
+  btn.textContent = `保存 ${l.name} 配置`;
+
+  if(pct === 0){
+    btn.disabled = true;
+    btn.title = '当前语言暂未填写任何内容，无需保存';
+    hint.textContent = '当前语言暂未填写任何内容，无需保存';
+    hint.classList.add('show');
+  } else if(pct < 100){
+    btn.disabled = false;
+    btn.title = '';
+    const fs = fieldsForLang(activeLangCode);
+    const missing = fs.filter(v=>!v).length;
+    hint.textContent = `还有 ${missing} 项未填写，未填写内容将回退显示中文`;
+    hint.classList.add('show');
+  } else {
+    btn.disabled = false;
+    btn.title = '';
+    hint.textContent = '';
+    hint.classList.remove('show');
+  }
 }
 
 /* ============================================================
@@ -670,8 +705,11 @@ function draftFrom(field){
   renderProgress();
   showToast('已带入中文草稿，请在此基础上翻译');
 }
-function saveAll(){
-  showToast('已保存全部语言的 Telegram 配置 ✓');
+function saveCurrentLang(){
+  const l = LANGS.find(x=>x.code===activeLangCode);
+  const pct = completionPct(activeLangCode);
+  if(pct === 0) return; // 理论上按钮已禁用，双重保险
+  showToast(`已保存 ${l.flag} ${l.name} 语言配置 ✓`);
 }
 let toastTimer;
 function showToast(msg){
