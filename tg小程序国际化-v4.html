@@ -98,7 +98,7 @@
   }
   .field textarea.value-box{min-height:150px;line-height:1.7;resize:vertical;background:#f7f8fa;color:var(--text);}
   .field .value-box.mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px;white-space:pre;}
-  .avatar-box{width:74px;height:74px;border-radius:50%;background:#e14545;display:flex;align-items:center;justify-content:center;font-size:32px;}
+  .avatar-box{width:74px;height:74px;border-radius:50%;background:linear-gradient(135deg,#5b8def,#2f6bff);display:flex;align-items:center;justify-content:center;font-size:32px;}
 
   /* ============ DRAWER：在 right-col 内做滑入动画 ============ */
   .drawer{
@@ -171,7 +171,7 @@
     width:100%;border:1px dashed var(--border-strong);border-radius:8px;padding:14px;display:flex;align-items:center;gap:14px;background:#fbfcfe;
   }
   .img-upload .thumb{width:56px;height:56px;border-radius:50%;background:#eef1f6;display:flex;align-items:center;justify-content:center;font-size:22px;color:#b7bec9;flex:none;}
-  .img-upload .thumb.filled{background:#e14545;color:#fff;}
+  .img-upload .thumb.filled{background:linear-gradient(135deg,#5b8def,#2f6bff);color:#fff;}
   .img-upload .txt{flex:1;font-size:12px;color:var(--text-faint);}
   .img-upload .txt b{color:var(--text);font-weight:600;display:block;font-size:12.5px;margin-bottom:2px;}
   .img-upload .actions2{display:flex;flex-direction:column;gap:6px;align-items:flex-end;}
@@ -207,6 +207,20 @@
     transition:.25s;z-index:999;}
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
   .toast .ic{color:#4ade80;}
+
+  /* ============ 背景说明弹窗 ============ */
+  .bg-modal-mask{
+    position:fixed;inset:0;background:rgba(20,24,34,.4);display:none;align-items:center;justify-content:center;z-index:998;
+  }
+  .bg-modal-mask.show{display:flex;}
+  .bg-modal{background:#fff;border-radius:12px;width:480px;max-width:90vw;overflow:hidden;}
+  .bg-modal-head{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+  .bg-modal-head h3{margin:0;font-size:15px;}
+  .bg-modal-body{padding:18px 20px 22px;}
+  .bg-modal-body p{margin:0 0 12px;font-size:13px;line-height:1.8;color:var(--text-dim);}
+  .bg-modal-body p:last-child{margin-bottom:0;}
+  .bg-modal-body b{color:var(--text);}
+  .bg-modal-body code{background:#f2f4f7;color:var(--blue);padding:1px 6px;border-radius:4px;font-size:12px;font-family:ui-monospace,Menlo,Consolas,monospace;}
 </style>
 </head>
 <body>
@@ -271,7 +285,10 @@
         </div>
 
         <div class="page-head">
-          <button class="btn rules-btn" id="rulesBtn" onclick="toggleRules()">📖 规则说明</button>
+          <div style="display:flex;gap:8px;">
+            <button class="btn rules-btn" id="rulesBtn" onclick="toggleRules()">📖 规则说明</button>
+            <button class="btn rules-btn" id="bgBtn" onclick="openBgModal()">🗒 背景说明</button>
+          </div>
           <button class="btn multi-lang" id="multiLangBtn" onclick="toggleDrawer()">
             <span class="flagstack"><span>🇬🇧</span><span>🇻🇳</span><span>🇰🇷</span><span>🇷🇺</span></span>
             🌐 多语言配置
@@ -296,7 +313,7 @@
         </div>
         <div class="field">
           <label><span class="num-badge" onclick="openRuleAt(5)">5</span>Telegram 自动回复图片 <span class="cmd">(/start)</span></label>
-          <div class="avatar-box">🐂</div>
+          <div class="avatar-box">🤖</div>
         </div>
         <div class="field">
           <label><span class="num-badge" onclick="openRuleAt(6)">6</span>Telegram 自动回复 <span class="cmd">(/start)</span></label>
@@ -381,6 +398,20 @@
 </div>
 
 <div class="toast" id="toast"><span class="ic">✓</span><span id="toastText"></span></div>
+
+<!-- 背景说明 弹窗 -->
+<div class="bg-modal-mask" id="bgModalMask" onclick="if(event.target===this) closeBgModal()">
+  <div class="bg-modal">
+    <div class="bg-modal-head">
+      <h3>背景说明</h3>
+      <button class="rules-close" onclick="closeBgModal()">✕</button>
+    </div>
+    <div class="bg-modal-body">
+      <p>为配合 U8 项目的国际化需求，Telegram 小程序需要新增 <b>4 个对应语言版本</b>的机器人（英语、越南语、韩语、俄语），每个语言机器人独立注册、独立配置。</p>
+      <p>各语言机器人对应的跳转 URL 需要直接体现语言标识：地址尾缀统一带上语言标识符，例如中文为 <code>/ch</code>、英语为 <code>/en</code>，以此类推，用于区分不同语言版本的跳转入口。</p>
+    </div>
+  </div>
+</div>
 
 <script>
 /* ============================================================
@@ -605,7 +636,7 @@ function renderDrawerBody(){
         <span class="empty-flag ${d.autoReplyImage?'':'show'}">未设置</span>
       </div>
       <div class="img-upload">
-        <div class="thumb ${d.autoReplyImage?'filled':''}">${d.autoReplyImage?'🐂':'＋'}</div>
+        <div class="thumb ${d.autoReplyImage?'filled':''}">${d.autoReplyImage?'🤖':'＋'}</div>
         <div class="txt">
           <b>${d.autoReplyImage ? '已使用图片' : '未设置，将沿用中文默认图片'}</b>
           支持 PNG / JPG，建议 512×512
@@ -624,7 +655,6 @@ function renderDrawerBody(){
       </div>
       <div class="di-actions" style="margin-bottom:6px;">
         <button class="link-btn" onclick="draftFrom('autoReplyText')">📋 带入中文草稿</button>
-        <button class="link-btn" onclick="showToast('已校验链接与变量一致性（原型演示）')">🔍 校验链接一致性</button>
       </div>
       <textarea class="di-input ${d.autoReplyText.trim()?'':'warn'}" placeholder="填写 ${l.name} 版本自动回复文案"
         oninput="onInput('autoReplyText', this.value)">${esc(d.autoReplyText)}</textarea>
@@ -814,6 +844,14 @@ function openRuleAt(n){
   }, rulesOpen ? 50 : 300);
 }
 renderRules();
+
+function openBgModal(){
+  document.getElementById('bgModalMask').classList.add('show');
+}
+function closeBgModal(){
+  document.getElementById('bgModalMask').classList.remove('show');
+}
+
 </script>
 </body>
 </html>
