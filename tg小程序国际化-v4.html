@@ -221,6 +221,10 @@
   .bg-modal-body p:last-child{margin-bottom:0;}
   .bg-modal-body b{color:var(--text);}
   .bg-modal-body code{background:#f2f4f7;color:var(--blue);padding:1px 6px;border-radius:4px;font-size:12px;font-family:ui-monospace,Menlo,Consolas,monospace;}
+
+  .example-modal{width:auto;}
+  .example-body{padding:16px;display:flex;align-items:center;justify-content:center;background:#f4f6f9;}
+  .example-img{max-width:340px;width:100%;height:auto;border-radius:14px;display:block;box-shadow:0 4px 18px rgba(20,24,34,.12);}
 </style>
 </head>
 <body>
@@ -288,6 +292,7 @@
           <div style="display:flex;gap:8px;">
             <button class="btn rules-btn" id="rulesBtn" onclick="toggleRules()">📖 规则说明</button>
             <button class="btn rules-btn" id="bgBtn" onclick="openBgModal()">🗒 背景说明</button>
+            <button class="btn rules-btn" id="exampleBtn" onclick="openExampleModal()">🖼 TG示例图</button>
           </div>
           <button class="btn multi-lang" id="multiLangBtn" onclick="toggleDrawer()">
             <span class="flagstack"><span>🇬🇧</span><span>🇻🇳</span><span>🇰🇷</span><span>🇷🇺</span></span>
@@ -409,6 +414,19 @@
     <div class="bg-modal-body">
       <p>为配合 U8 项目的国际化需求，Telegram 小程序需要新增 <b>4 个对应语言版本</b>的机器人（英语、越南语、韩语、俄语），每个语言机器人独立注册、独立配置。</p>
       <p>各语言机器人对应的跳转 URL 需要直接体现语言标识：地址尾缀统一带上语言标识符，例如中文为 <code>/ch</code>、英语为 <code>/en</code>，以此类推，用于区分不同语言版本的跳转入口。</p>
+    </div>
+  </div>
+</div>
+
+<!-- TG示例图 弹窗 -->
+<div class="bg-modal-mask" id="exampleModalMask" onclick="if(event.target===this) closeExampleModal()">
+  <div class="bg-modal example-modal">
+    <div class="bg-modal-head">
+      <h3>TG 示例图</h3>
+      <button class="rules-close" onclick="closeExampleModal()">✕</button>
+    </div>
+    <div class="bg-modal-body example-body">
+      <img src="tg-example.png" alt="Telegram 自动回复效果示例" class="example-img">
     </div>
   </div>
 </div>
@@ -850,6 +868,12 @@ function openBgModal(){
 }
 function closeBgModal(){
   document.getElementById('bgModalMask').classList.remove('show');
+}
+function openExampleModal(){
+  document.getElementById('exampleModalMask').classList.add('show');
+}
+function closeExampleModal(){
+  document.getElementById('exampleModalMask').classList.remove('show');
 }
 
 </script>
