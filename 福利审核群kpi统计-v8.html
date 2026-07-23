@@ -724,18 +724,14 @@
       <h4>规则说明</h4>
       <div class="anno-card" style="--anno-color:#3390ec; margin-bottom:10px;">
         <div class="anno-head"><span class="anno-badge">5</span><span class="anno-title">筛选条件</span></div>
-        <div class="anno-body">订单ID/审核人/彩金类型/送分人员/会员账号为精确或模糊文本匹配；状态为下拉选择；彩金金额/流水倍数为区间过滤；创建/完成时间为日期范围过滤；点击搜索后三处数据（指标卡/排行/明细）联动刷新。</div>
+        <div class="anno-body">订单ID/审核人/彩金类型/送分人员/会员账号为精确或模糊文本匹配；状态为下拉选择；彩金金额/流水倍数为区间过滤；创建/完成时间为日期范围过滤；点击搜索后指标卡与明细数据联动刷新。</div>
       </div>
       <div class="anno-card" style="--anno-color:#1a56c4; margin-bottom:10px;">
         <div class="anno-head"><span class="anno-badge">6</span><span class="anno-title">统计指标</span></div>
         <div class="anno-body">订单总数＝机器人后台创建总数；待处理/已完成为当前状态计数；平均处理时长仅统计已完成订单（创建→完成）。</div>
       </div>
-      <div class="anno-card" style="--anno-color:#1a7f37; margin-bottom:10px;">
-        <div class="anno-head"><span class="anno-badge">7</span><span class="anno-title">审核人排行</span></div>
-        <div class="anno-body">按审核人分组统计完成单数、平均耗时及占比，用于客服/审核人效率考核。</div>
-      </div>
       <div class="anno-card" style="--anno-color:#9a6a0a;">
-        <div class="anno-head"><span class="anno-badge">8</span><span class="anno-title">审核单明细</span></div>
+        <div class="anno-head"><span class="anno-badge">7</span><span class="anno-title">审核单明细</span></div>
         <div class="anno-body">展示订单全部字段；群聊创建时留空的字段（如备注）在此显示为空白，不做占位提示。</div>
       </div>
     </div>
@@ -840,18 +836,9 @@
       </div>
     </div>
 
-    <p class="section-title">审核人处理量排行</p>
-    <div class="panel anno-anchor" style="margin-bottom:26px;">
-      <span class="ui-badge" style="--anno-color:#1a7f37; top:-8px; left:-8px; right:auto;">7</span>
-      <div class="agent-row header-row">
-        <span></span><span>审核人</span><span>完成数</span><span>平均耗时</span><span>占比</span>
-      </div>
-      <div id="agent-list"></div>
-    </div>
-
     <p class="section-title">审核单明细</p>
     <div class="anno-anchor" style="position:relative;">
-      <span class="ui-badge" style="--anno-color:#9a6a0a; top:-8px; left:-8px; right:auto;">8</span>
+      <span class="ui-badge" style="--anno-color:#9a6a0a; top:-8px; left:-8px; right:auto;">7</span>
       <div class="table-wrap">
         <table>
         <thead>
@@ -1285,35 +1272,7 @@ function renderDashboard() {
     document.getElementById('m-avg').textContent = '—';
   }
 
-  /* 审核人排行 */
-  const agentMap = {};
-  doneList.forEach(o => {
-    if (!agentMap[o.auditor]) agentMap[o.auditor] = { count: 0, totalMs: 0 };
-    agentMap[o.auditor].count += 1;
-    agentMap[o.auditor].totalMs += o.durationMs;
-  });
-  const agentList = document.getElementById('agent-list');
-  agentList.innerHTML = '';
-  const agents = Object.keys(agentMap);
-  if (agents.length === 0) {
-    agentList.innerHTML = '<div class="agent-row"><span></span><span style="color:#9ca3af;">暂无数据</span><span></span><span></span><span></span></div>';
-  } else {
-    agents.sort((a,b) => agentMap[b].count - agentMap[a].count);
-    const maxCount = agentMap[agents[0]].count;
-    agents.forEach((agent, i) => {
-      const info = agentMap[agent];
-      const avg = info.totalMs / info.count;
-      const pct = Math.round(info.count / doneList.length * 100);
-      const row = document.createElement('div');
-      row.className = 'agent-row';
-      row.innerHTML = '<span class="agent-rank">' + (i+1) + '</span>' +
-        '<span class="agent-name">' + agent + '</span>' +
-        '<span>' + info.count + '</span>' +
-        '<span>' + formatDuration(avg) + '</span>' +
-        '<div class="bar-track"><div class="bar-fill" style="width:' + Math.round(info.count/maxCount*100) + '%;"></div></div>';
-      agentList.appendChild(row);
-    });
-  }
+  /* 审核人排行面板已移除 */
 
   /* 彩金类型统计面板已移除，如需恢复可参考 orders 按 bonusType 分组 */
 
