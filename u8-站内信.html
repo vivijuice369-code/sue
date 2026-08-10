@@ -148,6 +148,50 @@
   .flow-step.sys .flow-card .tag{ background:#eceef2; color:#6b7386; }
   .flow-card .note{ color:#b3bac6; font-size:11.5px; margin-top:4px; }
 
+  .flow-section-divider{
+    display:flex; align-items:center; gap:12px;
+    margin: 26px 0 10px;
+    font-size:13px; font-weight:700; color:#1c2333;
+  }
+  .flow-section-divider::before,
+  .flow-section-divider::after{
+    content:''; flex:1; height:1px; background:#eef0f4;
+  }
+  .flow-section-note{
+    font-size:12px; color:#8993a4; line-height:1.7; margin: 0 0 16px;
+  }
+
+  .flow-hrow{
+    display:flex; align-items:stretch; gap:10px;
+  }
+  .flow-hbox{
+    flex:1;
+    background:#fafbfc;
+    border: 1px solid #eef0f4;
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-size:12.5px; color:#3a4152; line-height:1.7;
+  }
+  .flow-hbox .tag{
+    display:inline-block; font-size:11px; font-weight:700;
+    margin-bottom:6px; padding: 1px 8px; border-radius: 4px;
+  }
+  .flow-hbox.activity{ background:#fff7ec; border-color:#ffe3b0; }
+  .flow-hbox.activity .tag{ background:#ffedcf; color:#c1791a; }
+  .flow-hbox.user{ background:#f0faf4; border-color:#cdeedb; }
+  .flow-hbox.user .tag{ background:#e6f4ea; color:#2ba471; }
+  .flow-hbox.sys{ background:#f5f6f9; border-color:#e7e9ee; }
+  .flow-hbox.sys .tag{ background:#eceef2; color:#6b7386; }
+  .flow-harrow{
+    flex-shrink:0;
+    display:flex; align-items:center; justify-content:center;
+    font-size:16px; color:#c3c9d4;
+  }
+  @media (max-width: 640px){
+    .flow-hrow{ flex-direction:column; }
+    .flow-harrow{ transform: rotate(90deg); padding: 2px 0; }
+  }
+
   .view{ display:none; }
   .view.active{ display:block; }
 
@@ -357,10 +401,7 @@
     white-space:nowrap;
     margin-left: 10px;
   }
-  .msg-card .msg-summary-title{
-    font-size:13.5px; font-weight:600; color: var(--text-main);
-    margin-bottom:4px;
-  }
+
   .msg-card .msg-body{
     font-size:12.5px; color: var(--text-sub);
     line-height:1.6;
@@ -1002,7 +1043,7 @@
           <span class="flow-dot"></span>
           <div class="flow-card">
             <span class="tag">用户端</span>
-            <div>用户在平台上触发对应业务行为，例如完成存款、提交提现、提现被审核、参与活动预热 / 开启 / 结束、修改密码、非常用设备登录、开启或关闭高级安全验证等</div>
+            <div>用户在平台上触发对应业务行为，例如完成存款、提交提现、提现被审核、修改密码、非常用设备登录、开启或关闭高级安全验证等</div>
           </div>
         </div>
 
@@ -1030,6 +1071,28 @@
           </div>
         </div>
 
+      </div>
+
+      <div class="flow-section-divider">
+        <span>活动通知配置流程（独立于本后台）</span>
+      </div>
+      <p class="flow-section-note">「活动通知」不在「消息通知」后台管理，由「活动后台」独立配置内容与开关；触发后同样会汇入用户端「消息通知」的「活动通知」分类，用户使用体验与资金 / 安全通知一致，无感知差异：</p>
+
+      <div class="flow-hrow">
+        <div class="flow-hbox activity">
+          <span class="tag">活动后台（独立系统）</span>
+          <div>运营在「活动后台」配置活动通知的标题、内容与多语言版本，并开启状态</div>
+        </div>
+        <div class="flow-harrow">→</div>
+        <div class="flow-hbox user">
+          <span class="tag">用户端</span>
+          <div>用户触发对应活动行为（如活动预热开启、活动开启、活动结束等）</div>
+        </div>
+        <div class="flow-harrow">→</div>
+        <div class="flow-hbox sys">
+          <span class="tag">系统</span>
+          <div>通知同步至用户端「消息通知 - 活动通知」分类下展示</div>
+        </div>
       </div>
 
     </div>
@@ -1079,13 +1142,13 @@
         <div class="left">📋「消息通知」功能规则说明</div>
       </div>
       <div class="user-rule-body show" id="userRuleBody">
-        <p><b>0. 与「平台通知」是两套独立逻辑。</b>「平台通知」是原有公告功能，本次未做调整；以下规则仅针对本次新增的「消息通知」功能。</p>
-        <p><b>1. 通知按类型分类展示。</b>分为「资金」「活动」「安全」三大类，具体类型和触发时机由后台统一配置和维护，用户可按「全部/资金/活动/安全」筛选查看。</p>
-        <p><b>2. 只看得到后台已开启的通知。</b>某条通知只有在后台被开启后，才会出现在用户的「消息通知」里；后台关闭后，将不再收到该类通知。</p>
-        <p><b>3. 触发对应行为会自动收到通知。</b>比如完成存款、提现、参与活动、修改密码、非常用设备登录等，只要对应通知已开启，系统会自动推送，不需要人工发送；<b>本原型中的消息列表为演示数据，实际以用户真实触发的业务行为为准。</b></p>
-        <p><b>4. 未读消息有红点数字提示。</b>点开某条通知查看详情、返回列表后，对应的未读红点数字会减少。</p>
-        <p><b>5. 显示语言有兜底保护。</b>正常情况下都会看到自己语言的完整内容；万一后台出现异常导致某语种缺失，会优先兜底展示英文，英文也没有的话再兜底展示中文，避免看到空白。</p>
-        <p><b>6. 支持批量操作，且仅作用于「消息通知」。</b>可一键「全部已读」或「全部删除」，通知详情页也可以单独删除某一条；这些操作只会清空「消息通知」分类下的记录，不会影响「平台通知」里的公告，也不会影响后台配置。</p>
+        <p><b>0. 与「平台通知」是两套独立逻辑。</b>「平台通知」为原有功能，本次未做调整；以下规则仅针对「消息通知」，两者关系详见「背景说明」。</p>
+        <p><b>1. 按类型分类展示。</b>分为「资金」「活动」「安全」三类；资金、安全类型由「消息通知」后台配置，<b>活动类型的内容来自「活动后台」独立配置</b>（详见「流程图」），展示体验一致，用户无感知差异。</p>
+        <p><b>2. 只看得到后台已开启的通知。</b>后台开启后才会出现在「消息通知」里，关闭后不再收到。</p>
+        <p><b>3. 触发对应行为会自动收到通知。</b>比如完成存款、提现、参与活动、修改密码、非常用设备登录等，只要通知已开启就会自动推送，不需要人工发送；<b>本原型中的消息列表为演示数据，实际以用户真实触发的业务行为为准。</b></p>
+        <p><b>4. 未读消息有红点数字提示，</b>点开详情返回列表后，对应红点数字会减少。</p>
+        <p><b>5. 显示语言有兜底保护。</b>正常都会看到自己语言的完整内容；仅当后台数据异常导致缺失时，才会依次兜底展示英文、中文，避免看到空白。</p>
+        <p><b>6. 支持批量操作，仅作用于「消息通知」。</b>可一键「全部已读」或「全部删除」，详情页也可单独删除；不会影响「平台通知」或后台配置。</p>
       </div>
     </div>
 
@@ -1171,15 +1234,10 @@
         <div class="adm-filter-card">
           <div class="adm-filter-row">
             <div class="adm-filter-item">
-              <label>标题</label>
-              <div class="ctrl placeholder">请输入标题</div>
-            </div>
-            <div class="adm-filter-item">
               <label>通知类型</label>
               <select class="ctrl" id="filterNotifyType">
                 <option value="">请选择通知类型</option>
                 <option value="fund">资金通知</option>
-                <option value="activity">活动通知</option>
                 <option value="security">安全通知</option>
               </select>
             </div>
@@ -1213,10 +1271,10 @@
           <table class="adm-table">
             <thead>
               <tr>
-                <th>标题</th>
                 <th>通知类型</th>
                 <th>通知时机</th>
                 <th>状态</th>
+                <th>标题</th>
                 <th>通知内容</th>
                 <th>更新时间</th>
                 <th>操作</th>
@@ -1310,14 +1368,14 @@
       <div class="close" id="ruleDrawerClose">✕</div>
     </div>
     <div class="rule-drawer-body">
-      <p>0. <b>与「平台通知」是两套独立逻辑：</b>「平台通知」是原有公告功能（全部公告/新人专属/系统公告/活动公告），本次不做调整；以下规则仅针对本次新增的「消息通知」功能；</p>
-      <p>1. 「消息通知」为系统新增功能，通知类型（资金 / 活动 / 安全通知）与通知时机为系统预置，不支持在此新增或删除，仅可编辑内容；</p>
-      <p>2. 每条通知需配置中文标题与通知内容，同时配置英语 / 越南语 / 韩语 / 俄语四个语种的标题与通知内容，全部配置完整才可保存；<b>标题限制50字以内、通知内容限制1000字以内</b>，输入框右侧会实时显示已输入字数（如「0/50」），超出上限后无法继续输入；</p>
-      <p>3. <b>功能发布后，所有通知默认状态为「关闭」</b>，需运营人员逐条配置好内容后手动开启，避免内容未配置齐全就误触达用户；</p>
-      <p>4. <b>状态开关只能在「编辑」页面里切换，列表页仅展示当前状态的文字</b>（绿色「开启」/ 红色「关闭」，不可点击），这样可以避免运营在列表页误触，导致内容还没配置完整就被意外打开；状态决定该条通知是否展示给用户，切换后会实时同步生效（用户端具体展示效果见用户端规则说明）；</p>
-      <p>5. <b>通知内容支持插入链接与图片</b>，「通知内容」富文本编辑器已支持插入超链接、图片等元素，运营可根据实际需要自行在内容中配置跳转链接或配图，无需额外开发；</p>
-      <p>6. <b>语种兜底规则（异常场景兜底，非正常保存路径）：</b>正常情况下保存时已强制要求5个语种全部配置完整；此规则是为极端情况预留的兜底手段——例如历史数据迁移、后台数据异常、未来新增语种但尚未补齐翻译等，一旦真的出现某语种缺失，用户端会优先展示英文版本，英文也缺失则兜底展示中文版本，避免用户看到空白内容；</p>
-      <p>7. 用户在用户端可对「消息通知」做「全部已读」「全部删除」「单条删除」等操作，仅作用于「消息通知」分类，不影响「平台通知」，也不会改变此处的后台配置数据。</p>
+      <p>0. <b>与「平台通知」是两套独立逻辑</b>，「平台通知」为原有功能，本次不作调整；以下规则仅针对「消息通知」，两者关系详见「背景说明」；</p>
+      <p>1. 通知类型与通知时机为系统预置，不支持新增或删除，仅可编辑内容；<b>「活动通知」已移交「活动后台」独立配置</b>，此处只保留资金通知与安全通知，配置流转详见「流程图」；</p>
+      <p>2. 每条通知需配置中文标题与通知内容，同时配置英语 / 越南语 / 韩语 / 俄语四个语种，全部配置完整才可保存；<b>标题限50字、内容限1000字</b>，输入框右侧实时显示已输入字数，超出上限无法继续输入；</p>
+      <p>3. <b>功能发布后默认全部「关闭」</b>，需运营逐条配置好内容后手动开启，避免内容未配置齐全就误触达用户；</p>
+      <p>4. <b>状态开关只能在「编辑」页面切换，列表页仅展示状态文字</b>（绿色「开启」/ 红色「关闭」，不可点击），避免误触导致内容未配置完就被打开；开启后会实时同步到用户端；</p>
+      <p>5. <b>通知内容支持链接、图片与变量占位符。</b>富文本编辑器支持插入超链接、图片；也可手动输入变量占位符（如「{金额}」「{失败原因}」「{设备名称}」，具体可用哪些以触发时机为准，暂无一键插入按钮）。<b>占位符与实际业务数据的映射、替换逻辑由开发在后端实现</b>——用户最终看到的是替换后的真实内容，不会看到 {} 本身；</p>
+      <p>6. <b>语种兜底（仅用于异常场景，非正常保存路径）：</b>正常保存已强制要求5个语种全部完整；万一出现数据异常导致某语种缺失，会优先兜底展示英文，其次中文，避免用户看到空白；</p>
+      <p>7. 用户端「全部已读」「全部删除」「单条删除」仅作用于「消息通知」，不影响「平台通知」，也不会改变后台配置数据。</p>
     </div>
   </div>
 </div>
@@ -1399,8 +1457,22 @@ const notifySubTabs = [
 // 用户端“删除”只影响用户自己看到的消息列表，不会删除后台配置的通知规则本身
 let userDeletedIds = new Set();
 
+// 活动通知内容来自「活动后台」，本系统不做配置，这里放几条默认演示数据，方便用户端预览展示效果
+const activityDemoMessages = [
+  { id:'act1', type:'activity', on:true, unread:false,
+    title:'活动预热开启通知', updated:'2026-08-04 09:00:00',
+    content:'「夏日狂欢」活动即将开启，敬请期待，活动详情可在活动中心提前了解。' },
+  { id:'act2', type:'activity', on:true, unread:false,
+    title:'活动开启通知', updated:'2026-08-05 12:00:00',
+    content:'「夏日狂欢」活动已正式开启，快去活动中心参与，赢取丰厚奖励吧。' },
+  { id:'act3', type:'activity', on:true, unread:false,
+    title:'活动结束通知', updated:'2026-08-06 23:59:59',
+    content:'「夏日狂欢」活动已结束，感谢您的参与，奖励将于结算后发放至您的账户。' },
+];
+
 function getNotifyMessagesFromAdmin(subKey){
-  return admRows
+  const source = [...admRows, ...activityDemoMessages];
+  return source
     .filter(r => r.on)
     .filter(r => !userDeletedIds.has(r.id))
     .filter(r => subKey === 'all' || r.type === subKey)
@@ -1417,7 +1489,8 @@ function getNotifyMessagesFromAdmin(subKey){
 
 // 未读数量统计：用于「消息通知」分类徽标 与 各子类型红点
 function getNotifyUnreadCount(subKey){
-  return admRows.filter(r => r.on && r.unread && !userDeletedIds.has(r.id) && (subKey === 'all' || r.type === subKey)).length;
+  const source = [...admRows, ...activityDemoMessages];
+  return source.filter(r => r.on && r.unread && !userDeletedIds.has(r.id) && (subKey === 'all' || r.type === subKey)).length;
 }
 
 let state = { category: 'notify', subTab: { platform: 'all', notify: 'all' } };
@@ -1470,7 +1543,6 @@ function renderList(){
         </div>
         <div class="detail-link" data-id="${m.id}">详情 ›</div>
       </div>
-      <div class="msg-summary-title">${m.summary.split('\n')[0]}</div>
       <div class="msg-body">${m.summary}</div>
       <div class="msg-date">${m.date}</div>
     </div>
@@ -1582,6 +1654,7 @@ document.getElementById('listActionBtn').addEventListener('click', () => {
     admRows.forEach(r => { if(r.on) r.unread = false; });
   } else if(btn.dataset.mode === 'delete'){
     admRows.forEach(r => { if(r.on) userDeletedIds.add(r.id); });
+    activityDemoMessages.forEach(r => { if(r.on) userDeletedIds.add(r.id); });
   }
   saveNotifyLocalState();
   renderCategoryTabs();
@@ -1615,31 +1688,26 @@ ruleDrawerMask.addEventListener('click', (e) => {
    2. 管理后台 - 表格数据渲染（已移除语言标识 / PC内容 / H5内容）
 ========================================================== */
 // 按“通知类型 + 通知子类”每种子类先放一条演示数据，方便对照筛选项
+// 活动通知已移交「活动后台」独立配置，此处不再管理，仅保留资金通知与安全通知
 const admRows = [
   { id:'n1', title:'存款成功通知', type:'fund', typeLabel:'资金通知', cat:'存款成功', on:true, created:'2026-08-01 10:02:11', updated:'2026-08-01 10:02:11',
-    content:'您的账户已成功存款到账，感谢您的支持，祝您游戏愉快。' },
+    content:'您的账户已成功存款 {金额} 到账，感谢您的支持，祝您游戏愉快。到账时间：{到账时间}' },
   { id:'n2', title:'提款已申请通知', type:'fund', typeLabel:'资金通知', cat:'提款已申请', on:true, created:'2026-08-01 10:15:40', updated:'2026-08-01 10:15:40',
-    content:'您的提款申请已提交，正在审核处理中，请耐心等待。' },
+    content:'您申请提款 {金额}，申请时间：{申请时间}，正在审核处理中，请耐心等待。' },
   { id:'n3', title:'提款成功通知', type:'fund', typeLabel:'资金通知', cat:'提款成功', on:true, created:'2026-08-01 11:03:27', updated:'2026-08-01 11:03:27',
-    content:'您的提款申请已审核通过，款项已成功发放，请注意查收。' },
+    content:'您的提款申请已审核通过，{金额} 已成功发放，到账时间：{到账时间}，请注意查收。' },
   { id:'n4', title:'提款失败通知', type:'fund', typeLabel:'资金通知', cat:'提款失败', on:true, created:'2026-08-01 11:20:05', updated:'2026-08-01 11:20:05',
-    content:'很抱歉，您的提款申请未能通过审核，如有疑问请联系在线客服核实处理。' },
-  { id:'n5', title:'活动预热开启通知', type:'activity', typeLabel:'活动通知', cat:'活动预热开启', on:true, created:'2026-08-02 09:00:00', updated:'2026-08-02 09:00:00',
-    content:'新一期活动即将开启，敬请期待，活动详情可在活动中心提前了解。' },
-  { id:'n6', title:'活动开启通知', type:'activity', typeLabel:'活动通知', cat:'活动开启', on:true, created:'2026-08-02 12:00:00', updated:'2026-08-02 12:00:00',
-    content:'活动已正式开启，快去活动中心参与，赢取丰厚奖励吧。' },
-  { id:'n7', title:'活动结束通知', type:'activity', typeLabel:'活动通知', cat:'活动结束', on:true, created:'2026-08-02 23:59:59', updated:'2026-08-02 23:59:59',
-    content:'本期活动已结束，感谢您的参与，奖励将于结算后发放至您的账户。' },
+    content:'很抱歉，您申请提款 {金额} 未能通过审核，失败原因：{失败原因}，如有疑问请联系在线客服核实处理。' },
   { id:'n8', title:'密码修改通知', type:'security', typeLabel:'安全通知', cat:'密码修改', on:true, created:'2026-08-03 08:12:33', updated:'2026-08-03 08:12:33',
-    content:'您的账户密码已修改成功，如非本人操作，请立即联系在线客服处理。' },
+    content:'您的账户密码已于 {修改时间} 修改成功，如非本人操作，请立即联系在线客服处理。' },
   { id:'n9', title:'非常用设备登录通知', type:'security', typeLabel:'安全通知', cat:'非常用设备登录', on:true, created:'2026-08-03 09:45:19', updated:'2026-08-03 09:45:19',
-    content:'检测到您的账户在一台新设备上登录，如非本人操作，请立即修改密码并联系客服协助处理。' },
+    content:'检测到您的账户于 {登录时间} 在新设备「{设备名称}」上登录，如非本人操作，请立即修改密码并联系客服协助处理。' },
   { id:'n10', title:'支付密码修改通知', type:'security', typeLabel:'安全通知', cat:'支付密码修改', on:true, created:'2026-08-03 14:22:07', updated:'2026-08-03 14:22:07',
-    content:'您的支付密码已修改成功，如非本人操作，请立即联系在线客服处理。' },
+    content:'您的支付密码已于 {修改时间} 修改成功，如非本人操作，请立即联系在线客服处理。' },
   { id:'n12', title:'高级安全验证启动通知', type:'security', typeLabel:'安全通知', cat:'高级安全验证启动', on:true, created:'2026-08-03 15:40:18', updated:'2026-08-03 15:40:18',
-    content:'您已成功启动高级安全验证，账户安全性进一步提升。' },
+    content:'您已于 {开启时间} 成功启动高级安全验证，账户安全性进一步提升。' },
   { id:'n13', title:'高级安全验证关闭通知', type:'security', typeLabel:'安全通知', cat:'高级安全验证关闭', on:false, created:'2026-08-03 16:05:44', updated:'2026-08-03 16:05:44',
-    content:'您的高级安全验证已关闭，如非本人操作，请立即联系在线客服处理。' },
+    content:'您已于 {关闭时间} 关闭高级安全验证，如非本人操作，请立即联系在线客服处理。' },
 ];
 // 演示数据默认标记为“未读”，用于用户端红点计数演示；用户查看详情返回后会标记为已读
 admRows.forEach(r => { if(r.unread === undefined) r.unread = true; });
@@ -1693,10 +1761,10 @@ function renderAdmTable(){
 
   tbody.innerHTML = admRows.map((r, i) => `
     <tr>
-      <td>${r.title}</td>
       <td><span class="adm-tag ${r.type}">${r.typeLabel}</span></td>
       <td>${r.cat ? `<span class="adm-cat">${r.cat}</span>` : ''}</td>
       <td><span class="status-text ${r.on ? 'on' : 'off'}">${r.on ? '开启' : '关闭'}</span></td>
+      <td>${r.title}</td>
       <td>${r.content || ''}</td>
       <td>${r.updated}</td>
       <td>
@@ -1855,9 +1923,6 @@ const notifyTriggerDesc = {
   '提款已申请': '用户提交提现申请，系统生成提现订单（尚未审核）时触发',
   '提款成功': '提现渠道 / 银行回调返回成功状态、订单状态变更为「提款成功」后触发',
   '提款失败': '提现申请被审核拒绝，或打款过程出现异常导致提现失败时触发',
-  '活动预热开启': '活动到达后台配置的「预热开始时间」时触发（活动尚未正式开始）',
-  '活动开启': '活动到达后台配置的「活动开始时间」时触发',
-  '活动结束': '活动到达配置的结束时间，或被运营手动提前关闭时触发',
   '密码修改': '用户登录密码修改成功时触发',
   '非常用设备登录': '该账号在一台此前未登录过的设备（App 或网页端）上首次登录成功时触发，同一设备后续登录不会重复通知',
   '支付密码修改': '用户支付密码（提现密码）修改成功时触发',
@@ -1951,7 +2016,6 @@ function showAdmToast(msg){
 /* -- 通知类型 / 通知时机 联动筛选 -- */
 const notifySubTypeOptions = {
   fund: ['存款成功', '提款已申请', '提款成功', '提款失败'],
-  activity: ['活动预热开启', '活动开启', '活动结束'],
   security: ['密码修改', '非常用设备登录', '支付密码修改', '高级安全验证启动', '高级安全验证关闭'],
 };
 
