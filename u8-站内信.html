@@ -178,6 +178,8 @@
   }
   .flow-hbox.activity{ background:#fff7ec; border-color:#ffe3b0; }
   .flow-hbox.activity .tag{ background:#ffedcf; color:#c1791a; }
+  .flow-hbox.letter{ background:#f5f0fc; border-color:#e0cdf5; }
+  .flow-hbox.letter .tag{ background:#ece0fa; color:#8b5cd6; }
   .flow-hbox.user{ background:#f0faf4; border-color:#cdeedb; }
   .flow-hbox.user .tag{ background:#e6f4ea; color:#2ba471; }
   .flow-hbox.sys{ background:#f5f6f9; border-color:#e7e9ee; }
@@ -287,6 +289,7 @@
     color: var(--text-sub);
     border-radius: 9px;
     cursor:pointer;
+    white-space:nowrap;
     transition: all .18s ease;
   }
   .category-tabs button.active{
@@ -410,8 +413,16 @@
     -webkit-box-orient:vertical;
     overflow:hidden;
   }
+  .msg-card .msg-date-row{
+    display:flex; align-items:center; justify-content:space-between;
+    margin-top:10px;
+  }
   .msg-card .msg-date{
-    font-size:11.5px; color:#b3bac6; margin-top:10px;
+    font-size:11.5px; color:#b3bac6;
+  }
+  .msg-card .msg-signature{
+    font-size:11px; color:#8993a4;
+    background:#f2f4f8; padding:2px 8px; border-radius: 10px;
   }
 
   .demo-note{
@@ -618,6 +629,24 @@
 
   .adm-toolbar{ display:flex; gap:10px; margin-bottom: 14px; }
 
+  .adm-mode-tabs{
+    display:flex; gap:8px;
+    margin-bottom: 16px;
+  }
+  .adm-mode-tab{
+    border:1px solid #e3e6ec; background:#fff; color:#4b5468;
+    font-size:13px; font-weight:500;
+    padding: 8px 20px; border-radius: 8px;
+    cursor:pointer;
+  }
+  .adm-mode-tab.active{
+    background: var(--blue); color:#fff; border-color: var(--blue);
+  }
+
+  .adm-table-toolbar-row{
+    padding: 14px 16px 0;
+  }
+
   .adm-table-card{
     background:#fff; border-radius:10px; overflow:hidden;
     box-shadow: 0 1px 4px rgba(20,30,60,0.04);
@@ -653,6 +682,7 @@
   .adm-tag.fund{ background:#eaf0ff; color:#2f6bff; }
   .adm-tag.activity{ background:#fff2e0; color:#e08a2b; }
   .adm-tag.security{ background:#fde9ea; color:#e0463f; }
+  .adm-tag.vip{ background:#fff2e0; color:#c1791a; }
 
   .adm-cat{
     display:inline-block; padding: 2px 9px; border-radius: 4px; font-size:12px;
@@ -667,6 +697,7 @@
   }
   .status-text.on{ color:#2ba471; background:#e6f4ea; }
   .status-text.off{ color:#e0463f; background:#fde9ea; }
+  .status-text.pending{ color:#c1791a; background:#fff2e0; }
 
   .adm-stepper{
     display:inline-flex; align-items:center; border:1px solid #e3e6ec; border-radius:6px; overflow:hidden;
@@ -681,6 +712,14 @@
 
   .adm-op{ color: var(--blue); cursor:pointer; margin-right: 12px; font-size:13px; }
   .adm-op.del{ color: var(--red); }
+
+  .pin-btn{
+    cursor:pointer; font-size:15px; opacity:0.35;
+    filter: grayscale(1);
+    transition: all .15s ease;
+  }
+  .pin-btn:hover{ opacity:0.7; }
+  .pin-btn.pinned{ opacity:1; filter:none; }
 
   .adm-toast{
     position: fixed; top: 90px; left:50%; transform: translateX(-50%) translateY(-10px);
@@ -767,6 +806,47 @@
   .status-field-note{
     font-size:11.5px; color:#b3bac6; margin-top:8px; line-height:1.6;
   }
+
+  .letter-import-row{
+    margin-top:8px;
+    display:flex; align-items:center; justify-content:space-between; gap:10px;
+  }
+  .letter-import-note{ font-size:11.5px; color:#b3bac6; line-height:1.6; }
+  .letter-warning{
+    color: var(--red); font-size:12px; line-height:1.7;
+    background:#fde9ea; border-radius:8px; padding:10px 12px;
+    margin-top:4px;
+  }
+  .letter-level-row{ display:flex; gap:14px; }
+  .letter-level-row > div{ flex:1; }
+  .letter-sub-label{ display:block; font-size:12px; color:#8993a4; margin-bottom:6px; }
+  textarea.field-ctrl{ resize:vertical; font-family:inherit; }
+
+  .ms-dropdown{ position:relative; }
+  .ms-trigger{
+    border:1px solid #e3e6ec; border-radius:6px;
+    padding: 9px 12px; font-size:13px; color:#1c2333;
+    background:#fff; cursor:pointer;
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  .ms-trigger.placeholder{ color:#b3bac6; }
+  .ms-trigger .ms-arrow{ color:#8993a4; font-size:11px; transition: transform .15s ease; }
+  .ms-dropdown.open .ms-trigger .ms-arrow{ transform: rotate(180deg); }
+  .ms-panel{
+    display:none;
+    position:absolute; top: calc(100% + 4px); left:0; right:0;
+    background:#fff; border:1px solid #e3e6ec; border-radius:8px;
+    box-shadow: 0 8px 20px rgba(20,30,60,0.12);
+    padding: 6px 0; z-index: 50;
+    max-height: 220px; overflow-y:auto;
+  }
+  .ms-dropdown.open .ms-panel{ display:block; }
+  .ms-panel label{
+    display:flex; align-items:center; gap:8px;
+    padding: 7px 14px; font-size:13px; color:#3a4152; cursor:pointer;
+  }
+  .ms-panel label:hover{ background:#f5f6f9; }
+  .ms-panel input{ accent-color: var(--blue); width:14px; height:14px; cursor:pointer; }
   .adm-radio-opt{ display:flex; align-items:center; gap:7px; font-size:13px; color:#4b5468; cursor:pointer; }
   .adm-radio-opt input{ accent-color: var(--blue); width:15px; height:15px; cursor:pointer; }
 
@@ -985,6 +1065,7 @@
       <p>「消息通知」功能希望在系统层面预置「资金通知」「活动通知」「安全通知」三大类、覆盖常见业务节点的通知规则。管理员只需要在后台把每条通知的中文及英/越/韩/俄多语言内容配置好、并开启状态，后续只要用户在平台上触发了对应的业务行为，系统就会自动生成并推送对应的通知，不需要人工逐条发送。</p>
       <p>这样一方面能让用户更及时地了解自己账户和活动的实时状态，提升体验和安全感；另一方面也能减少客服重复答疑的工作量，同时为后续拓展更多通知类型预留了统一的配置入口。</p>
       <p><b>需要特别说明的是：</b>「平台通知」是原有的公告功能（全部公告/新人专属/系统公告/活动公告），本次不做调整；「消息通知」是本次新增的独立功能。两者虽然都在「消息中心」里，但设计目的不同——「平台通知」偏运营公告发布，子标签只做展示态切换；「消息通知」偏业务事件触达，子标签会按类型真实筛选内容。这两套逻辑分开设计、互不影响。</p>
+      <p><b>另外，「消息通知」自动触发的通知只能覆盖系统预置的固定场景（存款、提现、VIP变动、安全事件等），无法满足运营针对个别用户或特定人群做一次性、灵活内容触达的需求</b>（比如给某几个大R会员发一封专属关怀信，或者给新注册但还没首充的用户群体推一条提醒）。因此在「消息通知」的基础上，又新增了「站内信」能力：运营可以在后台针对指定的会员ID、或按VIP等级 + 会员标签圈选的人群，手动编写并发送一条消息，内容展示在用户「消息通知」下新增的「个人消息」子分类里，与自动通知共用同一套已读、红点、批量操作机制，但内容完全由运营主导，不依赖系统预置的触发条件。</p>
     </div>
   </div>
 </div>
@@ -1095,6 +1176,28 @@
         </div>
       </div>
 
+      <div class="flow-section-divider">
+        <span>站内信发送流程（本后台「站内信」模块）</span>
+      </div>
+      <p class="flow-section-note">「站内信」不依赖用户触发任何业务行为，而是由运营主动创建、指定接收对象后直接发送或定时发送，最终同样汇入用户端「消息通知」的「个人消息」分类：</p>
+
+      <div class="flow-hrow">
+        <div class="flow-hbox letter">
+          <span class="tag">管理后台</span>
+          <div>运营新增站内信，选择接收对象（会员ID / 定制会员 / 全部会员），配置中/英/越/韩/俄多语言的标题与内容</div>
+        </div>
+        <div class="flow-harrow">→</div>
+        <div class="flow-hbox sys">
+          <span class="tag">系统</span>
+          <div>按「立即发送」或「定时发送」，到点后生成对应接收对象的消息实例</div>
+        </div>
+        <div class="flow-harrow">→</div>
+        <div class="flow-hbox user">
+          <span class="tag">用户端</span>
+          <div>被指定的用户在「消息通知 - 个人消息」中收到该信件，署名展示发送者</div>
+        </div>
+      </div>
+
     </div>
   </div>
 </div>
@@ -1119,7 +1222,7 @@
           </button>
         </div>
 
-        <div class="sub-tabs-wrap">
+        <div class="sub-tabs-wrap" id="subTabsWrap">
           <div class="sub-tabs" id="subTabs"></div>
           <div class="sub-tabs-fade"></div>
         </div>
@@ -1143,12 +1246,26 @@
       </div>
       <div class="user-rule-body show" id="userRuleBody">
         <p><b>0. 与「平台通知」是两套独立逻辑。</b>「平台通知」为原有功能，本次未做调整；以下规则仅针对「消息通知」，两者关系详见「背景说明」。</p>
-        <p><b>1. 按类型分类展示。</b>分为「资金」「活动」「安全」三类；资金、安全类型由「消息通知」后台配置，<b>活动类型的内容来自「活动后台」独立配置</b>（详见「流程图」），展示体验一致，用户无感知差异。</p>
+        <p><b>1. 按类型分类展示。</b>分为「个人消息」「资金」「活动」「VIP」「安全」几类；资金、VIP、安全类型由「消息通知」后台配置，<b>活动类型的内容来自「活动后台」独立配置</b>（详见「流程图」），<b>个人消息即运营在后台发送的「站内信」</b>（详见右侧「站内信」说明面板），展示体验一致，用户无感知差异。</p>
         <p><b>2. 只看得到后台已开启的通知。</b>后台开启后才会出现在「消息通知」里，关闭后不再收到。</p>
-        <p><b>3. 触发对应行为会自动收到通知。</b>比如完成存款、提现、参与活动、修改密码、非常用设备登录等，只要通知已开启就会自动推送，不需要人工发送；<b>本原型中的消息列表为演示数据，实际以用户真实触发的业务行为为准。</b></p>
+        <p><b>3. 触发对应行为会自动收到通知。</b>比如完成存款、提现、参与活动、VIP升降级、领取礼金、修改密码、非常用设备登录等，只要通知已开启就会自动推送，不需要人工发送；<b>本原型中的消息列表为演示数据，实际以用户真实触发的业务行为为准。</b></p>
         <p><b>4. 未读消息有红点数字提示，</b>点开详情返回列表后，对应红点数字会减少。</p>
         <p><b>5. 显示语言有兜底保护。</b>正常都会看到自己语言的完整内容；仅当后台数据异常导致缺失时，才会依次兜底展示英文、中文，避免看到空白。</p>
         <p><b>6. 支持批量操作，仅作用于「消息通知」。</b>可一键「全部已读」或「全部删除」，详情页也可单独删除；不会影响「平台通知」或后台配置。</p>
+      </div>
+    </div>
+
+    <div class="user-rule-panel">
+      <div class="user-rule-head-static">
+        <div class="left">📋「站内信」功能规则说明</div>
+      </div>
+      <div class="user-rule-body show">
+        <p><b>1. 站内信属于「消息通知 - 个人消息」。</b>与其他系统自动触发的通知不同，站内信是运营针对指定会员ID、定制会员（VIP等级+会员标签组合）或全部会员主动发送的消息，展示在同一个「消息通知」入口下，只是子标签换成了「个人消息」。</p>
+        <p><b>2. 只有发给「我」的信才会收到。</b>运营发送时指定的是会员ID或VIP等级 + 会员标签，只有匹配到当前账号的信件，才会出现在这个用户的「个人消息」里。</p>
+        <p><b>3. 内容按当前语言展示，</b>运营配置时已同步准备好中/英/越/韩/俄五个语种，用户会看到自己所用语言对应的版本。</p>
+        <p><b>4. 每条信件都带有署名，</b>默认展示「运营团队」，运营也可以改成其他署名（如「客户关怀中心」），方便用户知道是谁发的。</p>
+        <p><b>5. 未读红点、已读、删除等交互和其他类型通知完全一致，</b>点开详情返回后红点数字减少，也支持「全部已读」「全部删除」和单条删除，只影响自己账号收到的信件。</p>
+        <p><b>6. 定时发送的信件，</b>会在运营设定的时间点准时出现在用户的「个人消息」里，用户端不会提前看到。</p>
       </div>
     </div>
 
@@ -1230,14 +1347,51 @@
 
       <div class="adm-content">
 
-        <!-- 筛选卡片：已移除“语言标识”筛选 -->
-        <div class="adm-filter-card">
+        <!-- 自动通知 / 站内信 模式切换 -->
+        <div class="adm-mode-tabs">
+          <button class="adm-mode-tab active" id="btnModeLetter">站内信</button>
+          <button class="adm-mode-tab" id="btnModeAuto">自动通知</button>
+        </div>
+
+        <!-- 筛选卡片（站内信） -->
+        <div class="adm-filter-card" id="filterCardLetter">
+          <div class="adm-filter-row">
+            <div class="adm-filter-item">
+              <label>标题</label>
+              <div class="ctrl placeholder">请输入标题</div>
+            </div>
+            <div class="adm-filter-item">
+              <label>状态</label>
+              <select class="ctrl">
+                <option value="">请选择状态</option>
+                <option value="sent">已发送</option>
+                <option value="scheduled">定时中</option>
+                <option value="failed">发送失败</option>
+              </select>
+            </div>
+            <div class="adm-filter-item">
+              <label>发送时间</label>
+              <input class="field-ctrl" type="date" style="flex:1;">
+              <span style="color:#b3bac6;">-</span>
+              <input class="field-ctrl" type="date" style="flex:1;">
+            </div>
+          </div>
+          <div class="adm-filter-actions">
+            <button class="adm-btn primary">🔍 搜索</button>
+            <button class="adm-btn default">🗑 重置</button>
+            <button class="adm-btn rule-btn" id="btnOpenRuleDrawerLetter">📋 规则说明</button>
+          </div>
+        </div>
+
+        <!-- 筛选卡片（自动通知）：已移除“语言标识”筛选 -->
+        <div class="adm-filter-card" id="filterCardAuto" style="display:none;">
           <div class="adm-filter-row">
             <div class="adm-filter-item">
               <label>通知类型</label>
               <select class="ctrl" id="filterNotifyType">
                 <option value="">请选择通知类型</option>
                 <option value="fund">资金通知</option>
+                <option value="vip">VIP通知</option>
                 <option value="security">安全通知</option>
               </select>
             </div>
@@ -1263,8 +1417,8 @@
           </div>
         </div>
 
-        <!-- 表格：已移除“语言标识”列，及“PC内容”“H5内容”列 -->
-        <div class="adm-table-card">
+        <!-- 表格（自动通知）：已移除“语言标识”列，及“PC内容”“H5内容”列 -->
+        <div class="adm-table-card" id="tableCardAuto" style="display:none;">
           <div class="adm-table-toolbar">
             <span>↻</span><span>🔍</span><span>🖨</span><span>⚙</span>
           </div>
@@ -1285,6 +1439,37 @@
 
           <div class="adm-footer">
             共 <span id="admRowCount">13</span> 条
+            <span>‹</span>
+            <span class="page-num">1</span>
+            <span>›</span>
+            <select><option>200条/页</option></select>
+            前往 <input value="1" style="width:36px;">
+          </div>
+        </div>
+
+        <!-- 表格（站内信） -->
+        <div class="adm-table-card" id="tableCardLetter">
+          <div class="adm-table-toolbar-row">
+            <button class="adm-btn primary" id="btnAddLetter">＋ 新增站内信</button>
+          </div>
+          <table class="adm-table">
+            <thead>
+              <tr>
+                <th>置顶</th>
+                <th>ID</th>
+                <th>标题</th>
+                <th>接收对象</th>
+                <th>发送方式</th>
+                <th>状态</th>
+                <th>发送时间</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody id="letterTableBody"></tbody>
+          </table>
+
+          <div class="adm-footer">
+            共 <span id="letterRowCount">0</span> 条
             <span>‹</span>
             <span class="page-num">1</span>
             <span>›</span>
@@ -1364,18 +1549,144 @@
 <div class="rule-drawer-mask" id="ruleDrawerMask">
   <div class="rule-drawer">
     <div class="rule-drawer-head">
-      <h3>📋「消息通知」功能规则说明</h3>
+      <h3 id="ruleDrawerTitle">📋「消息通知」功能规则说明</h3>
       <div class="close" id="ruleDrawerClose">✕</div>
     </div>
-    <div class="rule-drawer-body">
+    <div class="rule-drawer-body" id="ruleDrawerBodyAuto">
       <p>0. <b>与「平台通知」是两套独立逻辑</b>，「平台通知」为原有功能，本次不作调整；以下规则仅针对「消息通知」，两者关系详见「背景说明」；</p>
-      <p>1. 通知类型与通知时机为系统预置，不支持新增或删除，仅可编辑内容；<b>「活动通知」已移交「活动后台」独立配置</b>，此处只保留资金通知与安全通知，配置流转详见「流程图」；</p>
+      <p>1. 通知类型与通知时机为系统预置，不支持新增或删除，仅可编辑内容；<b>「活动通知」已移交「活动后台」独立配置</b>，此处保留资金通知、VIP通知与安全通知，配置流转详见「流程图」；</p>
       <p>2. 每条通知需配置中文标题与通知内容，同时配置英语 / 越南语 / 韩语 / 俄语四个语种，全部配置完整才可保存；<b>标题限50字、内容限1000字</b>，输入框右侧实时显示已输入字数，超出上限无法继续输入；</p>
       <p>3. <b>功能发布后默认全部「关闭」</b>，需运营逐条配置好内容后手动开启，避免内容未配置齐全就误触达用户；</p>
       <p>4. <b>状态开关只能在「编辑」页面切换，列表页仅展示状态文字</b>（绿色「开启」/ 红色「关闭」，不可点击），避免误触导致内容未配置完就被打开；开启后会实时同步到用户端；</p>
       <p>5. <b>通知内容支持链接、图片与变量占位符。</b>富文本编辑器支持插入超链接、图片；也可手动输入变量占位符（如「{金额}」「{失败原因}」「{设备名称}」，具体可用哪些以触发时机为准，暂无一键插入按钮）。<b>占位符与实际业务数据的映射、替换逻辑由开发在后端实现</b>——用户最终看到的是替换后的真实内容，不会看到 {} 本身；</p>
       <p>6. <b>语种兜底（仅用于异常场景，非正常保存路径）：</b>正常保存已强制要求5个语种全部完整；万一出现数据异常导致某语种缺失，会优先兜底展示英文，其次中文，避免用户看到空白；</p>
       <p>7. 用户端「全部已读」「全部删除」「单条删除」仅作用于「消息通知」，不影响「平台通知」，也不会改变后台配置数据。</p>
+    </div>
+    <div class="rule-drawer-body" id="ruleDrawerBodyLetter" style="display:none;">
+      <p>0. <b>站内信与「自动通知」是两套独立逻辑。</b>「自动通知」由用户触发业务行为后系统自动生成；<b>「站内信」是运营针对指定会员ID / 定制会员 / 全部会员主动创建发送的消息</b>，需要运营逐条编写内容，系统不会自动生成；</p>
+      <p>1. 发送对象支持三种方式：按「会员ID」精确指定（支持多个ID，也支持Excel批量导入ID）；按「定制会员」用「VIP等级」+「会员标签」两个下拉框组合筛选，<b>两者均支持多选、可以组合搭配</b>（例如「VIP3、VIP4」+「千元用户」），系统按并集圈出符合任意条件的会员，若某会员同时满足多个条件也只会收到一封信，不会重复发送；或选择「全部会员」发送给平台当前全部会员；</p>
+      <p>2. <b>信件标题、信件内容都需要配置中文及英语 / 越南语 / 韩语 / 俄语四个语种</b>，全部配置完整才可保存，规则与「自动通知」一致；</p>
+      <p>3. <b>信件署名默认展示「运营团队」</b>，可自行修改为其他署名，用于告知用户这封信是谁发的；</p>
+      <p>4. 发送方式分「立即发送」和「定时发送」，选择「定时发送」需指定具体发送时间，到点后系统自动发出；</p>
+      <p>5. <b>已发送的记录不可再编辑，操作列只保留「删除」</b>；「定时中」等尚未发出的记录可以「编辑」或「删除」；</p>
+      <p>6. 列表支持「置顶」，点击每条记录左侧的置顶按钮可以把它固定到列表最前面，方便运营快速找到重要信件；</p>
+      <p>7. 用户在用户端「消息通知 - 个人消息」里看到的就是运营发给他的站内信，未读红点、已读、删除等交互与「消息通知」下其他类型统一，互不冲突。</p>
+    </div>
+  </div>
+</div>
+
+<!-- 站内信 新增/编辑 右侧抽屉 -->
+<div class="adm-drawer-mask" id="letterDrawerMask">
+  <div class="adm-drawer" id="letterDrawer">
+    <div class="adm-drawer-head">
+      <h3 id="letterDrawerTitle">新增站内信</h3>
+      <div class="close" id="letterDrawerClose">✕</div>
+    </div>
+
+    <div class="adm-drawer-body">
+
+      <div class="adm-field">
+        <label><span class="req">*</span>发送类型</label>
+        <div class="adm-radio-group">
+          <label class="adm-radio-opt"><input type="radio" name="letterSendType" value="id" checked>会员ID</label>
+          <label class="adm-radio-opt"><input type="radio" name="letterSendType" value="level">定制会员</label>
+          <label class="adm-radio-opt"><input type="radio" name="letterSendType" value="allMembers">全部会员</label>
+        </div>
+      </div>
+
+      <div class="adm-field" id="letterTargetIdField">
+        <textarea class="field-ctrl" id="letterTargetIds" rows="3" placeholder="请输入会员ID，多个会员ID用英文逗号隔开"></textarea>
+        <div class="letter-import-row">
+          <span class="letter-import-note">支持直接上传Excel文件，一次性批量导入会员ID（其他字段不会被导入）</span>
+          <button class="adm-btn default" type="button">📥 批量导入</button>
+        </div>
+      </div>
+
+      <div class="adm-field" id="letterTargetLevelField" style="display:none;">
+        <div class="letter-level-row">
+          <div>
+            <label class="letter-sub-label">VIP等级</label>
+            <div class="ms-dropdown" id="msVip">
+              <div class="ms-trigger" id="msVipTrigger">请选择VIP等级 <span class="ms-arrow">⌄</span></div>
+              <div class="ms-panel" id="msVipPanel">
+                <label><input type="checkbox" value="普通会员">普通会员</label>
+                <label><input type="checkbox" value="VIP1">VIP1</label>
+                <label><input type="checkbox" value="VIP2">VIP2</label>
+                <label><input type="checkbox" value="VIP3">VIP3</label>
+                <label><input type="checkbox" value="VIP4">VIP4</label>
+                <label><input type="checkbox" value="VIP5">VIP5</label>
+              </div>
+            </div>
+          </div>
+          <div>
+            <label class="letter-sub-label">会员标签</label>
+            <div class="ms-dropdown" id="msTag">
+              <div class="ms-trigger" id="msTagTrigger">请选择会员标签 <span class="ms-arrow">⌄</span></div>
+              <div class="ms-panel" id="msTagPanel">
+                <label><input type="checkbox" value="测试用户">测试用户</label>
+                <label><input type="checkbox" value="新手用户">新手用户</label>
+                <label><input type="checkbox" value="百元用户">百元用户</label>
+                <label><input type="checkbox" value="千元用户">千元用户</label>
+                <label><input type="checkbox" value="万元用户">万元用户</label>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="status-field-note">VIP等级、会员标签均支持多选，两个筛选项可以组合搭配使用（例如「VIP3、VIP4」+「千元用户」），系统会按并集圈出符合任意条件的会员；如果某个会员同时满足多个条件（既属于选中的VIP等级、又属于选中的标签），也只会收到一封信，不会重复发送。</div>
+      </div>
+
+      <div class="adm-field" id="letterAllMembersNote" style="display:none;">
+        <div class="status-field-note">将发送给平台当前的全部会员，请谨慎确认内容后再发送。</div>
+      </div>
+
+      <div class="adm-field">
+        <label><span class="req">*</span>发送方式</label>
+        <div class="adm-radio-group">
+          <label class="adm-radio-opt"><input type="radio" name="letterSendMode" value="now" checked>立即发送</label>
+          <label class="adm-radio-opt"><input type="radio" name="letterSendMode" value="schedule">定时发送</label>
+        </div>
+        <div class="adm-field" id="letterScheduleField" style="display:none; margin-top:10px;">
+          <input class="field-ctrl" type="datetime-local" id="letterScheduleTime">
+        </div>
+      </div>
+
+      <div class="adm-lang-tabs" id="letterLangTabs"></div>
+      <div class="adm-lang-progress" id="letterLangProgress"></div>
+
+      <div class="adm-field">
+        <label><span class="req">*</span>信件标题<span class="field-counter" id="letterTitleCounter">0/50</span></label>
+        <input class="field-ctrl" id="letterTitleInput" placeholder="请输入" maxlength="50">
+      </div>
+
+      <div class="adm-field">
+        <label><span class="req">*</span>信件内容<span class="field-counter" id="letterContentCounter">0/1000</span></label>
+        <div class="adm-editor">
+          <div class="adm-editor-toolbar">
+            <span>文件</span><span>编辑</span><span>插入</span><span>视图</span><span>格式</span>
+            <span style="color:#e0463f;">640x260/jpg/.gif/.png</span><span>🖼 图片上传</span>
+          </div>
+          <div class="adm-editor-toolbar row2">
+            <span>12pt ⌄</span><span>≡ ⌄</span><span>🔍</span>
+            <span><b>B</b></span><span><i>I</i></span><span><u>U</u></span><span>S̶</span>
+            <span>≡</span><span>≡</span><span>≡</span>
+          </div>
+          <div class="adm-editor-toolbar row2">
+            <span>⇤</span><span>⇥</span><span>❝</span><span>↶</span><span>↷</span>
+            <span>X₂</span><span>X²</span><span>&lt;&gt;</span><span>{}</span>
+          </div>
+          <div class="adm-editor-body" id="letterContentBody" contenteditable="true"></div>
+        </div>
+      </div>
+
+      <div class="adm-field">
+        <label>信件署名</label>
+        <input class="field-ctrl" id="letterSignatureInput" placeholder="结尾时的署名，不填写则默认读取站点配置的网站名" maxlength="30">
+      </div>
+
+    </div>
+    <div class="adm-drawer-foot">
+      <button class="adm-btn ghost" id="letterDrawerCancel">取消</button>
+      <button class="adm-btn primary" id="letterDrawerSave">保存</button>
     </div>
   </div>
 </div>
@@ -1447,9 +1758,24 @@ U8国际 App 已完成更新，并已更换 iOS 证书。更新后可能会出�
 
 const notifySubTabs = [
   { key:'all', label:'全部通知' },
+  { key:'personal', label:'个人消息' },
   { key:'fund', label:'资金通知' },
   { key:'activity', label:'活动通知' },
-  { key:'security', label:'安全通知', badge:1 },
+  { key:'vip', label:'VIP通知' },
+  { key:'security', label:'安全通知' },
+];
+
+// 个人消息（站内信）：运营针对指定会员ID / 会员层级单独发送，与自动通知逻辑不同、来源独立
+const personalMessages = [
+  { id:'pm1', unread:true, title:'新人福利礼包', date:'2026-08-05 10:00:00',
+    content:'亲爱的会员，感谢您加入JUAN365大家庭，新人专属礼包已发放至您的账户，请注意查收。',
+    signature:'运营团队' },
+  { id:'pm2', unread:true, title:'VIP等级专属关怀', date:'2026-08-06 15:30:00',
+    content:'尊敬的VIP会员，您本月的专属礼遇已上线，详情请咨询在线客服。',
+    signature:'客户关怀中心' },
+  { id:'pm3', unread:false, title:'账户异常提醒', date:'2026-08-02 09:20:00',
+    content:'我们注意到您的账户近期存在异常登录尝试，为保障您的账户安全，请及时核实并修改密码。',
+    signature:'' },
 ];
 
 // 消息通知的内容不再写死，而是直接读取后台「消息通知」列表的数据：
@@ -1470,9 +1796,13 @@ const activityDemoMessages = [
     content:'「夏日狂欢」活动已结束，感谢您的参与，奖励将于结算后发放至您的账户。' },
 ];
 
+const SITE_NAME = 'JUAN365';
+
 function getNotifyMessagesFromAdmin(subKey){
+  if(subKey === 'personal') return getPersonalMessages();
+
   const source = [...admRows, ...activityDemoMessages];
-  return source
+  const mapped = source
     .filter(r => r.on)
     .filter(r => !userDeletedIds.has(r.id))
     .filter(r => subKey === 'all' || r.type === subKey)
@@ -1484,27 +1814,62 @@ function getNotifyMessagesFromAdmin(subKey){
       summary: r.content || '',
       detailTitle: r.title,
       detailContent: r.content || '',
+      signature: '系统通知',
     }));
+
+  // “全部通知”把「个人消息」也汇总进来
+  return subKey === 'all' ? [...mapped, ...getPersonalMessages()] : mapped;
 }
 
 // 未读数量统计：用于「消息通知」分类徽标 与 各子类型红点
 function getNotifyUnreadCount(subKey){
+  if(subKey === 'personal') return getPersonalUnreadCount();
   const source = [...admRows, ...activityDemoMessages];
-  return source.filter(r => r.on && r.unread && !userDeletedIds.has(r.id) && (subKey === 'all' || r.type === subKey)).length;
+  const count = source.filter(r => r.on && r.unread && !userDeletedIds.has(r.id) && (subKey === 'all' || r.type === subKey)).length;
+  return subKey === 'all' ? count + getPersonalUnreadCount() : count;
+}
+
+// 个人消息（站内信）：不分子类型，未填署名时兜底展示站点名称
+function getPersonalMessages(){
+  return personalMessages
+    .filter(r => !userDeletedIds.has(r.id))
+    .map(r => ({
+      id: r.id,
+      unread: !!r.unread,
+      title: r.title,
+      date: r.date,
+      summary: r.content || '',
+      detailTitle: r.title,
+      detailContent: r.content || '',
+      signature: r.signature || SITE_NAME,
+    }));
+}
+
+function getPersonalUnreadCount(){
+  return personalMessages.filter(r => r.unread && !userDeletedIds.has(r.id)).length;
 }
 
 let state = { category: 'notify', subTab: { platform: 'all', notify: 'all' } };
 
-function currentSubTabs(){ return state.category === 'platform' ? platformSubTabs : notifySubTabs; }
+function currentSubTabs(){
+  if(state.category === 'platform') return platformSubTabs;
+  if(state.category === 'notify') return notifySubTabs;
+  return []; // 个人消息不分子类型
+}
 function currentMessages(){
-  return state.category === 'platform'
-    ? platformMessages
-    : getNotifyMessagesFromAdmin(state.subTab.notify);
+  if(state.category === 'platform') return platformMessages;
+  if(state.category === 'notify') return getNotifyMessagesFromAdmin(state.subTab.notify);
+  return getPersonalMessages();
 }
 
 function renderSubTabs(){
   const wrap = document.getElementById('subTabs');
+  const subTabsWrap = document.getElementById('subTabsWrap');
   const tabs = currentSubTabs();
+
+  if(subTabsWrap) subTabsWrap.style.display = tabs.length ? '' : 'none';
+  if(!tabs.length){ wrap.innerHTML = ''; return; }
+
   const activeKey = state.subTab[state.category];
   wrap.innerHTML = tabs.map(t => {
     const badgeNum = state.category === 'notify' ? getNotifyUnreadCount(t.key) : t.badge;
@@ -1528,7 +1893,9 @@ function renderList(){
   const container = document.getElementById('listContainer');
   const messages = currentMessages();
   const demoNote = state.category === 'notify'
-    ? `<div class="demo-note">以下为演示数据，实际场景中需用户触发对应条件（如完成存款、参与活动、修改密码等）后才会自动收到对应通知</div>`
+    ? (state.subTab.notify === 'personal'
+      ? `<div class="demo-note">以下为演示数据，实际内容由运营在后台「站内信」针对指定会员ID / 会员层级单独发送</div>`
+      : `<div class="demo-note">以下为演示数据，实际场景中需用户触发对应条件（如完成存款、参与活动、修改密码等）后才会自动收到对应通知</div>`)
     : '';
   if(!messages.length){
     container.innerHTML = demoNote + `<div class="empty-state">暂无消息</div>`;
@@ -1544,7 +1911,10 @@ function renderList(){
         <div class="detail-link" data-id="${m.id}">详情 ›</div>
       </div>
       <div class="msg-body">${m.summary}</div>
-      <div class="msg-date">${m.date}</div>
+      <div class="msg-date-row">
+        <span class="msg-date">${m.date}</span>
+        ${m.signature ? `<span class="msg-signature">${m.signature}</span>` : ''}
+      </div>
     </div>
   `).join('') + `<div class="footer-note">已加载全部数据</div>`;
   container.querySelectorAll('.detail-link').forEach(el => {
@@ -1573,8 +1943,9 @@ function renderListActionBtn(){
     btn.style.display = 'none';
     return;
   }
-  const unread = getNotifyUnreadCount('all');
-  const total = getNotifyMessagesFromAdmin('all').length;
+  const subKey = state.subTab.notify;
+  const unread = getNotifyUnreadCount(subKey);
+  const total = getNotifyMessagesFromAdmin(subKey).length;
   if(unread > 0){
     btn.style.display = 'block';
     btn.className = 'list-action-btn read';
@@ -1595,6 +1966,13 @@ function renderListActionBtn(){
 let pendingReadId = null;
 let currentDetailId = null;
 
+// 跨「消息通知」「活动通知演示」「个人消息」三个数据源，按id查找原始记录（用于标记已读）
+function findSourceRow(id){
+  return admRows.find(r => r.id === id)
+    || activityDemoMessages.find(r => r.id === id)
+    || personalMessages.find(r => r.id === id);
+}
+
 function openDetail(id){
   const m = currentMessages().find(x => x.id === id);
   if(!m) return;
@@ -1602,7 +1980,7 @@ function openDetail(id){
   document.getElementById('detailBody').innerHTML = `
     <div class="detail-card">
       <h2>${m.detailTitle}</h2>
-      <div class="date">${m.date}</div>
+      <div class="date">${m.date}${m.signature ? ` · ${m.signature}` : ''}</div>
       <div class="content">${m.detailContent}</div>
       ${showDelete ? `<div class="detail-card-delete" id="detailDeleteBtn">🗑</div>` : ''}
     </div>
@@ -1627,7 +2005,7 @@ function closeDetail(){
 
   // 返回列表后再标记已读，红点数字随之减少
   if(pendingReadId){
-    const row = admRows.find(r => r.id === pendingReadId);
+    const row = findSourceRow(pendingReadId);
     if(row) row.unread = false;
     pendingReadId = null;
     saveNotifyLocalState();
@@ -1650,11 +2028,26 @@ function handleDetailDelete(){
 
 document.getElementById('listActionBtn').addEventListener('click', () => {
   const btn = document.getElementById('listActionBtn');
+  const subKey = state.subTab.notify;
+  const applyToNotify = subKey === 'all' || subKey !== 'personal';
+  const applyToPersonal = subKey === 'all' || subKey === 'personal';
+
   if(btn.dataset.mode === 'read'){
-    admRows.forEach(r => { if(r.on) r.unread = false; });
+    if(applyToNotify){
+      admRows.forEach(r => { if(r.on && (subKey === 'all' || r.type === subKey)) r.unread = false; });
+      activityDemoMessages.forEach(r => { if(r.on && (subKey === 'all' || r.type === subKey)) r.unread = false; });
+    }
+    if(applyToPersonal){
+      personalMessages.forEach(r => { r.unread = false; });
+    }
   } else if(btn.dataset.mode === 'delete'){
-    admRows.forEach(r => { if(r.on) userDeletedIds.add(r.id); });
-    activityDemoMessages.forEach(r => { if(r.on) userDeletedIds.add(r.id); });
+    if(applyToNotify){
+      admRows.forEach(r => { if(r.on && (subKey === 'all' || r.type === subKey)) userDeletedIds.add(r.id); });
+      activityDemoMessages.forEach(r => { if(r.on && (subKey === 'all' || r.type === subKey)) userDeletedIds.add(r.id); });
+    }
+    if(applyToPersonal){
+      personalMessages.forEach(r => { userDeletedIds.add(r.id); });
+    }
   }
   saveNotifyLocalState();
   renderCategoryTabs();
@@ -1674,9 +2067,19 @@ document.getElementById('backBtn').addEventListener('click', closeDetail);
 
 /* -- 规则说明左侧抽屉交互 -- */
 const ruleDrawerMask = document.getElementById('ruleDrawerMask');
-document.getElementById('btnOpenRuleDrawer').addEventListener('click', () => {
+const ruleDrawerTitle = document.getElementById('ruleDrawerTitle');
+const ruleDrawerBodyAuto = document.getElementById('ruleDrawerBodyAuto');
+const ruleDrawerBodyLetter = document.getElementById('ruleDrawerBodyLetter');
+
+function openRuleDrawer(which){
+  const isLetter = which === 'letter';
+  ruleDrawerTitle.textContent = isLetter ? '📋「站内信」功能规则说明' : '📋「消息通知」功能规则说明';
+  ruleDrawerBodyAuto.style.display = isLetter ? 'none' : '';
+  ruleDrawerBodyLetter.style.display = isLetter ? '' : 'none';
   ruleDrawerMask.classList.add('show');
-});
+}
+document.getElementById('btnOpenRuleDrawer').addEventListener('click', () => openRuleDrawer('auto'));
+document.getElementById('btnOpenRuleDrawerLetter').addEventListener('click', () => openRuleDrawer('letter'));
 document.getElementById('ruleDrawerClose').addEventListener('click', () => {
   ruleDrawerMask.classList.remove('show');
 });
@@ -1698,6 +2101,18 @@ const admRows = [
     content:'您的提款申请已审核通过，{金额} 已成功发放，到账时间：{到账时间}，请注意查收。' },
   { id:'n4', title:'提款失败通知', type:'fund', typeLabel:'资金通知', cat:'提款失败', on:true, created:'2026-08-01 11:20:05', updated:'2026-08-01 11:20:05',
     content:'很抱歉，您申请提款 {金额} 未能通过审核，失败原因：{失败原因}，如有疑问请联系在线客服核实处理。' },
+  { id:'n19', title:'代理存取成功通知', type:'fund', typeLabel:'资金通知', cat:'代理存取成功', on:true, created:'2026-08-01 12:00:00', updated:'2026-08-01 12:00:00',
+    content:'您的代理已为您完成一笔 {操作类型} 操作，金额 {金额}，操作时间：{操作时间}，如非本人授权，请立即联系在线客服核实处理。' },
+  { id:'n14', title:'VIP升级通知', type:'vip', typeLabel:'VIP通知', cat:'VIP升级', on:true, created:'2026-08-04 09:10:00', updated:'2026-08-04 09:10:00',
+    content:'恭喜您已成功升级为 {VIP等级}，升级时间：{升级时间}，更多专属权益请前往会员中心查看。' },
+  { id:'n15', title:'VIP降级通知', type:'vip', typeLabel:'VIP通知', cat:'VIP降级', on:true, created:'2026-08-04 09:20:00', updated:'2026-08-04 09:20:00',
+    content:'很抱歉，您的会员等级已调整为 {VIP等级}，降级时间：{降级时间}，如有疑问请联系在线客服核实处理。' },
+  { id:'n16', title:'VIP周礼金领取通知', type:'vip', typeLabel:'VIP通知', cat:'VIP周礼金领取', on:true, created:'2026-08-04 09:30:00', updated:'2026-08-04 09:30:00',
+    content:'您已成功领取本周VIP周礼金 {金额}，领取时间：{领取时间}，感谢您的支持。' },
+  { id:'n17', title:'VIP月礼金领取通知', type:'vip', typeLabel:'VIP通知', cat:'VIP月礼金领取', on:true, created:'2026-08-04 09:40:00', updated:'2026-08-04 09:40:00',
+    content:'您已成功领取本月VIP月礼金 {金额}，领取时间：{领取时间}，感谢您的支持。' },
+  { id:'n18', title:'VIP一次性礼金领取通知', type:'vip', typeLabel:'VIP通知', cat:'VIP一次性礼金领取', on:false, created:'2026-08-04 09:50:00', updated:'2026-08-04 09:50:00',
+    content:'您已成功领取VIP专属一次性礼金 {金额}，领取时间：{领取时间}，感谢您的支持。' },
   { id:'n8', title:'密码修改通知', type:'security', typeLabel:'安全通知', cat:'密码修改', on:true, created:'2026-08-03 08:12:33', updated:'2026-08-03 08:12:33',
     content:'您的账户密码已于 {修改时间} 修改成功，如非本人操作，请立即联系在线客服处理。' },
   { id:'n9', title:'非常用设备登录通知', type:'security', typeLabel:'安全通知', cat:'非常用设备登录', on:true, created:'2026-08-03 09:45:19', updated:'2026-08-03 09:45:19',
@@ -1717,7 +2132,8 @@ const NOTIFY_LOCAL_KEY = 'msgcenter_notify_local_state';
 
 function saveNotifyLocalState(){
   try {
-    const readIds = admRows.filter(r => !r.unread).map(r => r.id);
+    const allSources = [...admRows, ...activityDemoMessages, ...personalMessages];
+    const readIds = allSources.filter(r => !r.unread).map(r => r.id);
     localStorage.setItem(NOTIFY_LOCAL_KEY, JSON.stringify({
       readIds,
       deletedIds: Array.from(userDeletedIds),
@@ -1732,7 +2148,7 @@ function loadNotifyLocalState(){
     const data = JSON.parse(raw);
     if(Array.isArray(data.readIds)){
       data.readIds.forEach(id => {
-        const row = admRows.find(r => r.id === id);
+        const row = findSourceRow(id);
         if(row) row.unread = false;
       });
     }
@@ -1923,6 +2339,12 @@ const notifyTriggerDesc = {
   '提款已申请': '用户提交提现申请，系统生成提现订单（尚未审核）时触发；变量 {金额} 取自该笔提现订单的申请金额，{申请时间} 取自提现订单的提交时间',
   '提款成功': '提现渠道 / 银行回调返回成功状态、订单状态变更为「提款成功」后触发；变量 {金额} 取自该笔提现订单的实际到账金额，{到账时间} 取自打款成功后渠道回调的到账时间',
   '提款失败': '提现申请被审核拒绝，或打款过程出现异常导致提现失败时触发；变量 {金额} 取自该笔提现订单的申请金额，{失败原因} 取自财务放款审核环节的备注字段',
+  '代理存取成功': '代理为下级会员代为完成存款或取款操作，且资金变动成功时触发；变量 {操作类型} 取自本次代理操作的类型（存款/取款），{金额} 取自本次代理存取的实际金额，{操作时间} 取自代理操作记录的操作时间',
+  'VIP升级': '用户成长值 / 累计流水达到系统设定的更高VIP等级门槛，系统自动完成升级时触发；变量 {VIP等级} 取自升级后的最新等级，{升级时间} 取自会员等级变更记录的操作时间',
+  'VIP降级': '用户因长期未达标（如成长值不足、活跃度下降）被系统按周期规则自动降级时触发；变量 {VIP等级} 取自降级后的最新等级，{降级时间} 取自会员等级变更记录的操作时间',
+  'VIP周礼金领取': '用户在会员中心手动领取本周VIP周礼金，领取成功时触发；变量 {金额} 取自该笔周礼金的实际发放金额，{领取时间} 取自礼金领取记录的操作时间',
+  'VIP月礼金领取': '用户在会员中心手动领取本月VIP月礼金，领取成功时触发；变量 {金额} 取自该笔月礼金的实际发放金额，{领取时间} 取自礼金领取记录的操作时间',
+  'VIP一次性礼金领取': '用户领取仅限一次的VIP专属礼金（如首次达到某等级的一次性奖励），领取成功时触发；变量 {金额} 取自该笔一次性礼金的实际发放金额，{领取时间} 取自礼金领取记录的操作时间',
   '密码修改': '用户登录密码修改成功时触发；变量 {修改时间} 取自账户安全日志中该次密码修改操作的操作时间',
   '非常用设备登录': '该账号在一台此前未登录过的设备（App 或网页端）上首次登录成功时触发，同一设备后续登录不会重复通知；变量 {设备名称} 取自登录时上报的设备信息（如设备型号 / 浏览器标识），{登录时间} 取自登录日志的登录时间',
   '支付密码修改': '用户支付密码（提现密码）修改成功时触发；变量 {修改时间} 取自账户安全日志中该次操作的操作时间',
@@ -2015,7 +2437,8 @@ function showAdmToast(msg){
 
 /* -- 通知类型 / 通知时机 联动筛选 -- */
 const notifySubTypeOptions = {
-  fund: ['存款成功', '提款已申请', '提款成功', '提款失败'],
+  fund: ['存款成功', '提款已申请', '提款成功', '提款失败', '代理存取成功'],
+  vip: ['VIP升级', 'VIP降级', 'VIP周礼金领取', 'VIP月礼金领取', 'VIP一次性礼金领取'],
   security: ['密码修改', '非常用设备登录', '支付密码修改', '高级安全验证启动', '高级安全验证关闭'],
 };
 
@@ -2068,10 +2491,376 @@ document.getElementById('btnResetDemo').addEventListener('click', () => {
   try { localStorage.removeItem(NOTIFY_LOCAL_KEY); } catch(e){}
   userDeletedIds.clear();
   admRows.forEach(r => { r.unread = true; });
+  personalMessages.forEach(r => { r.unread = true; });
   renderCategoryTabs();
   renderSubTabs();
   renderList();
   renderAdmTable();
+  renderLetterTable();
+});
+
+/* ==========================================================
+   4. 管理后台 - 自动通知 / 站内信 模式切换
+========================================================== */
+const btnModeAuto = document.getElementById('btnModeAuto');
+const btnModeLetter = document.getElementById('btnModeLetter');
+const filterCardAuto = document.getElementById('filterCardAuto');
+const filterCardLetter = document.getElementById('filterCardLetter');
+const tableCardAuto = document.getElementById('tableCardAuto');
+const tableCardLetter = document.getElementById('tableCardLetter');
+
+function switchAdmMode(mode){
+  btnModeAuto.classList.toggle('active', mode === 'auto');
+  btnModeLetter.classList.toggle('active', mode === 'letter');
+  filterCardAuto.style.display = mode === 'auto' ? '' : 'none';
+  filterCardLetter.style.display = mode === 'letter' ? '' : 'none';
+  tableCardAuto.style.display = mode === 'auto' ? '' : 'none';
+  tableCardLetter.style.display = mode === 'letter' ? '' : 'none';
+}
+btnModeAuto.addEventListener('click', () => switchAdmMode('auto'));
+btnModeLetter.addEventListener('click', () => switchAdmMode('letter'));
+
+/* ==========================================================
+   5. 管理后台 - 站内信 数据与表格渲染
+========================================================== */
+const letterRows = [
+  {
+    id:'lt1', pinned:false, title:'新人福利礼包', sendType:'id', targetLabel:'12345678, 23456789 等 2 位会员',
+    sendMode:'now', status:'sent', sendTime:'2026-08-05 10:00:00',
+    signature:'运营团队', targetLevels:[], targetTags:[],
+    content:'亲爱的会员，感谢您加入JUAN365大家庭，新人专属礼包已发放至您的账户，请注意查收。',
+    langData:null,
+  },
+  {
+    id:'lt2', pinned:false, title:'VIP等级专属关怀', sendType:'level', targetLabel:'VIP3、VIP4 + 千元用户',
+    sendMode:'now', status:'sent', sendTime:'2026-08-06 15:30:00',
+    signature:'客户关怀中心', targetLevels:['VIP3','VIP4'], targetTags:['千元用户'],
+    content:'尊敬的VIP会员，您本月的专属礼遇已上线，详情请咨询在线客服。',
+    langData:null,
+  },
+  {
+    id:'lt3', pinned:false, title:'账户异常提醒', sendType:'id', targetLabel:'88889999',
+    sendMode:'schedule', status:'scheduled', sendTime:'2026-08-12 09:00:00',
+    signature:'运营团队', targetLevels:[], targetTags:[],
+    content:'我们注意到您的账户近期存在异常登录尝试，为保障您的账户安全，请及时核实并修改密码。',
+    langData:null,
+  },
+  {
+    id:'lt4', pinned:false, title:'平台维护公告', sendType:'allMembers', targetLabel:'全部会员',
+    sendMode:'schedule', status:'scheduled', sendTime:'2026-08-15 02:00:00',
+    signature:'运营团队', targetLevels:[], targetTags:[],
+    content:'平台将于本周六凌晨2点进行例行维护，预计持续1小时，期间可能影响部分功能使用，敬请谅解。',
+    langData:null,
+  },
+];
+
+const sendTypeLabelMap = { id:'会员ID', level:'定制会员', allMembers:'全部会员' };
+const sendModeLabelMap = { now:'立即发送', schedule:'定时发送' };
+const letterStatusLabelMap = { sent:'已发送', scheduled:'定时中', failed:'发送失败' };
+const letterStatusClassMap = { sent:'on', scheduled:'pending', failed:'off' };
+
+function renderLetterTable(){
+  const tbody = document.getElementById('letterTableBody');
+  const countEl = document.getElementById('letterRowCount');
+  if(countEl) countEl.textContent = letterRows.length;
+
+  if(!letterRows.length){
+    tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; color:#b3bac6; padding: 40px 0;">暂无数据</td></tr>`;
+    return;
+  }
+
+  // 置顶的排在最前面，组内保持原有顺序
+  const sorted = letterRows.map((r, i) => ({ r, i })).sort((a, b) => (b.r.pinned ? 1 : 0) - (a.r.pinned ? 1 : 0));
+
+  tbody.innerHTML = sorted.map(({ r, i }) => {
+    const isSent = r.status === 'sent';
+    const opsHtml = isSent
+      ? `<span class="adm-op del" data-index="${i}">🗑 删除</span>`
+      : `<span class="adm-op" data-index="${i}">✎ 编辑</span><span class="adm-op del" data-index="${i}">🗑 删除</span>`;
+    return `
+    <tr>
+      <td><span class="pin-btn ${r.pinned ? 'pinned' : ''}" data-index="${i}" title="置顶">📌</span></td>
+      <td>${r.id}</td>
+      <td>${r.title}</td>
+      <td>${r.targetLabel}</td>
+      <td>${sendModeLabelMap[r.sendMode] || ''}</td>
+      <td><span class="status-text ${letterStatusClassMap[r.status] || ''}">${letterStatusLabelMap[r.status] || ''}</span></td>
+      <td>${r.sendTime}</td>
+      <td>${opsHtml}</td>
+    </tr>
+  `;
+  }).join('');
+
+  tbody.querySelectorAll('.pin-btn').forEach(el => {
+    el.addEventListener('click', () => {
+      const idx = Number(el.dataset.index);
+      letterRows[idx].pinned = !letterRows[idx].pinned;
+      renderLetterTable();
+    });
+  });
+  tbody.querySelectorAll('.adm-op:not(.del)').forEach(el => {
+    el.addEventListener('click', () => openLetterDrawer(letterRows[Number(el.dataset.index)]));
+  });
+  tbody.querySelectorAll('.adm-op.del').forEach(el => {
+    el.addEventListener('click', () => {
+      const idx = Number(el.dataset.index);
+      letterRows.splice(idx, 1);
+      renderLetterTable();
+    });
+  });
+}
+renderLetterTable();
+
+/* -- 站内信 新增/编辑 抽屉 -- */
+const letterDrawerMask = document.getElementById('letterDrawerMask');
+const letterDrawerTitle = document.getElementById('letterDrawerTitle');
+const letterTargetIds = document.getElementById('letterTargetIds');
+const letterTitleInput = document.getElementById('letterTitleInput');
+const letterContentBody = document.getElementById('letterContentBody');
+const letterSignatureInput = document.getElementById('letterSignatureInput');
+const letterTitleCounter = document.getElementById('letterTitleCounter');
+const letterContentCounter = document.getElementById('letterContentCounter');
+let editingLetterIndex = -1;
+
+function updateLetterCounters(){
+  letterTitleCounter.textContent = `${letterTitleInput.value.length}/50`;
+  letterContentCounter.textContent = `${letterContentBody.textContent.length}/1000`;
+}
+
+document.querySelectorAll('input[name="letterSendType"]').forEach(r => {
+  r.addEventListener('change', () => {
+    if(r.checked){
+      document.getElementById('letterTargetIdField').style.display = r.value === 'id' ? '' : 'none';
+      document.getElementById('letterTargetLevelField').style.display = r.value === 'level' ? '' : 'none';
+      document.getElementById('letterAllMembersNote').style.display = r.value === 'allMembers' ? '' : 'none';
+    }
+  });
+});
+document.querySelectorAll('input[name="letterSendMode"]').forEach(r => {
+  r.addEventListener('change', () => {
+    if(r.checked){
+      document.getElementById('letterScheduleField').style.display = r.value === 'schedule' ? '' : 'none';
+    }
+  });
+});
+
+/* -- 多选下拉组件（VIP等级 / 会员标签 通用） -- */
+function setupMultiSelect(dropdownId, triggerId, panelId, placeholder){
+  const dropdown = document.getElementById(dropdownId);
+  const trigger = document.getElementById(triggerId);
+  const panel = document.getElementById(panelId);
+
+  trigger.addEventListener('click', (e) => {
+    e.stopPropagation();
+    document.querySelectorAll('.ms-dropdown.open').forEach(d => { if(d !== dropdown) d.classList.remove('open'); });
+    dropdown.classList.toggle('open');
+  });
+  panel.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+    cb.addEventListener('change', () => updateMultiSelectTrigger(panelId, triggerId, placeholder));
+  });
+  document.addEventListener('click', (e) => {
+    if(!dropdown.contains(e.target)) dropdown.classList.remove('open');
+  });
+}
+function updateMultiSelectTrigger(panelId, triggerId, placeholder){
+  const panel = document.getElementById(panelId);
+  const trigger = document.getElementById(triggerId);
+  const selected = Array.from(panel.querySelectorAll('input:checked')).map(cb => cb.value);
+  if(selected.length){
+    trigger.innerHTML = `${selected.join('、')} <span class="ms-arrow">⌄</span>`;
+    trigger.classList.remove('placeholder');
+  } else {
+    trigger.innerHTML = `${placeholder} <span class="ms-arrow">⌄</span>`;
+    trigger.classList.add('placeholder');
+  }
+}
+function getMultiSelectValues(panelId){
+  return Array.from(document.querySelectorAll(`#${panelId} input:checked`)).map(cb => cb.value);
+}
+function setMultiSelectValues(panelId, triggerId, placeholder, values){
+  document.querySelectorAll(`#${panelId} input[type="checkbox"]`).forEach(cb => {
+    cb.checked = (values || []).includes(cb.value);
+  });
+  updateMultiSelectTrigger(panelId, triggerId, placeholder);
+}
+setupMultiSelect('msVip', 'msVipTrigger', 'msVipPanel', '请选择VIP等级');
+setupMultiSelect('msTag', 'msTagTrigger', 'msTagPanel', '请选择会员标签');
+
+/* -- 站内信 信件标题 / 信件内容 多语言配置（中文 + 英/越/韩/俄），复用与自动通知一致的语种字典 -- */
+let letterLangData = {};
+let currentLetterLangTab = 'zh';
+const letterLangTabsEl = document.getElementById('letterLangTabs');
+const letterLangProgressEl = document.getElementById('letterLangProgress');
+
+function letterLangCompletion(key){
+  const d = letterLangData[key] || { title:'', content:'' };
+  let done = 0;
+  if(d.title && d.title.trim()) done++;
+  if(d.content && d.content.trim()) done++;
+  return Math.round((done / 2) * 100);
+}
+function renderLetterLangTabs(){
+  letterLangTabsEl.innerHTML = langKeys.map(key => {
+    const meta = langMeta[key];
+    const complete = letterLangCompletion(key) === 100;
+    return `
+      <div class="adm-lang-tab ${key === currentLetterLangTab ? 'active' : ''}" data-lang="${key}">
+        <span class="flag">${meta.flag}</span>${meta.name}
+        ${complete ? '' : '<span class="req-dot"></span>'}
+      </div>`;
+  }).join('');
+  letterLangTabsEl.querySelectorAll('.adm-lang-tab').forEach(el => {
+    el.addEventListener('click', () => switchLetterLangTab(el.dataset.lang));
+  });
+}
+function renderLetterLangProgress(){
+  const meta = langMeta[currentLetterLangTab];
+  const pct = letterLangCompletion(currentLetterLangTab);
+  letterLangProgressEl.innerHTML = `
+    <span class="flag">${meta.flag}</span>
+    <span class="lang-name">${meta.name}</span>
+    <span class="bar-track"><span class="bar-fill" style="width:${pct}%;"></span></span>
+    <span class="pct">${pct}%</span>`;
+}
+function switchLetterLangTab(key){
+  if(!letterLangData[currentLetterLangTab]) letterLangData[currentLetterLangTab] = { title:'', content:'' };
+  letterLangData[currentLetterLangTab].title = letterTitleInput.value;
+  letterLangData[currentLetterLangTab].content = letterContentBody.textContent;
+
+  currentLetterLangTab = key;
+  letterTitleInput.value = (letterLangData[key] && letterLangData[key].title) || '';
+  letterContentBody.textContent = (letterLangData[key] && letterLangData[key].content) || '';
+  updateLetterCounters();
+  renderLetterLangTabs();
+  renderLetterLangProgress();
+}
+letterTitleInput.addEventListener('input', () => {
+  if(!letterLangData[currentLetterLangTab]) letterLangData[currentLetterLangTab] = { title:'', content:'' };
+  letterLangData[currentLetterLangTab].title = letterTitleInput.value;
+  updateLetterCounters();
+  renderLetterLangTabs();
+  renderLetterLangProgress();
+});
+letterContentBody.addEventListener('input', () => {
+  if(!letterLangData[currentLetterLangTab]) letterLangData[currentLetterLangTab] = { title:'', content:'' };
+  letterLangData[currentLetterLangTab].content = letterContentBody.textContent;
+  updateLetterCounters();
+  renderLetterLangTabs();
+  renderLetterLangProgress();
+});
+
+function resetLetterLangData(row){
+  letterLangData = {};
+  langKeys.forEach(key => {
+    letterLangData[key] = (row && row.langData && row.langData[key])
+      ? { ...row.langData[key] }
+      : { title:'', content:'' };
+  });
+  if(row && !letterLangData.zh.title && !letterLangData.zh.content){
+    letterLangData.zh = { title: row.title || '', content: row.content || '' };
+  }
+  currentLetterLangTab = 'zh';
+  letterTitleInput.value = letterLangData.zh.title || '';
+  letterContentBody.textContent = letterLangData.zh.content || '';
+  updateLetterCounters();
+  renderLetterLangTabs();
+  renderLetterLangProgress();
+}
+
+function openLetterDrawer(row){
+  letterDrawerTitle.textContent = row ? '编辑站内信' : '新增站内信';
+  editingLetterIndex = row ? letterRows.indexOf(row) : -1;
+
+  const sendType = row ? row.sendType : 'id';
+  document.querySelectorAll('input[name="letterSendType"]').forEach(r => { r.checked = r.value === sendType; });
+  document.getElementById('letterTargetIdField').style.display = sendType === 'id' ? '' : 'none';
+  document.getElementById('letterTargetLevelField').style.display = sendType === 'level' ? '' : 'none';
+  document.getElementById('letterAllMembersNote').style.display = sendType === 'allMembers' ? '' : 'none';
+  letterTargetIds.value = (row && sendType === 'id') ? row.targetLabel : '';
+  setMultiSelectValues('msVipPanel', 'msVipTrigger', '请选择VIP等级', row ? row.targetLevels : []);
+  setMultiSelectValues('msTagPanel', 'msTagTrigger', '请选择会员标签', row ? row.targetTags : []);
+
+  resetLetterLangData(row);
+
+  // 信件署名：新增时默认展示“运营团队”，编辑时展示原有署名（若原来为空也兜底展示“运营团队”）
+  letterSignatureInput.value = row ? (row.signature || '运营团队') : '运营团队';
+
+  document.querySelectorAll('input[name="letterSendMode"]').forEach(r => { r.checked = r.value === (row ? row.sendMode : 'now'); });
+  document.getElementById('letterScheduleField').style.display = (row && row.sendMode === 'schedule') ? '' : 'none';
+  document.getElementById('letterScheduleTime').value = '';
+
+  letterDrawerMask.classList.add('show');
+}
+function closeLetterDrawer(){
+  letterDrawerMask.classList.remove('show');
+}
+
+document.getElementById('btnAddLetter').addEventListener('click', () => openLetterDrawer(null));
+document.getElementById('letterDrawerClose').addEventListener('click', closeLetterDrawer);
+document.getElementById('letterDrawerCancel').addEventListener('click', closeLetterDrawer);
+document.getElementById('letterDrawerSave').addEventListener('click', () => {
+  const sendType = document.querySelector('input[name="letterSendType"]:checked').value;
+  const sendMode = document.querySelector('input[name="letterSendMode"]:checked').value;
+  const targetLevels = getMultiSelectValues('msVipPanel');
+  const targetTags = getMultiSelectValues('msTagPanel');
+
+  if(sendType === 'id' && !letterTargetIds.value.trim()){
+    showAdmToast('请输入会员ID');
+    return;
+  }
+  if(sendType === 'level' && !targetLevels.length && !targetTags.length){
+    showAdmToast('请至少选择一个VIP等级或会员标签');
+    return;
+  }
+
+  // 保存前把当前语种输入同步进数据，再校验5个语种是否全部配置完整
+  if(!letterLangData[currentLetterLangTab]) letterLangData[currentLetterLangTab] = { title:'', content:'' };
+  letterLangData[currentLetterLangTab].title = letterTitleInput.value;
+  letterLangData[currentLetterLangTab].content = letterContentBody.textContent;
+
+  const incompleteLang = langKeys.find(key => letterLangCompletion(key) < 100);
+  if(incompleteLang){
+    showAdmToast(`请完善「${langMeta[incompleteLang].name}」的信件标题与信件内容后再保存`);
+    switchLetterLangTab(incompleteLang);
+    return;
+  }
+
+  let targetLabel = '';
+  if(sendType === 'id'){
+    targetLabel = letterTargetIds.value.trim();
+  } else if(sendType === 'level'){
+    targetLabel = [...targetLevels, ...targetTags].join('、');
+  } else {
+    targetLabel = '全部会员';
+  }
+
+  const rowData = {
+    id: editingLetterIndex >= 0 ? letterRows[editingLetterIndex].id : 'lt' + (letterRows.length + 1) + '_' + Date.now(),
+    pinned: editingLetterIndex >= 0 ? letterRows[editingLetterIndex].pinned : false,
+    title: letterLangData.zh.title,
+    sendType,
+    targetLabel,
+    targetLevels: sendType === 'level' ? targetLevels : [],
+    targetTags: sendType === 'level' ? targetTags : [],
+    sendMode,
+    status: sendMode === 'schedule' ? 'scheduled' : 'sent',
+    sendTime: new Date().toISOString().slice(0,19).replace('T',' '),
+    signature: letterSignatureInput.value.trim() || '运营团队',
+    content: letterLangData.zh.content,
+    langData: JSON.parse(JSON.stringify(letterLangData)),
+  };
+
+  if(editingLetterIndex >= 0){
+    letterRows[editingLetterIndex] = rowData;
+  } else {
+    letterRows.push(rowData);
+  }
+  renderLetterTable();
+  closeLetterDrawer();
+  showAdmToast('保存成功');
+});
+letterDrawerMask.addEventListener('click', (e) => {
+  if(e.target === letterDrawerMask) closeLetterDrawer();
 });
 </script>
 
