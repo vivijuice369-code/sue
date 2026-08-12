@@ -886,6 +886,12 @@
     display:flex; align-items:center; justify-content:space-between; gap:10px;
   }
   .letter-import-note{ font-size:11.5px; color:#b3bac6; line-height:1.6; }
+  .letter-flow-note{
+    background: var(--blue-soft); color:#3a5bb8;
+    font-size:12px; line-height:1.7;
+    padding: 10px 12px; border-radius: 8px;
+    margin-bottom: 18px;
+  }
   .letter-warning{
     color: var(--red); font-size:12px; line-height:1.7;
     background:#fde9ea; border-radius:8px; padding:10px 12px;
@@ -1136,10 +1142,10 @@
     </div>
     <div class="info-modal-body">
       <p>目前用户对存款、提现、活动进度、账户安全等关键节点的状态变化，只能被动地找客服咨询或自己反复查询，平台缺少一个统一、及时的消息触达渠道，客服端也因为大量重复咨询而承担了不小的人力成本。</p>
-      <p>「消息通知」功能希望在系统层面预置「资金通知」「活动通知」「安全通知」三大类、覆盖常见业务节点的通知规则。管理员只需要在后台把每条通知的中文及英/越/韩/俄多语言内容配置好、并开启状态，后续只要用户在平台上触发了对应的业务行为，系统就会自动生成并推送对应的通知，不需要人工逐条发送。</p>
+      <p>「消息通知」功能希望在系统层面预置「资金通知」「VIP通知」「安全通知」等类别、覆盖常见业务节点的通知规则（「活动通知」内容对接独立的「活动后台」，详见下文）。管理员只需要在后台把每条通知的中文及英/越/韩/俄多语言内容配置好、并开启状态，后续只要用户在平台上触发了对应的业务行为，系统就会自动生成并推送对应的通知，不需要人工逐条发送。</p>
       <p>这样一方面能让用户更及时地了解自己账户和活动的实时状态，提升体验和安全感；另一方面也能减少客服重复答疑的工作量，同时为后续拓展更多通知类型预留了统一的配置入口。</p>
       <p><b>需要特别说明的是：</b>「平台通知」是原有的公告功能（全部公告/新人专属/系统公告/活动公告），本次不做调整；「消息通知」是本次新增的独立功能。两者虽然都在「消息中心」里，但设计目的不同——「平台通知」偏运营公告发布，子标签只做展示态切换；「消息通知」偏业务事件触达，子标签会按类型真实筛选内容。这两套逻辑分开设计、互不影响。</p>
-      <p><b>另外，「消息通知」自动触发的通知只能覆盖系统预置的固定场景（存款、提现、VIP变动、安全事件等），无法满足运营针对个别用户或特定人群做一次性、灵活内容触达的需求</b>（比如给某几个大R会员发一封专属关怀信，或者给新注册但还没首充的用户群体推一条提醒）。因此在「消息通知」的基础上，又新增了「站内信」能力：运营可以在后台针对指定的会员ID、或按VIP等级 + 会员标签圈选的人群，手动编写并发送一条消息，内容展示在用户「消息通知」下新增的「个人消息」子分类里，与自动通知共用同一套已读、红点、批量操作机制，但内容完全由运营主导，不依赖系统预置的触发条件。</p>
+      <p><b>另外，「消息通知」自动触发的通知只能覆盖系统预置的固定场景（存款、提现、VIP变动、安全事件等），无法满足运营针对个别用户或特定人群做一次性、灵活内容触达的需求</b>（比如给某几个大R会员发一封专属关怀信，或者给新注册但还没首充的用户群体推一条提醒）。因此在「消息通知」的基础上，又新增了「站内信」能力：运营可以在后台针对指定的会员ID、按「VIP等级 + 会员标签」组合筛选的定制人群，或直接选择「全部会员」，手动编写并发送一条消息，内容展示在用户「消息通知」下新增的「个人消息」子分类里，与自动通知共用同一套已读、红点、批量操作机制，但内容完全由运营主导，不依赖系统预置的触发条件。</p>
     </div>
   </div>
 </div>
@@ -1181,7 +1187,7 @@
           <span class="flow-dot"></span>
           <div class="flow-card">
             <span class="tag">管理后台</span>
-            <div>5个语种全部配置完整后点击「保存」，并在列表页将该通知的状态开关切换为「开启」</div>
+            <div>5个语种全部配置完整后，在编辑页面内将「状态」切换为「开启」，点击「保存」</div>
           </div>
         </div>
 
@@ -1222,7 +1228,7 @@
           <span class="flow-dot"></span>
           <div class="flow-card">
             <span class="tag">用户端</span>
-            <div>用户打开「消息通知」，可按「全部 / 资金 / 活动 / 安全」筛选查看已收到的通知</div>
+            <div>用户打开「消息通知」，可按「全部 / 个人消息 / 资金 / 活动 / VIP / 安全」筛选查看已收到的通知</div>
           </div>
         </div>
 
@@ -1331,7 +1337,7 @@
         <div class="left">📋「消息通知」功能规则说明</div>
       </div>
       <div class="user-rule-body show" id="userRuleBody">
-        <p><b>0. 与「平台通知」是两套独立逻辑。</b>「平台通知」为原有功能，本次未做调整；以下规则仅针对「消息通知」，两者关系详见「背景说明」。</p>
+        <p><b>0. 与「平台通知」是两套独立逻辑。</b>「平台通知」为原有功能，本次未做调整；以下规则仅针对「消息通知」，两者关系详见「背景说明」。<b>注意：「平台通知」下的红点与未读标记沿用原有实现、本次不改造，在本原型中为静态展示，点开后不会消减，属预期表现。</b></p>
         <p><b>1. 按类型分类展示。</b>分为「个人消息」「资金」「活动」「VIP」「安全」几类；资金、VIP、安全类型由「消息通知」后台配置，<b>活动类型的内容来自「活动后台」独立配置</b>（详见「流程图」），<b>个人消息即运营在后台发送的「站内信」</b>（详见右侧「站内信」说明面板），展示体验一致，用户无感知差异。</p>
         <p><b>2. 只看得到后台已开启的通知。</b>后台开启后才会出现在「消息通知」里，关闭后不再收到。</p>
         <p><b>3. 触发对应行为会自动收到通知。</b>比如完成存款、提现、参与活动、VIP升降级、领取礼金、修改密码、非常用设备登录等，只要通知已开启就会自动推送，不需要人工发送；<b>本原型中的消息列表为演示数据，实际以用户真实触发的业务行为为准。</b></p>
@@ -1348,10 +1354,9 @@
       <div class="user-rule-body show">
         <p><b>1. 站内信属于「消息通知 - 个人消息」。</b>与其他系统自动触发的通知不同，站内信是运营针对指定会员ID、定制会员（VIP等级+会员标签组合）或全部会员主动发送的消息，展示在同一个「消息通知」入口下，只是子标签换成了「个人消息」。</p>
         <p><b>2. 只有发给「我」的信才会收到。</b>运营发送时指定的是会员ID或VIP等级 + 会员标签，只有匹配到当前账号的信件，才会出现在这个用户的「个人消息」里。</p>
-        <p><b>3. 内容按当前语言展示，</b>运营配置时已同步准备好中/英/越/韩/俄五个语种，用户会看到自己所用语言对应的版本。</p>
-        <p><b>4. 每条信件都带有署名，</b>默认展示「运营团队」，运营也可以改成其他署名（如「客户关怀中心」），方便用户知道是谁发的。</p>
-        <p><b>5. 未读红点、已读、删除等交互和其他类型通知完全一致，</b>点开详情返回后红点数字减少，也支持「全部已读」「全部删除」和单条删除，只影响自己账号收到的信件。</p>
-        <p><b>6. 定时发送的信件，</b>正式上线后会在运营设定的时间点由后端定时任务统一下发，用户端在那之前不会提前看到；<b>本原型为方便演示，保存后无论「立即发送」还是「定时发送」都会直接同步显示在「个人消息」里，不代表真实的定时触发效果。</b></p>
+        <p><b>3. 每条信件都带有署名，</b>默认展示「运营团队」，运营也可以改成其他署名（如「客户关怀中心」），方便用户知道是谁发的；这也是站内信与自动通知（署名固定为「系统通知」）在展示上的主要区别。</p>
+        <p><b>4. 多语言展示、未读红点、已读、批量与单条删除等交互，与「消息通知」下其他类型完全一致</b>，具体规则见左侧面板，此处不再重复。</p>
+        <p><b>5. 定时发送的信件，</b>正式上线后会在运营设定的时间点由后端定时任务统一下发，用户端在那之前不会提前看到；<b>本原型为方便演示，保存后无论「立即发送」还是「定时发送」都会直接同步显示在「个人消息」里，不代表真实的定时触发效果。</b></p>
       </div>
     </div>
 
@@ -1686,6 +1691,8 @@
 
     <div class="adm-drawer-body">
 
+      <div class="letter-flow-note">📩 站内信保存发送后，会展示在用户端「消息通知 - 个人消息」中，与自动通知使用同一套已读、红点、批量操作逻辑。</div>
+
       <div class="adm-field">
         <label><span class="req">*</span>接收对象</label>
         <div class="adm-radio-group">
@@ -1781,7 +1788,7 @@
 
       <div class="adm-field">
         <label>信件署名</label>
-        <input class="field-ctrl" id="letterSignatureInput" placeholder="结尾时的署名，不填写则默认读取站点配置的网站名" maxlength="30">
+        <input class="field-ctrl" id="letterSignatureInput" placeholder="结尾时的署名，默认为「运营团队」，可自行修改" maxlength="30">
       </div>
 
     </div>
@@ -1888,7 +1895,8 @@ const activityDemoMessages = [
     content:'「夏日狂欢」活动已结束，感谢您的参与，奖励将于结算后发放至您的账户。' },
 ];
 
-const SITE_NAME = 'JUAN365';
+// 站内信署名的兜底值：运营未填写署名时统一展示「运营团队」（与后台默认值保持一致）
+const DEFAULT_SIGNATURE = '运营团队';
 
 function getNotifyMessagesFromAdmin(subKey){
   if(subKey === 'personal') return getPersonalMessages();
@@ -1933,7 +1941,7 @@ function getPersonalMessages(){
       summary: r.content || '',
       detailTitle: r.title,
       detailContent: r.content || '',
-      signature: r.signature || SITE_NAME,
+      signature: r.signature || DEFAULT_SIGNATURE,
     }));
 }
 
@@ -2147,7 +2155,8 @@ function handleDetailDelete(){
 document.getElementById('listActionBtn').addEventListener('click', () => {
   const btn = document.getElementById('listActionBtn');
   const subKey = state.subTab.notify;
-  const applyToNotify = subKey === 'all' || subKey !== 'personal';
+  // 「个人消息」子标签只作用于站内信；其他子标签只作用于自动通知；「全部通知」两者都作用
+  const applyToNotify = subKey !== 'personal';
   const applyToPersonal = subKey === 'all' || subKey === 'personal';
   const isRead = btn.dataset.mode === 'read';
 
@@ -2746,7 +2755,7 @@ const letterRows = [
     langData:null,
   },
   {
-    id:'lt3', pinned:false, title:'账户异常提醒', sendType:'id', targetLabel:'88889999',
+    id:'lt3', pinned:false, title:'账户异常提醒', sendType:'id', targetLabel:'10086520',
     sendMode:'schedule', status:'scheduled', sendTime:'2026-08-12 09:00:00',
     signature:'运营团队', targetLevels:[], targetTags:[], operator:'JU_admin',
     content:'我们注意到您的账户近期存在异常登录尝试，为保障您的账户安全，请及时核实并修改密码。',
@@ -2792,7 +2801,7 @@ function renderLetterTable(){
       <td><span class="pin-btn ${r.pinned ? 'pinned' : ''}" data-index="${i}" title="置顶">📌</span></td>
       <td>${r.id}</td>
       <td>${r.title}</td>
-      <td>${r.targetLabel}</td>
+      <td>${r.targetLabel || '<span style="color:#b3bac6;">未设置</span>'}</td>
       <td>${sendModeLabelMap[r.sendMode] || ''}</td>
       <td><span class="status-text ${letterStatusClassMap[r.status] || ''}">${letterStatusLabelMap[r.status] || ''}</span></td>
       <td>${r.operator || ''}</td>
