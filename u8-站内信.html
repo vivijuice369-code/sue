@@ -69,6 +69,29 @@
     display:flex; flex-direction:column;
     box-shadow: 0 20px 60px rgba(0,0,0,0.3);
   }
+  .info-modal.wide{ width: 1080px; }
+  .lang-table-wrap{
+    overflow-x:auto;
+    border:1px solid #eef0f4; border-radius:10px;
+  }
+  table.lang-table{ width:100%; border-collapse:collapse; font-size:12.5px; }
+  table.lang-table th{
+    background:#fafbfc; color:#4b5468; font-weight:700;
+    text-align:left; padding:10px 12px;
+    border-bottom:1px solid #eef0f4;
+    white-space:nowrap; position:sticky; top:0;
+  }
+  table.lang-table td{
+    padding:10px 12px; color:#3a4152; line-height:1.6;
+    border-bottom:1px solid #f2f3f6;
+    vertical-align:top;
+    min-width: 160px;
+  }
+  table.lang-table td.lang-row-label{
+    min-width:auto; color:#b3bac6; text-align:center; font-weight:600;
+  }
+  table.lang-table tr:last-child td{ border-bottom:none; }
+  table.lang-table tr:hover td{ background:#fafcff; }
   .info-modal-head{
     display:flex; align-items:center; justify-content:space-between;
     padding: 18px 24px;
@@ -892,6 +915,19 @@
     padding: 10px 12px; border-radius: 8px;
     margin-bottom: 18px;
   }
+  .sig-quick-row{
+    display:flex; align-items:center; flex-wrap:wrap; gap:6px;
+    margin-bottom: 8px;
+  }
+  .sig-quick-label{ font-size:11.5px; color:#8993a4; margin-right:2px; }
+  .sig-chip{
+    font-size:11.5px; color:#4b5468;
+    background:#f2f4f8; border:1px solid #e3e6ec;
+    padding: 3px 10px; border-radius: 12px;
+    cursor:pointer;
+  }
+  .sig-chip:hover{ background:#e7ecf5; }
+  .sig-chip.active{ background: var(--blue-soft); border-color:#b9caf7; color: var(--blue); }
   .letter-warning{
     color: var(--red); font-size:12px; line-height:1.7;
     background:#fde9ea; border-radius:8px; padding:10px 12px;
@@ -1129,6 +1165,7 @@
   <span class="mode-bar-divider"></span>
   <button class="mode-btn ghost-btn" id="btnBackground">📄 背景说明</button>
   <button class="mode-btn ghost-btn" id="btnFlowchart">🔀 流程图</button>
+  <button class="mode-btn ghost-btn" id="btnLangTable">🌐 多语言翻译</button>
   <span class="mode-bar-divider"></span>
   <button class="mode-btn ghost-btn" id="btnResetDemo" title="恢复消息通知的未读红点等演示数据">🔄 重置演示数据</button>
 </div>
@@ -1282,6 +1319,55 @@
   </div>
 </div>
 
+<!-- ============ 多语言翻译 弹窗 ============ -->
+<div class="info-modal-mask" id="langModalMask">
+  <div class="info-modal wide">
+    <div class="info-modal-head">
+      <h3>多语言翻译对照表</h3>
+      <div class="close" id="langModalClose">✕</div>
+    </div>
+    <div class="info-modal-body">
+      <p style="margin-top:0;">以下是「消息通知」「站内信」相关界面文案的多语言翻译对照，供前端标注文案 / 开发做 i18n 参考。</p>
+      <div class="lang-table-wrap">
+        <table class="lang-table">
+          <thead>
+            <tr>
+              <th>语言</th>
+              <th>中文</th>
+              <th>English</th>
+              <th>Tiếng Việt</th>
+              <th>한국어</th>
+              <th>Русский</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td class="lang-row-label">1</td><td>消息通知</td><td>Message Notifications</td><td>Thông báo tin nhắn</td><td>메시지 알림</td><td>Уведомления о сообщениях</td></tr>
+            <tr><td class="lang-row-label">2</td><td>全部通知</td><td>All Notifications</td><td>Tất cả thông báo</td><td>전체 알림</td><td>Все уведомления</td></tr>
+            <tr><td class="lang-row-label">3</td><td>个人消息</td><td>Personal Messages</td><td>Tin nhắn cá nhân</td><td>개인 메시지</td><td>Личные сообщения</td></tr>
+            <tr><td class="lang-row-label">4</td><td>资金通知</td><td>Fund Notifications</td><td>Thông báo tài chính</td><td>자금 알림</td><td>Уведомления о средствах</td></tr>
+            <tr><td class="lang-row-label">5</td><td>活动通知</td><td>Activity Notifications</td><td>Thông báo hoạt động</td><td>이벤트 알림</td><td>Уведомления об акциях</td></tr>
+            <tr><td class="lang-row-label">6</td><td>VIP通知</td><td>VIP Notifications</td><td>Thông báo VIP</td><td>VIP 알림</td><td>VIP-уведомления</td></tr>
+            <tr><td class="lang-row-label">7</td><td>安全通知</td><td>Security Notifications</td><td>Thông báo bảo mật</td><td>보안 알림</td><td>Уведомления о безопасности</td></tr>
+            <tr><td class="lang-row-label">8</td><td>全部已读</td><td>Mark All as Read</td><td>Đánh dấu tất cả đã đọc</td><td>모두 읽음으로 표시</td><td>Отметить всё как прочитанное</td></tr>
+            <tr><td class="lang-row-label">9</td><td>全部删除</td><td>Delete All</td><td>Xóa tất cả</td><td>전체 삭제</td><td>Удалить всё</td></tr>
+            <tr><td class="lang-row-label">10</td><td>确定要将当前列表中的通知全部标记为已读吗？</td><td>Mark all notifications in this list as read?</td><td>Đánh dấu tất cả thông báo trong danh sách này là đã đọc?</td><td>이 목록의 알림을 모두 읽음으로 표시할까요?</td><td>Отметить все уведомления в этом списке как прочитанные?</td></tr>
+            <tr><td class="lang-row-label">11</td><td>确定要删除当前列表中的全部通知吗？删除后将无法恢复!</td><td>Delete all notifications in this list? This cannot be undone!</td><td>Xóa tất cả thông báo trong danh sách này? Không thể khôi phục!</td><td>이 목록의 알림을 모두 삭제할까요? 삭제 후 복구할 수 없습니다!</td><td>Удалить все уведомления в этом списке? Восстановить будет нельзя!</td></tr>
+            <tr><td class="lang-row-label">12</td><td>系统通知</td><td>System Notification</td><td>Thông báo hệ thống</td><td>시스템 알림</td><td>Системное уведомление</td></tr>
+            <tr><td class="lang-row-label">13</td><td>详情</td><td>Details</td><td>Chi tiết</td><td>상세보기</td><td>Подробнее</td></tr>
+            <tr><td class="lang-row-label">14</td><td>删除消息</td><td>Delete Message</td><td>Xóa tin nhắn</td><td>메시지 삭제</td><td>Удалить сообщение</td></tr>
+            <tr><td class="lang-row-label">15</td><td>确定要删除这条消息吗？删除后将无法恢复</td><td>Delete this message? This cannot be undone.</td><td>Xóa tin nhắn này? Không thể khôi phục.</td><td>이 메시지를 삭제할까요? 복구할 수 없습니다.</td><td>Удалить это сообщение? Восстановить будет нельзя.</td></tr>
+            <tr><td class="lang-row-label">16</td><td>确定</td><td>Confirm</td><td>Xác nhận</td><td>확인</td><td>Подтвердить</td></tr>
+            <tr><td class="lang-row-label">17</td><td>取消</td><td>Cancel</td><td>Hủy</td><td>취소</td><td>Отмена</td></tr>
+            <tr><td class="lang-row-label">18</td><td>运营团队</td><td>Operations Team</td><td>Đội ngũ vận hành</td><td>운영팀</td><td>Операционная команда</td></tr>
+            <tr><td class="lang-row-label">19</td><td>风控团队</td><td>Risk Control Team</td><td>Đội Rủi ro</td><td>리스크 관리팀</td><td>Отдел рисков</td></tr>
+            <tr><td class="lang-row-label">20</td><td>客服团队</td><td>Customer Service</td><td>CSKH</td><td>고객 서비스팀</td><td>Поддержка клиентов</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- ============ 用户端视图 ============ -->
 <div class="view active" id="view-user">
   <div class="phone-wrap">
@@ -1342,8 +1428,9 @@
         <p><b>2. 只看得到后台已开启的通知。</b>后台开启后才会出现在「消息通知」里，关闭后不再收到。</p>
         <p><b>3. 触发对应行为会自动收到通知。</b>比如完成存款、提现、参与活动、VIP升降级、领取礼金、修改密码、非常用设备登录等，只要通知已开启就会自动推送，不需要人工发送；<b>本原型中的消息列表为演示数据，实际以用户真实触发的业务行为为准。</b></p>
         <p><b>4. 未读消息有红点数字提示，</b>点开详情返回列表后，对应红点数字会减少。</p>
-        <p><b>5. 显示语言有兜底保护。</b>正常都会看到自己语言的完整内容；仅当后台数据异常导致缺失时，才会依次兜底展示英文、中文，避免看到空白。</p>
-        <p><b>6. 支持批量操作，仅作用于「消息通知」。</b>顶部按钮会自动切换：<b>只要当前列表还有未读消息，就只显示「全部已读」；等全部标记为已读后，才会变成「全部删除」</b>，需要点击才会真正执行，且都会先弹出确认框二次确认；详情页也可单独删除某一条；这些操作不会影响「平台通知」或后台配置。</p>
+        <p><b>5. 消息时间按本地时区展示。</b>列表与详情页显示的时间，是以后台实际发送 / 触发的时间为准，再根据用户当前设备所在时区自动换算后展示；同一条消息，不同时区的用户看到的时间不同，但对应的是同一个时刻。「平台通知」的时间也遵循同样的换算规则。</p>
+        <p><b>6. 显示语言有兜底保护。</b>正常都会看到自己语言的完整内容；仅当后台数据异常导致缺失时，才会依次兜底展示英文、中文，避免看到空白。</p>
+        <p><b>7. 支持批量操作，仅作用于「消息通知」。</b>顶部按钮会自动切换：<b>只要当前列表还有未读消息，就只显示「全部已读」；等全部标记为已读后，才会变成「全部删除」</b>，需要点击才会真正执行，且都会先弹出确认框二次确认；详情页也可单独删除某一条；这些操作不会影响「平台通知」或后台配置。</p>
       </div>
     </div>
 
@@ -1354,7 +1441,7 @@
       <div class="user-rule-body show">
         <p><b>1. 站内信属于「消息通知 - 个人消息」。</b>与其他系统自动触发的通知不同，站内信是运营针对指定会员ID、定制会员（VIP等级+会员标签组合）或全部会员主动发送的消息，展示在同一个「消息通知」入口下，只是子标签换成了「个人消息」。</p>
         <p><b>2. 只有发给「我」的信才会收到。</b>运营发送时指定的是会员ID或VIP等级 + 会员标签，只有匹配到当前账号的信件，才会出现在这个用户的「个人消息」里。</p>
-        <p><b>3. 每条信件都带有署名，</b>默认展示「运营团队」，运营也可以改成其他署名（如「客户关怀中心」），方便用户知道是谁发的；这也是站内信与自动通知（署名固定为「系统通知」）在展示上的主要区别。</p>
+        <p><b>3. 每条信件都带有署名，</b>由运营按语种分别配置（如「运营团队」「风控团队」「客服团队」），用户会看到自己所用语言对应的署名；这也是站内信与自动通知（署名固定为「系统通知」）在展示上的主要区别。</p>
         <p><b>4. 多语言展示、未读红点、已读、批量与单条删除等交互，与「消息通知」下其他类型完全一致</b>，具体规则见左侧面板，此处不再重复。</p>
         <p><b>5. 定时发送的信件，</b>正式上线后会在运营设定的时间点由后端定时任务统一下发，用户端在那之前不会提前看到；<b>本原型为方便演示，保存后无论「立即发送」还是「定时发送」都会直接同步显示在「个人消息」里，不代表真实的定时触发效果。</b></p>
       </div>
@@ -1666,17 +1753,21 @@
       <p>4. <b>状态开关只能在「编辑」页面切换，列表页仅展示状态文字</b>（绿色「开启」/ 红色「关闭」，不可点击），避免误触导致内容未配置完就被打开；开启后会实时同步到用户端；</p>
       <p>5. <b>通知内容支持链接、图片与变量占位符。</b>富文本编辑器支持插入超链接、图片；「通知内容」上方会根据当前通知时机自动展示对应的「可用变量」按钮（比如「提款失败」会展示「金额」「失败原因」两个按钮），点击即可插入到光标处，不需要手动输入花括号。<b>占位符与实际业务数据的映射、替换逻辑由开发在后端实现</b>——用户最终看到的是替换后的真实内容，不会看到 {} 本身；</p>
       <p>6. <b>语种兜底（仅用于异常场景，非正常保存路径）：</b>正常保存已强制要求5个语种全部完整；万一出现数据异常导致某语种缺失，会优先兜底展示英文，其次中文，避免用户看到空白；</p>
-      <p>7. 用户端「全部已读」「全部删除」「单条删除」仅作用于「消息通知」，不影响「平台通知」，也不会改变后台配置数据；<b>顶部按钮只有当列表内全部消息都已读后，才会从「全部已读」切换为「全部删除」，且两者点击后都会弹出确认框二次确认，避免误触</b>；站内信的「删除」操作在后台列表页也同样会弹出确认框。</p>
+      <p>7. <b>「操作人」记录最近一次保存该条通知的后台账号。</b>系统初始化的预置数据尚未被配置过，操作人显示为「未配置」；运营在编辑页保存后，才会写入当前登录账号，并同步更新「更新时间」；</p>
+      <p>8. <b>用户端展示的通知时间会按用户设备所在时区自动换算</b>，此处配置与展示的时间均为后台时区，同一条通知不同时区的用户看到的时间不同，但对应同一时刻；</p>
+      <p>9. 用户端「全部已读」「全部删除」「单条删除」仅作用于「消息通知」，不影响「平台通知」，也不会改变后台配置数据；<b>顶部按钮只有当列表内全部消息都已读后，才会从「全部已读」切换为「全部删除」，且两者点击后都会弹出确认框二次确认，避免误触</b>；站内信的「删除」操作在后台列表页也同样会弹出确认框。</p>
     </div>
     <div class="rule-drawer-body" id="ruleDrawerBodyLetter" style="display:none;">
       <p>0. <b>站内信与「自动通知」是两套独立逻辑。</b>「自动通知」由用户触发业务行为后系统自动生成；<b>「站内信」是运营针对指定会员ID / 定制会员 / 全部会员主动创建发送的消息</b>，需要运营逐条编写内容，系统不会自动生成；</p>
       <p>1. 发送对象支持三种方式：按「会员ID」精确指定（支持多个ID，也支持Excel批量导入ID）；按「定制会员」用「VIP等级」+「会员标签」两个下拉框组合筛选，<b>两者均支持多选、可以组合搭配</b>（例如「VIP3、VIP4」+「千元用户」），系统按并集圈出符合任意条件的会员，若某会员同时满足多个条件也只会收到一封信，不会重复发送；或选择「全部会员」发送给平台当前全部会员；</p>
-      <p>2. <b>信件标题、信件内容都需要配置中文及英语 / 越南语 / 韩语 / 俄语四个语种</b>，全部配置完整才可保存，规则与「自动通知」一致；</p>
-      <p>3. <b>信件署名默认展示「运营团队」</b>，可自行修改为其他署名，用于告知用户这封信是谁发的；</p>
+      <p>2. <b>信件标题、信件内容、信件署名都需要配置中文及英语 / 越南语 / 韩语 / 俄语四个语种</b>，三项全部配置完整才可保存，规则与「自动通知」一致；</p>
+      <p>3. <b>信件署名需按语种分别配置且不可为空</b>，标签会随当前语种变化（如「中文署名」「English署名」）；中文署名默认填入「运营团队」，其余语种需自行填写。输入框上方提供「运营团队 / 风控团队 / 客服团队」快捷按钮，点击即可填入，也可手动输入自定义署名；署名用于告知用户这封信是谁发的；</p>
       <p>4. 发送方式分「立即发送」和「定时发送」，选择「定时发送」需指定具体发送时间，到点后系统自动发出；<b>本原型为方便演示，保存后无论哪种发送方式都会直接同步到用户端「个人消息」</b>，真实环境中「定时发送」需等到点后才会真正触达用户；</p>
       <p>5. <b>已发送的记录不可再编辑，操作列只保留「删除」</b>；「定时中」等尚未发出的记录可以「编辑」或「删除」；<b>已发送记录被删除后，只是从后台列表中移除，用户端已经收到的内容不会被撤回</b>；删除「定时中」等尚未发出的记录，则会直接取消发送，不会再推送给用户；</p>
-      <p>6. 列表支持「置顶」，点击每条记录左侧的置顶按钮可以把它固定到列表最前面，方便运营快速找到重要信件；</p>
-      <p>7. 用户在用户端「消息通知 - 个人消息」里看到的就是运营发给他的站内信，未读红点、已读、删除等交互与「消息通知」下其他类型统一，互不冲突。</p>
+      <p>6. <b>列表默认按「创建时间」倒序排列，最新创建的信件排在最前面</b>；点击每条记录左侧的置顶按钮可将其固定到列表顶部，置顶的记录不参与上述倒序、始终排在最前，方便运营快速找到重要信件；</p>
+      <p>7. <b>「操作人」记录最近一次保存该条信件的后台账号</b>，新增或编辑保存后自动写入当前登录账号；</p>
+      <p>8. <b>用户端展示的信件时间会按用户设备所在时区自动换算</b>，此处填写与展示的时间均为后台时区，同一封信不同时区的用户看到的时间不同，但对应同一时刻；</p>
+      <p>9. 用户在用户端「消息通知 - 个人消息」里看到的就是运营发给他的站内信，未读红点、已读、删除等交互与「消息通知」下其他类型统一，互不冲突。</p>
     </div>
   </div>
 </div>
@@ -1705,7 +1796,7 @@
       <div class="adm-field" id="letterTargetIdField">
         <textarea class="field-ctrl" id="letterTargetIds" rows="3" placeholder="请输入会员ID，多个会员ID用英文逗号隔开"></textarea>
         <div class="letter-import-row">
-          <span class="letter-import-note">支持直接上传Excel文件，一次性批量导入会员ID（其他字段不会被导入）</span>
+          <span class="letter-import-note">支持上传 Excel 一次性批量导入会员ID（其他字段不会被导入）；重复的会员ID会自动过滤，同一会员只发送一封</span>
           <button class="adm-btn default" type="button">📥 批量导入</button>
         </div>
       </div>
@@ -1740,8 +1831,7 @@
             </div>
           </div>
         </div>
-        <div class="status-field-note">VIP等级、会员标签均支持多选，两个筛选项可以组合搭配使用（例如「VIP3、VIP4」+「千元用户」），系统会按并集圈出符合任意条件的会员；如果某个会员同时满足多个条件（既属于选中的VIP等级、又属于选中的标签），也只会收到一封信，不会重复发送。</div>
-      </div>
+        <div class="status-field-note">两项均可多选、可组合使用；命中多个条件的会员只发送一封，不会重复。</div>      </div>
 
       <div class="adm-field" id="letterAllMembersNote" style="display:none;">
         <div class="status-field-note">将发送给平台当前的全部会员，请谨慎确认内容后再发送。</div>
@@ -1787,8 +1877,14 @@
       </div>
 
       <div class="adm-field">
-        <label>信件署名</label>
-        <input class="field-ctrl" id="letterSignatureInput" placeholder="结尾时的署名，默认为「运营团队」，可自行修改" maxlength="30">
+        <label><span><span class="req">*</span><span id="letterSignatureLabel">中文署名</span></span><span class="field-counter" id="letterSignatureCounter">0/20</span></label>
+        <div class="sig-quick-row">
+          <span class="sig-quick-label">快捷选择：</span>
+          <span class="sig-chip" data-sig="运营团队">运营团队</span>
+          <span class="sig-chip" data-sig="风控团队">风控团队</span>
+          <span class="sig-chip" data-sig="客服团队">客服团队</span>
+        </div>
+        <input class="field-ctrl" id="letterSignatureInput" placeholder="请输入该语种的信件署名" maxlength="20">
       </div>
 
     </div>
@@ -2263,9 +2359,9 @@ const admRows = [
 ];
 // 演示数据默认标记为“未读”，用于用户端红点计数演示；用户查看详情返回后会标记为已读
 admRows.forEach(r => { if(r.unread === undefined) r.unread = true; });
-// 演示数据默认补充“操作人”（最近一次编辑该条通知的后台账号），循环几个示例账号
-const demoOperators = ['admin', '运营-王芳', '运营-李强'];
-admRows.forEach((r, i) => { if(r.operator === undefined) r.operator = demoOperators[i % demoOperators.length]; });
+// 「操作人」= 最近一次保存该条通知的后台账号。系统初始化的预置数据尚未被任何人配置过，
+// 因此操作人为空，只有运营在编辑页保存后才会写入当前登录账号
+admRows.forEach(r => { if(r.operator === undefined) r.operator = ''; });
 
 /* -- 消息的已读 / 删除状态暂存本地（localStorage），仅用于当前设备当前浏览器的原型演示 -- */
 const NOTIFY_LOCAL_KEY = 'msgcenter_notify_local_state';
@@ -2322,7 +2418,7 @@ function renderAdmTable(){
       <td><span class="status-text ${r.on ? 'on' : 'off'}">${r.on ? '开启' : '关闭'}</span></td>
       <td>${r.title}</td>
       <td>${r.content || ''}</td>
-      <td>${r.operator || ''}</td>
+      <td>${r.operator || '<span style="color:#b3bac6;">未配置</span>'}</td>
       <td>${r.updated}</td>
       <td>
         <span class="adm-op">✎ 编辑</span>
@@ -2693,12 +2789,15 @@ function closeInfoModal(mask){ mask.classList.remove('show'); }
 
 const bgModalMask = document.getElementById('bgModalMask');
 const flowModalMask = document.getElementById('flowModalMask');
+const langModalMask = document.getElementById('langModalMask');
 
 document.getElementById('btnBackground').addEventListener('click', () => openInfoModal(bgModalMask));
 document.getElementById('btnFlowchart').addEventListener('click', () => openInfoModal(flowModalMask));
+document.getElementById('btnLangTable').addEventListener('click', () => openInfoModal(langModalMask));
 document.getElementById('bgModalClose').addEventListener('click', () => closeInfoModal(bgModalMask));
 document.getElementById('flowModalClose').addEventListener('click', () => closeInfoModal(flowModalMask));
-[bgModalMask, flowModalMask].forEach(mask => {
+document.getElementById('langModalClose').addEventListener('click', () => closeInfoModal(langModalMask));
+[bgModalMask, flowModalMask, langModalMask].forEach(mask => {
   mask.addEventListener('click', (e) => { if(e.target === mask) closeInfoModal(mask); });
 });
 
@@ -2741,28 +2840,28 @@ btnModeLetter.addEventListener('click', () => switchAdmMode('letter'));
 ========================================================== */
 const letterRows = [
   {
-    id:'lt1', pinned:false, title:'新人福利礼包', sendType:'id', targetLabel:'12345678, 23456789 等 2 位会员',
+    id:'lt1', pinned:false, createdAt:'2026-08-05 09:40:00', title:'新人福利礼包', sendType:'id', targetLabel:'12345678, 23456789 等 2 位会员',
     sendMode:'now', status:'sent', sendTime:'2026-08-05 10:00:00',
     signature:'运营团队', targetLevels:[], targetTags:[], operator:'运营-王芳',
     content:'亲爱的会员，感谢您加入JUAN365大家庭，新人专属礼包已发放至您的账户，请注意查收。',
     langData:null,
   },
   {
-    id:'lt2', pinned:false, title:'VIP等级专属关怀', sendType:'level', targetLabel:'VIP3、VIP4 + 千元用户',
+    id:'lt2', pinned:false, createdAt:'2026-08-06 15:10:00', title:'VIP等级专属关怀', sendType:'level', targetLabel:'VIP3、VIP4 + 千元用户',
     sendMode:'now', status:'sent', sendTime:'2026-08-06 15:30:00',
-    signature:'客户关怀中心', targetLevels:['VIP3','VIP4'], targetTags:['千元用户'], operator:'运营-李强',
+    signature:'运营团队', targetLevels:['VIP3','VIP4'], targetTags:['千元用户'], operator:'运营-李强',
     content:'尊敬的VIP会员，您本月的专属礼遇已上线，详情请咨询在线客服。',
     langData:null,
   },
   {
-    id:'lt3', pinned:false, title:'账户异常提醒', sendType:'id', targetLabel:'10086520',
+    id:'lt3', pinned:false, createdAt:'2026-08-10 11:25:00', title:'账户异常提醒', sendType:'id', targetLabel:'10086520',
     sendMode:'schedule', status:'scheduled', sendTime:'2026-08-12 09:00:00',
     signature:'运营团队', targetLevels:[], targetTags:[], operator:'JU_admin',
     content:'我们注意到您的账户近期存在异常登录尝试，为保障您的账户安全，请及时核实并修改密码。',
     langData:null,
   },
   {
-    id:'lt4', pinned:false, title:'平台维护公告', sendType:'allMembers', targetLabel:'全部会员',
+    id:'lt4', pinned:false, createdAt:'2026-08-11 18:05:00', title:'平台维护公告', sendType:'allMembers', targetLabel:'全部会员',
     sendMode:'schedule', status:'scheduled', sendTime:'2026-08-15 02:00:00',
     signature:'运营团队', targetLevels:[], targetTags:[], operator:'JU_admin',
     content:'平台将于本周六凌晨2点进行例行维护，预计持续1小时，期间可能影响部分功能使用，敬请谅解。',
@@ -2788,8 +2887,12 @@ function renderLetterTable(){
     return;
   }
 
-  // 置顶的排在最前面，组内保持原有顺序
-  const sorted = letterRows.map((r, i) => ({ r, i })).sort((a, b) => (b.r.pinned ? 1 : 0) - (a.r.pinned ? 1 : 0));
+  // 排序规则：置顶的固定排在最前面；其余按「创建时间」倒序，最新创建的信件排在最上方
+  const sorted = letterRows.map((r, i) => ({ r, i })).sort((a, b) => {
+    const pinDiff = (b.r.pinned ? 1 : 0) - (a.r.pinned ? 1 : 0);
+    if(pinDiff !== 0) return pinDiff;
+    return String(b.r.createdAt || '').localeCompare(String(a.r.createdAt || ''));
+  });
 
   tbody.innerHTML = sorted.map(({ r, i }) => {
     const isSent = r.status === 'sent';
@@ -2881,11 +2984,13 @@ const letterContentBody = document.getElementById('letterContentBody');
 const letterSignatureInput = document.getElementById('letterSignatureInput');
 const letterTitleCounter = document.getElementById('letterTitleCounter');
 const letterContentCounter = document.getElementById('letterContentCounter');
+const letterSignatureCounter = document.getElementById('letterSignatureCounter');
 let editingLetterIndex = -1;
 
 function updateLetterCounters(){
   letterTitleCounter.textContent = `${letterTitleInput.value.length}/50`;
   letterContentCounter.textContent = `${letterContentBody.textContent.length}/1000`;
+  letterSignatureCounter.textContent = `${letterSignatureInput.value.length}/20`;
 }
 
 document.querySelectorAll('input[name="letterSendType"]').forEach(r => {
@@ -2954,11 +3059,12 @@ const letterLangTabsEl = document.getElementById('letterLangTabs');
 const letterLangProgressEl = document.getElementById('letterLangProgress');
 
 function letterLangCompletion(key){
-  const d = letterLangData[key] || { title:'', content:'' };
+  const d = letterLangData[key] || { title:'', content:'', signature:'' };
   let done = 0;
   if(d.title && d.title.trim()) done++;
   if(d.content && d.content.trim()) done++;
-  return Math.round((done / 2) * 100);
+  if(d.signature && d.signature.trim()) done++;
+  return Math.round((done / 3) * 100);
 }
 function renderLetterLangTabs(){
   letterLangTabsEl.innerHTML = langKeys.map(key => {
@@ -2983,47 +3089,95 @@ function renderLetterLangProgress(){
     <span class="bar-track"><span class="bar-fill" style="width:${pct}%;"></span></span>
     <span class="pct">${pct}%</span>`;
 }
-function switchLetterLangTab(key){
-  if(!letterLangData[currentLetterLangTab]) letterLangData[currentLetterLangTab] = { title:'', content:'' };
+// 署名快捷按钮：命中当前署名时高亮
+// 署名快捷按钮的多语言翻译：按钮文案固定显示中文，点击后会按当前语种填入对应翻译
+// 翻译内容控制在20字以内，与署名字段的字数限制保持一致
+const signatureTranslations = {
+  '运营团队': { zh:'运营团队', en:'Operations Team', vi:'Đội ngũ vận hành', ko:'운영팀', ru:'Операционная команда' },
+  '风控团队': { zh:'风控团队', en:'Risk Control Team', vi:'Đội Rủi ro', ko:'리스크 관리팀', ru:'Отдел рисков' },
+  '客服团队': { zh:'客服团队', en:'Customer Service', vi:'CSKH', ko:'고객 서비스팀', ru:'Поддержка клиентов' },
+};
+
+function renderSigChips(){
+  const cur = letterSignatureInput.value.trim();
+  document.querySelectorAll('.sig-chip').forEach(chip => {
+    const key = chip.dataset.sig;
+    const label = (signatureTranslations[key] && signatureTranslations[key][currentLetterLangTab]) || key;
+    // 按钮文案固定显示中文，方便运营辨认；只有点击后填入输入框的内容才会按当前语种翻译
+    chip.classList.toggle('active', label === cur);
+  });
+}
+function stashCurrentLetterLang(){
+  if(!letterLangData[currentLetterLangTab]) letterLangData[currentLetterLangTab] = { title:'', content:'', signature:'' };
   letterLangData[currentLetterLangTab].title = letterTitleInput.value;
   letterLangData[currentLetterLangTab].content = letterContentBody.textContent;
+  letterLangData[currentLetterLangTab].signature = letterSignatureInput.value;
+}
+function switchLetterLangTab(key){
+  stashCurrentLetterLang();
 
   currentLetterLangTab = key;
   letterTitleInput.value = (letterLangData[key] && letterLangData[key].title) || '';
   letterContentBody.textContent = (letterLangData[key] && letterLangData[key].content) || '';
+  letterSignatureInput.value = (letterLangData[key] && letterLangData[key].signature) || '';
+  document.getElementById('letterSignatureLabel').textContent = `${langMeta[key].name}署名`;
   updateLetterCounters();
+  renderSigChips();
   renderLetterLangTabs();
   renderLetterLangProgress();
 }
 letterTitleInput.addEventListener('input', () => {
-  if(!letterLangData[currentLetterLangTab]) letterLangData[currentLetterLangTab] = { title:'', content:'' };
+  if(!letterLangData[currentLetterLangTab]) letterLangData[currentLetterLangTab] = { title:'', content:'', signature:'' };
   letterLangData[currentLetterLangTab].title = letterTitleInput.value;
   updateLetterCounters();
   renderLetterLangTabs();
   renderLetterLangProgress();
 });
 letterContentBody.addEventListener('input', () => {
-  if(!letterLangData[currentLetterLangTab]) letterLangData[currentLetterLangTab] = { title:'', content:'' };
+  if(!letterLangData[currentLetterLangTab]) letterLangData[currentLetterLangTab] = { title:'', content:'', signature:'' };
   letterLangData[currentLetterLangTab].content = letterContentBody.textContent;
   updateLetterCounters();
   renderLetterLangTabs();
   renderLetterLangProgress();
+});
+letterSignatureInput.addEventListener('input', () => {
+  if(!letterLangData[currentLetterLangTab]) letterLangData[currentLetterLangTab] = { title:'', content:'', signature:'' };
+  letterLangData[currentLetterLangTab].signature = letterSignatureInput.value;
+  updateLetterCounters();
+  renderSigChips();
+  renderLetterLangTabs();
+  renderLetterLangProgress();
+});
+// 快捷署名按钮：点击直接填入当前语种的署名输入框
+document.querySelectorAll('.sig-chip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    const key = chip.dataset.sig;
+    const label = (signatureTranslations[key] && signatureTranslations[key][currentLetterLangTab]) || key;
+    letterSignatureInput.value = label;
+    letterSignatureInput.dispatchEvent(new Event('input'));
+  });
 });
 
 function resetLetterLangData(row){
   letterLangData = {};
   langKeys.forEach(key => {
     letterLangData[key] = (row && row.langData && row.langData[key])
-      ? { ...row.langData[key] }
-      : { title:'', content:'' };
+      ? { title:'', content:'', signature:'', ...row.langData[key] }
+      : { title:'', content:'', signature:'' };
   });
   if(row && !letterLangData.zh.title && !letterLangData.zh.content){
-    letterLangData.zh = { title: row.title || '', content: row.content || '' };
+    letterLangData.zh = { title: row.title || '', content: row.content || '', signature: row.signature || DEFAULT_SIGNATURE };
   }
+  // 新增时中文署名默认填入「运营团队」，其余语种由运营自行配置
+  if(!row) letterLangData.zh.signature = DEFAULT_SIGNATURE;
+
   currentLetterLangTab = 'zh';
   letterTitleInput.value = letterLangData.zh.title || '';
   letterContentBody.textContent = letterLangData.zh.content || '';
+  letterSignatureInput.value = letterLangData.zh.signature || '';
+  document.getElementById('letterSignatureLabel').textContent = `${langMeta.zh.name}署名`;
   updateLetterCounters();
+  renderSigChips();
   renderLetterLangTabs();
   renderLetterLangProgress();
 }
@@ -3043,8 +3197,6 @@ function openLetterDrawer(row){
 
   resetLetterLangData(row);
 
-  // 信件署名：新增时默认展示“运营团队”，编辑时展示原有署名（若原来为空也兜底展示“运营团队”）
-  letterSignatureInput.value = row ? (row.signature || '运营团队') : '运营团队';
 
   document.querySelectorAll('input[name="letterSendMode"]').forEach(r => { r.checked = r.value === (row ? row.sendMode : 'now'); });
   document.getElementById('letterScheduleField').style.display = (row && row.sendMode === 'schedule') ? '' : 'none';
@@ -3074,14 +3226,12 @@ document.getElementById('letterDrawerSave').addEventListener('click', () => {
     return;
   }
 
-  // 保存前把当前语种输入同步进数据，再校验5个语种是否全部配置完整
-  if(!letterLangData[currentLetterLangTab]) letterLangData[currentLetterLangTab] = { title:'', content:'' };
-  letterLangData[currentLetterLangTab].title = letterTitleInput.value;
-  letterLangData[currentLetterLangTab].content = letterContentBody.textContent;
+  // 保存前把当前语种输入（标题/内容/署名）同步进数据，再校验5个语种是否全部配置完整
+  stashCurrentLetterLang();
 
   const incompleteLang = langKeys.find(key => letterLangCompletion(key) < 100);
   if(incompleteLang){
-    showAdmToast(`请完善「${langMeta[incompleteLang].name}」的信件标题与信件内容后再保存`);
+    showAdmToast(`请完善「${langMeta[incompleteLang].name}」的信件标题、信件内容与署名后再保存`);
     switchLetterLangTab(incompleteLang);
     return;
   }
@@ -3099,6 +3249,10 @@ document.getElementById('letterDrawerSave').addEventListener('click', () => {
     const rowData = {
       id: editingLetterIndex >= 0 ? letterRows[editingLetterIndex].id : 'lt' + (letterRows.length + 1) + '_' + Date.now(),
       pinned: editingLetterIndex >= 0 ? letterRows[editingLetterIndex].pinned : false,
+      // 创建时间：编辑时沿用原值，新增时记录当前时间（列表按此倒序，最新创建的在最前）
+      createdAt: editingLetterIndex >= 0
+        ? letterRows[editingLetterIndex].createdAt
+        : new Date().toISOString().slice(0,19).replace('T',' '),
       title: letterLangData.zh.title,
       sendType,
       targetLabel,
@@ -3107,7 +3261,7 @@ document.getElementById('letterDrawerSave').addEventListener('click', () => {
       sendMode,
       status: sendMode === 'schedule' ? 'scheduled' : 'sent',
       sendTime: new Date().toISOString().slice(0,19).replace('T',' '),
-      signature: letterSignatureInput.value.trim() || '运营团队',
+      signature: letterLangData.zh.signature || DEFAULT_SIGNATURE,
       content: letterLangData.zh.content,
       langData: JSON.parse(JSON.stringify(letterLangData)),
       operator: CURRENT_OPERATOR,
