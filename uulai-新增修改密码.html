@@ -1,0 +1,1444 @@
+<title>账号安全中心</title>
+<!--
+  ============================================================
+  功能与规则说明（个人中心 / 修改密码 / 登录日志 原型）
+  ============================================================
+
+  一、页面结构
+  - 左侧导航在「首页」下新增「个人中心」入口。
+  - 右上角头像可点击，弹出「个人中心 / 注销登出」菜单。
+  - 页面分左右两栏，各占一半：左 = 个人资料 / 修改密码（新功能标记）；
+    右 = 登录日志。
+
+  二、修改密码规则
+  - 旧密码：必填，是否正确由后端校验。
+  - 新密码：8-12 位，须同时包含字母、数字、特殊符号
+    (!@#$%&*,.)，且只能由这三类字符组成。
+  - 新密码不能与旧密码相同；确认密码须与新密码一致。
+  - 任一项不满足，点击「保存」时在对应输入框下方提示，
+    不进入下一步。
+
+  三、二次验证（Google 验证码）
+  - 复用系统已有的谷歌验证码功能，有效期、重试次数等
+    沿用现有规则，这里不新增。
+  - 表单校验通过后弹出验证码弹窗，要求输入 6 位数字。
+  - 验证码非 6 位或错误，都按验证失败处理：关闭弹窗 +
+    居中提示「密码修改失败」。
+  - 验证通过才算修改成功，统一用居中提示（toast）展示结果。
+  - 取消验证不会清空已填写的密码表单。
+
+  四、自动退出登录
+  - 修改成功：居中提示成功后，弹出「请重新登录」遮罩，
+    点击「重新登录」相当于回到登录页。
+  - 修改失败：居中提示失败，停留在当前页面，不触发退出。
+
+  五、登录日志
+  - 系统其他页面已有登录日志功能，这里新增只是方便账号
+    自己查看自己的登录情况，不重复建设。
+  - 其他页面可按日期筛选，这里简化为默认只展示近 3 个月
+    内的登录记录，并在页面上标注展示周期；保留时长仍跟随
+    现有登录日志功能。
+  - 只有登录后才能查看，因此不会出现空状态。
+  - 字段：登录IP（完整展示）/ 登录设备 / 登录时间，
+    按时间倒序排列。
+  ============================================================
+-->
+<style>
+  :root {
+    --blue-700: #1d4fd6;
+    --blue-600: #2f6fed;
+    --blue-500: #4f8ff7;
+    --blue-400: #7db2f9;
+    --blue-100: #e8f0fe;
+    --blue-50: #f2f7ff;
+
+    --bg: #eef1f6;
+    --surface: #ffffff;
+    --surface-2: #f7f8fb;
+    --border: #e3e7ee;
+    --text: #1f2733;
+    --text-dim: #6b7684;
+    --text-faint: #9aa3b1;
+
+    --danger: #e5484d;
+    --warn: #f5a524;
+    --ok: #22a55e;
+
+    --shadow: 0 1px 2px rgba(20, 30, 60, 0.04), 0 8px 24px -12px rgba(20, 30, 60, 0.12);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #14171f;
+      --surface: #1b1f29;
+      --surface-2: #20242f;
+      --border: #2b303c;
+      --text: #e7eaf0;
+      --text-dim: #9aa3b1;
+      --text-faint: #6b7684;
+      --blue-100: #22314f;
+      --blue-50: #1a2438;
+      --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px -12px rgba(0, 0, 0, 0.5);
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --bg: #14171f;
+    --surface: #1b1f29;
+    --surface-2: #20242f;
+    --border: #2b303c;
+    --text: #e7eaf0;
+    --text-dim: #9aa3b1;
+    --text-faint: #6b7684;
+    --blue-100: #22314f;
+    --blue-50: #1a2438;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px -12px rgba(0, 0, 0, 0.5);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+      "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ---------- top app bar ---------- */
+  .appbar {
+    display: flex;
+    align-items: center;
+    height: 56px;
+    padding: 0 16px;
+    background: linear-gradient(115deg, var(--blue-700) 0%, var(--blue-600) 55%, var(--blue-500) 100%);
+    color: #fff;
+    gap: 4px;
+    overflow-x: auto;
+  }
+  .appbar .brand {
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: 0.02em;
+    padding: 0 18px 0 4px;
+    white-space: nowrap;
+    opacity: 0.95;
+  }
+  .appbar nav {
+    display: flex;
+    gap: 2px;
+    flex: 1;
+  }
+  .appbar .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    white-space: nowrap;
+    color: rgba(255, 255, 255, 0.88);
+    font-size: 13px;
+  }
+  .appbar .nav-item svg { width: 15px; height: 15px; flex: none; opacity: 0.9; }
+  .appbar .nav-item.active {
+    background: rgba(255, 255, 255, 0.96);
+    color: var(--blue-700);
+    font-weight: 600;
+  }
+  .appbar .nav-item.active svg { opacity: 1; }
+  .appbar .side-icons {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding-left: 12px;
+    white-space: nowrap;
+  }
+  .appbar .side-icons svg { width: 17px; height: 17px; color: rgba(255,255,255,0.85); }
+  .appbar .avatar-chip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.14);
+    padding: 5px 10px 5px 5px;
+    border-radius: 999px;
+    position: relative;
+    cursor: pointer;
+    border: none;
+    color: #fff;
+    font-size: 13px;
+    font-family: inherit;
+  }
+  .appbar .avatar-chip:hover { background: rgba(255, 255, 255, 0.22); }
+  .appbar .avatar-chip .dot {
+    width: 26px; height: 26px; border-radius: 50%;
+    background: rgba(255,255,255,0.85);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--blue-600); font-weight: 700; font-size: 12px;
+    flex: none;
+  }
+  .appbar .avatar-chip .chev {
+    width: 12px; height: 12px;
+    opacity: 0.85;
+    transition: transform 0.15s;
+  }
+  .appbar .avatar-chip[aria-expanded="true"] .chev { transform: rotate(180deg); }
+
+  .avatar-wrap { position: relative; }
+  /* Rendered as position:fixed and appended near the end of the document
+     (see script) so the ancestor appbar's overflow-x:auto can't clip it,
+     and it always paints above every other page section. */
+  .avatar-menu {
+    position: fixed;
+    min-width: 128px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+    padding: 6px;
+    display: none;
+    z-index: 1000;
+  }
+  .avatar-menu.open { display: block; }
+  .avatar-menu button {
+    display: flex;
+    width: 100%;
+    appearance: none;
+    background: none;
+    border: none;
+    text-align: left;
+    padding: 8px 10px;
+    border-radius: 7px;
+    font-size: 13px;
+    color: var(--text-dim);
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .avatar-menu button:hover { background: var(--surface-2); }
+  .avatar-menu button.current {
+    color: var(--blue-600);
+    font-weight: 600;
+    background: var(--blue-50);
+  }
+  .avatar-menu .divider { height: 1px; background: var(--border); margin: 4px 2px; }
+
+  /* ---------- google verification modal ---------- */
+  .modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.45);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 2000;
+  }
+  .modal-backdrop.open { display: flex; }
+  .modal-box {
+    width: 380px;
+    max-width: 100%;
+    background: var(--surface);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+  .modal-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 18px;
+    border-bottom: 1px solid var(--border);
+  }
+  .modal-head h2 {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .modal-close {
+    appearance: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text-faint);
+    width: 24px; height: 24px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 6px;
+    flex: none;
+  }
+  .modal-close:hover { background: var(--surface-2); color: var(--text-dim); }
+  .modal-close svg { width: 15px; height: 15px; }
+  .modal-body { padding: 20px 18px 24px; }
+  .modal-body .modal-label {
+    font-size: 13px;
+    color: var(--text-dim);
+    margin: 0 0 10px;
+  }
+  .modal-body input {
+    width: 100%;
+    padding: 11px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--surface-2);
+    color: var(--text);
+    font-size: 13.5px;
+    outline: none;
+    letter-spacing: 0.06em;
+  }
+  .modal-body input:focus { border-color: var(--blue-500); background: var(--surface); }
+  .modal-actions { margin-top: 4px; }
+  .modal-actions .btn-primary {
+    width: 100%;
+    padding: 11px;
+    border-radius: 8px;
+    font-size: 14px;
+  }
+
+  /* ---------- rules-description modal (wide, scrollable) ---------- */
+  .modal-box.wide {
+    width: 560px;
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    max-height: min(640px, calc(100vh - 40px));
+  }
+  .modal-box.wide .modal-body {
+    overflow-y: auto;
+    padding: 18px 24px 24px;
+  }
+  .rules-doc h3 {
+    font-size: 13.5px;
+    font-weight: 700;
+    color: var(--text);
+    margin: 22px 0 8px;
+  }
+  .rules-doc h3:first-child { margin-top: 0; }
+  .rules-doc ul {
+    margin: 0;
+    padding-left: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .rules-doc li {
+    font-size: 12.5px;
+    color: var(--text-dim);
+    line-height: 1.6;
+  }
+  .rules-doc li b { color: var(--text); font-weight: 600; }
+
+  /* ---------- center toast (operation result) ---------- */
+  .toast-stack {
+    position: fixed;
+    top: 22px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 3000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    pointer-events: none;
+  }
+  .toast {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 11px 20px;
+    border-radius: 8px;
+    font-size: 13.5px;
+    font-weight: 500;
+    color: #fff;
+    box-shadow: 0 10px 28px -10px rgba(0, 0, 0, 0.4);
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: opacity 0.22s ease, transform 0.22s ease;
+    white-space: nowrap;
+  }
+  .toast.show { opacity: 1; transform: translateY(0); }
+  .toast svg { width: 16px; height: 16px; flex: none; }
+  .toast.success { background: var(--ok); }
+  .toast.error { background: var(--danger); }
+
+  /* ---------- auto-logout overlay (password change succeeded) ---------- */
+  .logout-overlay {
+    position: fixed;
+    inset: 0;
+    background: var(--bg);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 4000;
+  }
+  .logout-overlay.open { display: flex; }
+  .logout-card {
+    width: 340px;
+    max-width: calc(100vw - 40px);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    box-shadow: var(--shadow);
+    padding: 34px 28px 28px;
+    text-align: center;
+  }
+  .logout-icon {
+    width: 52px; height: 52px;
+    margin: 0 auto 18px;
+    border-radius: 50%;
+    background: var(--blue-50);
+    color: var(--blue-600);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .logout-icon svg { width: 24px; height: 24px; }
+  .logout-card h2 {
+    margin: 0 0 8px;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .logout-card p {
+    margin: 0 0 22px;
+    font-size: 12.5px;
+    color: var(--text-faint);
+    line-height: 1.6;
+  }
+  .logout-card .btn-primary {
+    width: 100%;
+    padding: 11px;
+    border-radius: 8px;
+    font-size: 14px;
+  }
+
+  /* ---------- open-tab strip ---------- */
+  .tabstrip {
+    display: flex;
+    align-items: center;
+    height: 40px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 8px;
+    gap: 2px;
+    overflow-x: auto;
+  }
+  .tabstrip .chev {
+    width: 26px; height: 26px; flex: none;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--text-faint);
+  }
+  .tabstrip .tab {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 12.5px;
+    color: var(--text-dim);
+    white-space: nowrap;
+    background: var(--surface-2);
+    border: 1px solid transparent;
+  }
+  .tabstrip .tab.active {
+    background: var(--blue-50);
+    color: var(--blue-600);
+    border-color: var(--blue-100);
+    font-weight: 600;
+  }
+  .tabstrip .tab .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--blue-600); flex: none; }
+  .tabstrip .tab .x { opacity: 0.5; font-size: 13px; line-height: 1; }
+  .tabstrip .spacer { flex: 1; }
+  .tabstrip .tool { width: 28px; height: 28px; flex: none; display:flex; align-items:center; justify-content:center; color: var(--text-faint); }
+
+  /* ---------- layout ---------- */
+  .layout {
+    display: flex;
+    align-items: flex-start;
+    min-height: calc(100vh - 96px);
+  }
+
+  .sidebar {
+    width: 216px;
+    flex: none;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    min-height: calc(100vh - 96px);
+    padding: 10px 0;
+  }
+  .sidebar .crumb {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px 12px;
+    color: var(--text-faint);
+    font-size: 13px;
+  }
+  .sidebar .crumb svg { width: 14px; height: 14px; }
+  .sidebar .item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 2px 8px;
+    padding: 9px 10px;
+    border-radius: 8px;
+    color: var(--text-dim);
+    font-size: 13.5px;
+    cursor: pointer;
+    border-left: 2px solid transparent;
+  }
+  .sidebar .item svg { width: 16px; height: 16px; flex: none; }
+  .sidebar .item:hover { background: var(--surface-2); }
+  .sidebar .item.active {
+    background: var(--blue-50);
+    color: var(--blue-600);
+    font-weight: 600;
+    border-left: 2px solid var(--blue-600);
+  }
+  .badge-new {
+    font-size: 10px;
+    background: var(--blue-100);
+    color: var(--blue-600);
+    padding: 1px 6px;
+    border-radius: 999px;
+    font-weight: 600;
+  }
+  .sidebar .item .badge-new { margin-left: auto; }
+  .subtab .badge-new { margin-left: 3px; vertical-align: 1px; }
+
+  .main {
+    flex: 1;
+    min-width: 0;
+    padding: 22px 26px 40px;
+  }
+  .panel-title {
+    font-size: 16px;
+    font-weight: 700;
+    margin: 0 0 4px;
+  }
+  .panel-sub {
+    color: var(--text-faint);
+    font-size: 12.5px;
+    margin: 0;
+  }
+  .panel-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 18px;
+  }
+  .rules-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex: none;
+    appearance: none;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    border-radius: 8px;
+    padding: 7px 12px;
+    font-size: 12.5px;
+    cursor: pointer;
+    font-family: inherit;
+    white-space: nowrap;
+  }
+  .rules-btn:hover { background: var(--surface-2); color: var(--text); }
+  .rules-btn svg { width: 14px; height: 14px; flex: none; }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    padding: 26px 28px;
+    max-width: 640px;
+  }
+
+  /* ---------- account info (existing) ---------- */
+  .profile-head { display: flex; align-items: center; gap: 18px; margin-bottom: 22px; }
+  .profile-avatar {
+    width: 64px; height: 64px; border-radius: 50%;
+    background: var(--surface-2); border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--text-faint);
+  }
+  .profile-avatar svg { width: 30px; height: 30px; }
+  .profile-name { font-size: 15px; font-weight: 700; }
+  .profile-role { font-size: 12.5px; color: var(--text-faint); margin-top: 2px; }
+
+  .info-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px dashed var(--border);
+    font-size: 13.5px;
+  }
+  .info-row:last-child { border-bottom: none; }
+  .info-row svg { width: 15px; height: 15px; color: var(--text-faint); flex: none; }
+  .info-row .label { width: 78px; color: var(--text-faint); flex: none; }
+  .info-row .value { color: var(--text); }
+  .info-row .value.muted { color: var(--text-faint); }
+
+  /* ---------- change password form ---------- */
+  .field { margin-bottom: 18px; }
+  .field label {
+    display: block;
+    font-size: 13px;
+    color: var(--text-dim);
+    margin-bottom: 7px;
+  }
+  .field label .req { color: var(--danger); margin-right: 3px; }
+  .input-wrap { position: relative; }
+  .input-wrap input {
+    width: 100%;
+    padding: 10px 40px 10px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--surface-2);
+    color: var(--text);
+    font-size: 13.5px;
+    outline: none;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .input-wrap input:focus {
+    border-color: var(--blue-500);
+    background: var(--surface);
+  }
+  .input-wrap input.invalid { border-color: var(--danger); }
+  .input-wrap .toggle-eye {
+    position: absolute;
+    right: 10px; top: 50%; transform: translateY(-50%);
+    width: 18px; height: 18px;
+    color: var(--text-faint);
+    cursor: pointer;
+    background: none; border: none; padding: 0;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .hint {
+    font-size: 12px;
+    margin-top: 6px;
+    color: var(--text-faint);
+  }
+  .hint.error { color: var(--danger); }
+
+  .rule-list {
+    list-style: none;
+    margin: 10px 0 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .rule-list li {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 12px;
+    color: var(--text-faint);
+  }
+  .rule-list .rule-dot {
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    border: 1.5px solid var(--border);
+    flex: none;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .rule-list .rule-dot svg { width: 9px; height: 9px; opacity: 0; transition: opacity 0.15s; }
+  .rule-list li.pass { color: var(--ok); }
+  .rule-list li.pass .rule-dot { background: var(--ok); border-color: var(--ok); }
+  .rule-list li.pass .rule-dot svg { opacity: 1; color: #fff; }
+
+  .btn {
+    appearance: none;
+    border: none;
+    border-radius: 8px;
+    padding: 9px 22px;
+    font-size: 13.5px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .btn-primary {
+    background: var(--blue-600);
+    color: #fff;
+  }
+  .btn-primary:hover { background: var(--blue-700); }
+  .btn-primary:disabled {
+    background: var(--border);
+    color: var(--text-faint);
+    cursor: not-allowed;
+  }
+  .save-row { display: flex; align-items: center; gap: 12px; margin-top: 4px; }
+
+  /* ---------- login log table ---------- */
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    font-variant-numeric: tabular-nums;
+  }
+  .data-table th {
+    text-align: center;
+    font-weight: 500;
+    color: var(--text-faint);
+    padding: 0 8px 12px;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  .data-table td {
+    text-align: center;
+    color: var(--text-dim);
+    padding: 13px 8px;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  .data-table tbody tr:last-child td { border-bottom: none; }
+
+  /* ---------- pagination ---------- */
+  .pagination {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 16px;
+    padding-top: 4px;
+  }
+  .pagination .total {
+    font-size: 12px;
+    color: var(--text-faint);
+  }
+  .pagination .pages {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .pagination button {
+    appearance: none;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text-dim);
+    border-radius: 6px;
+    min-width: 26px;
+    height: 26px;
+    padding: 0 6px;
+    font-size: 12px;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .pagination button:hover:not(:disabled) { background: var(--surface-2); }
+  .pagination button.current {
+    background: var(--blue-600);
+    border-color: var(--blue-600);
+    color: #fff;
+    font-weight: 600;
+  }
+  .pagination button:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .table-scroll { overflow-x: auto; }
+
+  /* ---------- merged personal-center layout ---------- */
+  .split {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  .split .card {
+    margin: 0;
+  }
+  .left-card, .right-card {
+    flex: 1 1 380px;
+    max-width: none;
+  }
+
+  .subtabs {
+    display: flex;
+    gap: 22px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+  }
+  .subtab {
+    appearance: none;
+    background: none;
+    border: none;
+    padding: 0 0 10px;
+    font-size: 13.5px;
+    color: var(--text-faint);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+  }
+  .subtab.active {
+    color: var(--blue-600);
+    font-weight: 600;
+    border-bottom-color: var(--blue-600);
+  }
+  .subtab:disabled { cursor: default; }
+
+  .log-note {
+    color: var(--text-faint);
+    font-size: 12px;
+    margin: -8px 0 14px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; }
+  }
+</style>
+
+<div class="appbar">
+  <span class="brand">运营后台</span>
+  <nav>
+    <span class="nav-item active">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-7 9 7"/><path d="M5 10v9a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1v-9"/></svg>
+      首页
+    </span>
+    <span class="nav-item">报表统计</span>
+    <span class="nav-item">会员管理</span>
+    <span class="nav-item">财务管理</span>
+    <span class="nav-item">站点管理</span>
+    <span class="nav-item">权限管理</span>
+    <span class="nav-item">福利中心</span>
+    <span class="nav-item">运营管理</span>
+    <span class="nav-item">游戏管理</span>
+    <span class="nav-item">棋牌管理</span>
+    <span class="nav-item">系统管理</span>
+  </nav>
+  <div class="side-icons">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 5h16M4 12h10M4 19h7"/></svg>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 01-3.4 0"/></svg>
+    <div class="avatar-wrap">
+      <button type="button" class="avatar-chip" id="avatarChip" aria-haspopup="true" aria-expanded="false">
+        <span class="dot">S</span>
+        <span>sue</span>
+        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="tabstrip">
+  <span class="chev">‹</span>
+  <span class="tab">首页</span>
+  <span class="tab">资金记录 <span class="x">×</span></span>
+  <span class="tab active"><span class="dot"></span>个人中心 <span class="x">×</span></span>
+  <span class="spacer"></span>
+  <span class="tool">⟳</span>
+  <span class="tool">⌄</span>
+</div>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="crumb">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-7 9 7"/><path d="M5 10v9a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1v-9"/></svg>
+      首页
+    </div>
+    <div class="item active" data-target="center">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="3.2"/><path d="M5 20c1.2-4 4-6 7-6s5.8 2 7 6"/></svg>
+      个人中心
+      <span class="badge-new">新增</span>
+    </div>
+  </aside>
+
+  <main class="main">
+    <!-- MERGED: 个人资料/修改密码 (left) + 登录日志 (right) -->
+    <section id="panel-center">
+      <div class="panel-head">
+        <div>
+          <h1 class="panel-title">个人中心</h1>
+          <p class="panel-sub">账号资料、密码安全与登录记录</p>
+        </div>
+        <button type="button" class="rules-btn" id="rulesBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9.5"/><path d="M12 11v5.5"/><circle cx="12" cy="8" r="0.6" fill="currentColor" stroke="none"/></svg>
+          规则说明
+        </button>
+      </div>
+
+      <div class="split">
+        <!-- left card: 个人资料 / 修改密码 -->
+        <div class="card left-card">
+          <div class="subtabs" data-group="left">
+            <button type="button" class="subtab active" data-target="profile">个人资料</button>
+            <button type="button" class="subtab" data-target="security">修改密码<span class="badge-new">新</span></button>
+          </div>
+
+          <div id="pane-profile">
+            <div class="profile-head">
+              <div class="profile-avatar">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="3.4"/><path d="M4.5 20c1.4-4.4 4.3-6.6 7.5-6.6s6.1 2.2 7.5 6.6"/></svg>
+              </div>
+              <div>
+                <div class="profile-name">sue</div>
+                <div class="profile-role">创始人123</div>
+              </div>
+            </div>
+            <div class="info-row">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="3.2"/><path d="M5 20c1.2-4 4-6 7-6s5.8 2 7 6"/></svg>
+              <span class="label">用户名</span><span class="value">sue</span>
+            </div>
+            <div class="info-row">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 3h6l3 4-6 12L4 7z"/></svg>
+              <span class="label">手机号码</span><span class="value muted">-</span>
+            </div>
+            <div class="info-row">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3.5" y="5.5" width="17" height="13" rx="2"/><path d="M4 7l8 6 8-6"/></svg>
+              <span class="label">邮箱</span><span class="value muted">-</span>
+            </div>
+            <div class="info-row">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20V9l8-5 8 5v11"/><path d="M9 20v-6h6v6"/></svg>
+              <span class="label">部门</span><span class="value muted">-</span>
+            </div>
+            <div class="info-row">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="8" r="2.6"/><circle cx="17" cy="9" r="2.2"/><path d="M3.5 19c.8-3 3-4.6 5.5-4.6s4.7 1.6 5.5 4.6"/><path d="M14.5 14.7c2 .3 3.5 1.8 4.1 4.3"/></svg>
+              <span class="label">角色</span><span class="value muted">-</span>
+            </div>
+            <div class="info-row">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>
+              <span class="label">创建日期</span><span class="value">2025-07-11 15:00:30</span>
+            </div>
+          </div>
+
+          <div id="pane-security" style="display:none;">
+            <form id="pwForm" novalidate>
+              <div class="field">
+                <label for="oldPw"><span class="req">*</span>旧密码</label>
+                <div class="input-wrap">
+                  <input type="password" id="oldPw" autocomplete="current-password" placeholder="请输入当前登录密码" />
+                  <button type="button" class="toggle-eye" data-for="oldPw" aria-label="显示密码">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3.8-7 10-7 10 7 10 7-3.8 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>
+                  </button>
+                </div>
+                <div class="hint error" id="oldPwHint"></div>
+              </div>
+
+              <div class="field">
+                <label for="newPw"><span class="req">*</span>新密码</label>
+                <div class="input-wrap">
+                  <input type="password" id="newPw" autocomplete="new-password" placeholder="8-12位，含字母、数字和特殊符号" />
+                  <button type="button" class="toggle-eye" data-for="newPw" aria-label="显示密码">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3.8-7 10-7 10 7 10 7-3.8 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>
+                  </button>
+                </div>
+                <ul class="rule-list" id="pwRules">
+                  <li id="ruleLen" data-rule="len">
+                    <span class="rule-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M4 12l5 5L20 6"/></svg></span>
+                    长度 8-12 位
+                  </li>
+                  <li id="ruleLetter" data-rule="letter">
+                    <span class="rule-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M4 12l5 5L20 6"/></svg></span>
+                    包含英文字母
+                  </li>
+                  <li id="ruleDigit" data-rule="digit">
+                    <span class="rule-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M4 12l5 5L20 6"/></svg></span>
+                    包含数字
+                  </li>
+                  <li id="ruleSymbol" data-rule="symbol">
+                    <span class="rule-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M4 12l5 5L20 6"/></svg></span>
+                    包含特殊符号 !@#$%&amp;*,.
+                  </li>
+                  <li id="ruleOnlyAllowed" data-rule="onlyAllowed">
+                    <span class="rule-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M4 12l5 5L20 6"/></svg></span>
+                    不包含其他字符（空格、中文、其他符号等）
+                  </li>
+                </ul>
+                <div class="hint error" id="newPwHint"></div>
+              </div>
+
+              <div class="field">
+                <label for="confirmPw"><span class="req">*</span>确认密码</label>
+                <div class="input-wrap">
+                  <input type="password" id="confirmPw" autocomplete="new-password" placeholder="请再次输入新密码" />
+                  <button type="button" class="toggle-eye" data-for="confirmPw" aria-label="显示密码">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3.8-7 10-7 10 7 10 7-3.8 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>
+                  </button>
+                </div>
+                <div class="hint error" id="confirmPwHint"></div>
+              </div>
+
+              <div class="save-row">
+                <button type="submit" class="btn btn-primary" id="saveBtn">保存</button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- right card: 登录日志 -->
+        <div class="card right-card">
+          <div class="subtabs" data-group="right">
+            <button type="button" class="subtab active" disabled>登录日志</button>
+          </div>
+
+          <p class="log-note">默认展示近 3 个月内的登录记录</p>
+
+          <div class="table-scroll">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>登录IP</th>
+                  <th>登录设备</th>
+                  <th>登录时间</th>
+                </tr>
+              </thead>
+              <tbody id="logTableBody"></tbody>
+            </table>
+          </div>
+
+          <div class="pagination">
+            <span class="total" id="logTotal"></span>
+            <div class="pages" id="logPages"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- Rendered outside .appbar / .layout on purpose: an ancestor there has
+     overflow-x:auto, which would otherwise clip this menu. Positioned via
+     JS (position:fixed) so it always floats above the whole page. -->
+<div class="avatar-menu" id="avatarMenu">
+  <button type="button" class="current" id="menuGoCenter">个人中心</button>
+  <div class="divider"></div>
+  <button type="button" id="menuLogout">注销登出</button>
+</div>
+
+<!-- Google 验证码弹窗：修改密码提交后先在此二次验证，确认后才真正生效 -->
+<div class="modal-backdrop" id="googleModalBackdrop">
+  <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="googleModalTitle">
+    <div class="modal-head">
+      <h2 id="googleModalTitle">Google检验</h2>
+      <button type="button" class="modal-close" id="googleModalClose" aria-label="关闭">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <p class="modal-label">请输入谷歌验证码：</p>
+      <input type="text" id="googleCodeInput" inputmode="numeric" maxlength="6" placeholder="请输入" autocomplete="one-time-code" />
+      <div class="modal-actions">
+        <button type="button" class="btn btn-primary" id="googleModalConfirm">确定</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 操作结果提示：居中弹出，成功/失败都走这里 -->
+<div class="toast-stack" id="toastStack"></div>
+
+<!-- 密码修改成功后的自动退出登录遮罩（原型模拟，无真实登录页可跳转） -->
+<div class="logout-overlay" id="logoutOverlay">
+  <div class="logout-card">
+    <div class="logout-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 4H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8"/><path d="M10 12h11m0 0l-3.5-3.5M21 12l-3.5 3.5"/></svg>
+    </div>
+    <h2>密码已修改，请重新登录</h2>
+    <p>为保障账号安全，密码修改成功后系统已自动退出当前登录状态。</p>
+    <button type="button" class="btn btn-primary" id="reloginBtn">重新登录</button>
+  </div>
+</div>
+
+<!-- 规则说明弹窗：点页面右上角「规则说明」按钮打开，供人在网页里直接查看这些约定 -->
+<div class="modal-backdrop" id="rulesModalBackdrop">
+  <div class="modal-box wide" role="dialog" aria-modal="true" aria-labelledby="rulesModalTitle">
+    <div class="modal-head">
+      <h2 id="rulesModalTitle">功能与规则说明</h2>
+      <button type="button" class="modal-close" id="rulesModalClose" aria-label="关闭">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="rules-doc">
+        <h3>页面结构</h3>
+        <ul>
+          <li>左侧导航在<b>「首页」</b>下新增<b>「个人中心」</b>入口。</li>
+          <li>右上角头像可点击，弹出<b>「个人中心 / 注销登出」</b>菜单。</li>
+          <li>页面分左右两栏，各占一半：左 = 个人资料 / 修改密码（新功能标记）；右 = 登录日志。</li>
+        </ul>
+
+        <h3>修改密码规则</h3>
+        <ul>
+          <li><b>旧密码</b>：必填，是否正确由后端校验。</li>
+          <li><b>新密码</b>：8-12 位，须同时包含字母、数字、特殊符号（!@#$%&amp;*,.），且只能由这三类字符组成。</li>
+          <li><b>新密码不能与旧密码相同</b>；<b>确认密码</b>须与新密码一致。</li>
+          <li>任一项不满足，点击「保存」时在对应输入框下方提示，不进入下一步。</li>
+        </ul>
+
+        <h3>二次验证（Google 验证码）</h3>
+        <ul>
+          <li>复用系统已有的谷歌验证码功能，有效期、重试次数等沿用现有规则，这里不新增。</li>
+          <li>表单校验通过后弹出<b>「Google检验」</b>弹窗，要求输入 6 位数字验证码。</li>
+          <li>验证码非 6 位或错误，都按<b>验证失败</b>处理：关闭弹窗 + 居中提示「密码修改失败」。</li>
+          <li>验证通过才算修改成功，统一用居中提示（toast）展示结果。</li>
+          <li>点击「×」或遮罩可取消验证，取消不会清空已填写的密码表单。</li>
+        </ul>
+
+        <h3>自动退出登录</h3>
+        <ul>
+          <li>修改<b>成功</b>：居中提示成功后，弹出「请重新登录」遮罩，点击相当于回到登录页。</li>
+          <li>修改<b>失败</b>：居中提示失败，停留在当前页面，不触发退出。</li>
+        </ul>
+
+        <h3>登录日志</h3>
+        <ul>
+          <li>系统其他页面已有登录日志功能，这里新增只是方便账号自己查看自己的登录情况，不重复建设。</li>
+          <li>其他页面可按日期筛选，这里简化为<b>默认只展示近 3 个月内</b>的登录记录，并在页面上标注展示周期；保留时长仍跟随现有登录日志功能。</li>
+          <li>只有登录后才能查看，因此不会出现空状态。</li>
+          <li>字段：登录IP（完整展示）/ 登录设备 / 登录时间，按时间倒序排列。</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ---- center toast (success/error result banner) ----
+  var toastStack = document.getElementById('toastStack');
+  var ICON_SUCCESS = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="12" cy="12" r="9.5"/><path d="M8 12.5l2.5 2.5L16 9.5"/></svg>';
+  var ICON_ERROR = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="12" cy="12" r="9.5"/><path d="M9 9l6 6M15 9l-6 6"/></svg>';
+
+  function showToast(message, type) {
+    var el = document.createElement('div');
+    el.className = 'toast ' + (type === 'error' ? 'error' : 'success');
+    el.innerHTML = (type === 'error' ? ICON_ERROR : ICON_SUCCESS) + '<span></span>';
+    el.querySelector('span').textContent = message;
+    toastStack.appendChild(el);
+    requestAnimationFrame(function () { el.classList.add('show'); });
+    setTimeout(function () {
+      el.classList.remove('show');
+      setTimeout(function () { el.remove(); }, 220);
+    }, 2600);
+  }
+
+  // ---- top-right avatar dropdown ----
+  var avatarChip = document.getElementById('avatarChip');
+  var avatarMenu = document.getElementById('avatarMenu');
+
+  function positionAvatarMenu() {
+    var rect = avatarChip.getBoundingClientRect();
+    avatarMenu.style.top = (rect.bottom + 10) + 'px';
+    avatarMenu.style.right = (window.innerWidth - rect.right) + 'px';
+  }
+  function closeAvatarMenu() {
+    avatarMenu.classList.remove('open');
+    avatarChip.setAttribute('aria-expanded', 'false');
+  }
+  function toggleAvatarMenu() {
+    var willOpen = !avatarMenu.classList.contains('open');
+    if (willOpen) positionAvatarMenu();
+    avatarMenu.classList.toggle('open', willOpen);
+    avatarChip.setAttribute('aria-expanded', String(willOpen));
+  }
+  avatarChip.addEventListener('click', function (e) {
+    e.stopPropagation();
+    toggleAvatarMenu();
+  });
+  document.addEventListener('click', function (e) {
+    if (!avatarMenu.contains(e.target) && e.target !== avatarChip) closeAvatarMenu();
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') {
+      closeAvatarMenu();
+      closeGoogleModal();
+      document.getElementById('rulesModalBackdrop').classList.remove('open');
+    }
+  });
+  window.addEventListener('resize', function () {
+    if (avatarMenu.classList.contains('open')) positionAvatarMenu();
+  });
+  window.addEventListener('scroll', closeAvatarMenu, true);
+  document.getElementById('menuGoCenter').addEventListener('click', function () {
+    closeAvatarMenu();
+    document.getElementById('panel-center').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+  document.getElementById('menuLogout').addEventListener('click', function () {
+    closeAvatarMenu();
+  });
+
+  // ---- sub-tab switching (left card: 个人资料 / 修改密码) ----
+  var panesByGroup = {
+    left: { profile: document.getElementById('pane-profile'), security: document.getElementById('pane-security') }
+  };
+  document.querySelectorAll('.subtabs[data-group]').forEach(function (group) {
+    var groupKey = group.getAttribute('data-group');
+    var panes = panesByGroup[groupKey];
+    if (!panes) return; // e.g. the right card's subtabs is just a static label now
+    var tabs = group.querySelectorAll('.subtab[data-target]');
+    tabs.forEach(function (tab) {
+      tab.addEventListener('click', function () {
+        tabs.forEach(function (t) { t.classList.remove('active'); });
+        tab.classList.add('active');
+        var target = tab.getAttribute('data-target');
+        Object.keys(panes).forEach(function (k) {
+          panes[k].style.display = (k === target) ? '' : 'none';
+        });
+      });
+    });
+  });
+
+  // ---- password eye toggles ----
+  document.querySelectorAll('.toggle-eye').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var input = document.getElementById(btn.getAttribute('data-for'));
+      input.type = input.type === 'password' ? 'text' : 'password';
+    });
+  });
+
+  // ---- password rules: 8-12位，只能是字母、数字、特殊符号(!@#$%&*,.)，
+  // 且三类都要有；新密码不能与旧密码相同 ----
+  function checkPwRules(pw) {
+    return {
+      len: pw.length >= 8 && pw.length <= 12,
+      letter: /[A-Za-z]/.test(pw),
+      digit: /\d/.test(pw),
+      symbol: /[!@#$%&*,.]/.test(pw),
+      onlyAllowed: pw.length > 0 && /^[A-Za-z0-9!@#$%&*,.]+$/.test(pw)
+    };
+  }
+  function allRulesPass(rules) {
+    return rules.len && rules.letter && rules.digit && rules.symbol && rules.onlyAllowed;
+  }
+
+  var oldPw = document.getElementById('oldPw');
+  var newPw = document.getElementById('newPw');
+  var confirmPw = document.getElementById('confirmPw');
+  var oldPwHint = document.getElementById('oldPwHint');
+  var newPwHint = document.getElementById('newPwHint');
+  var confirmPwHint = document.getElementById('confirmPwHint');
+  var ruleEls = {
+    len: document.getElementById('ruleLen'),
+    letter: document.getElementById('ruleLetter'),
+    digit: document.getElementById('ruleDigit'),
+    symbol: document.getElementById('ruleSymbol'),
+    onlyAllowed: document.getElementById('ruleOnlyAllowed')
+  };
+
+  function validateSameAsOld() {
+    if (newPw.value && oldPw.value && newPw.value === oldPw.value) {
+      newPwHint.textContent = '新密码不能与旧密码相同';
+      newPw.classList.add('invalid');
+      return true;
+    }
+    newPwHint.textContent = '';
+    return false;
+  }
+
+  function refreshPwRuleChecklist() {
+    var rules = checkPwRules(newPw.value);
+    Object.keys(rules).forEach(function (k) {
+      ruleEls[k].classList.toggle('pass', rules[k]);
+    });
+    newPw.classList.remove('invalid');
+    validateSameAsOld();
+    validateConfirm();
+  }
+  newPw.addEventListener('input', refreshPwRuleChecklist);
+  oldPw.addEventListener('input', function () {
+    // typing a (corrected) old password clears its own error and re-checks
+    // it against the new password too
+    oldPwHint.textContent = '';
+    oldPw.classList.remove('invalid');
+    validateSameAsOld();
+  });
+
+  function validateConfirm() {
+    if (!confirmPw.value) { confirmPwHint.textContent = ''; confirmPw.classList.remove('invalid'); return; }
+    if (confirmPw.value !== newPw.value) {
+      confirmPwHint.textContent = '两次输入的新密码不一致';
+      confirmPw.classList.add('invalid');
+    } else {
+      confirmPwHint.textContent = '';
+      confirmPw.classList.remove('invalid');
+    }
+  }
+  confirmPw.addEventListener('input', validateConfirm);
+
+  document.getElementById('pwForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    oldPwHint.textContent = '';
+    newPwHint.textContent = '';
+    confirmPwHint.textContent = '';
+    oldPw.classList.remove('invalid');
+    confirmPw.classList.remove('invalid');
+    newPw.classList.remove('invalid');
+
+    var ok = true;
+    if (!oldPw.value) {
+      oldPwHint.textContent = '请输入旧密码';
+      oldPw.classList.add('invalid');
+      ok = false;
+    }
+    var rules = checkPwRules(newPw.value);
+    Object.keys(rules).forEach(function (k) { ruleEls[k].classList.toggle('pass', rules[k]); });
+    if (!allRulesPass(rules)) {
+      newPw.classList.add('invalid');
+      ok = false;
+    }
+    if (validateSameAsOld()) {
+      ok = false;
+    }
+    if (!confirmPw.value || confirmPw.value !== newPw.value) {
+      confirmPwHint.textContent = '两次输入的新密码不一致';
+      confirmPw.classList.add('invalid');
+      ok = false;
+    }
+    if (!ok) return;
+
+    // form itself is valid — require Google verification before it actually saves
+    openGoogleModal();
+  });
+
+  // ---- Google 验证码弹窗 ----
+  var googleModalBackdrop = document.getElementById('googleModalBackdrop');
+  var googleCodeInput = document.getElementById('googleCodeInput');
+  var googleModalConfirm = document.getElementById('googleModalConfirm');
+  var googleModalClose = document.getElementById('googleModalClose');
+
+  function openGoogleModal() {
+    googleCodeInput.value = '';
+    googleModalBackdrop.classList.add('open');
+    googleCodeInput.focus();
+  }
+  function closeGoogleModal() {
+    googleModalBackdrop.classList.remove('open');
+  }
+  function confirmGoogleCode() {
+    var code = googleCodeInput.value.trim();
+
+    // demo-only: no backend wired up yet, so there's nothing real to check
+    // the code against. A code that isn't exactly 6 digits (including left
+    // empty) is treated as a failed verification, same as a wrong code —
+    // both close the modal and surface the failure toast. "000000" is
+    // reserved to demo a correctly-formatted-but-wrong code; any other
+    // 6-digit code simulates success.
+    closeGoogleModal();
+    if (!/^\d{6}$/.test(code) || code === '000000') {
+      showToast('密码修改失败，请重试', 'error');
+      return;
+    }
+    oldPw.value = ''; newPw.value = ''; confirmPw.value = '';
+    oldPwHint.textContent = ''; newPwHint.textContent = ''; confirmPwHint.textContent = '';
+    Object.keys(ruleEls).forEach(function (k) { ruleEls[k].classList.remove('pass'); });
+    showToast('密码修改成功，下次登录请使用新密码', 'success');
+
+    // 规则：密码修改成功后自动退出登录，需要重新登录
+    setTimeout(function () {
+      document.getElementById('logoutOverlay').classList.add('open');
+    }, 1200);
+  }
+
+  document.getElementById('reloginBtn').addEventListener('click', function () {
+    // demo-only: no real login route to send the user to, so this just
+    // resets the page back to its initial state to stand in for "logged out".
+    location.reload();
+  });
+
+  googleModalConfirm.addEventListener('click', confirmGoogleCode);
+  googleCodeInput.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') { e.preventDefault(); confirmGoogleCode(); }
+  });
+  googleModalClose.addEventListener('click', closeGoogleModal);
+  googleModalBackdrop.addEventListener('click', function (e) {
+    if (e.target === googleModalBackdrop) closeGoogleModal();
+  });
+
+  // ---- 规则说明弹窗 ----
+  var rulesModalBackdrop = document.getElementById('rulesModalBackdrop');
+  document.getElementById('rulesBtn').addEventListener('click', function () {
+    rulesModalBackdrop.classList.add('open');
+  });
+  document.getElementById('rulesModalClose').addEventListener('click', function () {
+    rulesModalBackdrop.classList.remove('open');
+  });
+  rulesModalBackdrop.addEventListener('click', function (e) {
+    if (e.target === rulesModalBackdrop) rulesModalBackdrop.classList.remove('open');
+  });
+
+  // ---- login log demo data (newest first) ----
+  // Only records within the most recent 3 months are shown (see 规则说明).
+  // The window is anchored to the newest demo entry (standing in for "now")
+  // so the demo stays consistent regardless of when this file is opened.
+  var LOG_WINDOW_DAYS = 90;
+  var logsAll = [
+    { ip: '165.154.119.222', device: 'Windows', time: '2026-08-24 13:33:07' },
+    { ip: '149.28.134.231', device: 'Mac', time: '2026-08-24 13:30:49' },
+    { ip: '149.174.116.179', device: 'Mac', time: '2026-08-24 13:26:30' },
+    { ip: '103.62.49.138', device: 'Mac', time: '2026-08-24 13:17:03' },
+    { ip: '149.174.116.128', device: 'Mac', time: '2026-08-24 12:41:06' },
+    { ip: '217.217.254.177', device: 'Mac', time: '2026-08-24 11:39:34' },
+    { ip: '178.62.193.45', device: 'Mac', time: '2026-08-23 22:14:51' },
+    { ip: '188.166.32.90', device: 'Windows', time: '2026-08-23 18:47:12' },
+    { ip: '149.28.134.231', device: 'Mac', time: '2026-08-23 09:12:03' },
+    { ip: '103.62.49.138', device: 'Mac', time: '2026-08-22 21:05:44' },
+    { ip: '165.154.119.222', device: 'Windows', time: '2026-08-22 14:33:07' },
+    { ip: '149.174.116.179', device: 'Mac', time: '2026-08-22 08:19:56' },
+    { ip: '217.217.254.177', device: 'Mac', time: '2026-08-21 20:02:11' },
+    { ip: '149.174.116.128', device: 'Mac', time: '2026-08-21 13:47:38' },
+    { ip: '103.62.49.138', device: 'Mac', time: '2026-08-20 19:26:04' },
+    { ip: '149.28.134.231', device: 'Mac', time: '2026-08-20 10:11:22' },
+    { ip: '165.154.119.222', device: 'Windows', time: '2026-08-19 23:58:47' },
+    { ip: '188.166.32.90', device: 'Mac', time: '2026-08-19 15:34:19' },
+    { ip: '178.62.193.45', device: 'Mac', time: '2026-08-18 09:47:02' }
+  ];
+
+  var logWindowStart = new Date(logsAll[0].time.replace(' ', 'T'));
+  logWindowStart.setDate(logWindowStart.getDate() - LOG_WINDOW_DAYS);
+  var logs = logsAll.filter(function (row) {
+    return new Date(row.time.replace(' ', 'T')) >= logWindowStart;
+  });
+
+  var LOG_PAGE_SIZE = 6;
+  var logPage = 1;
+  var logTableBody = document.getElementById('logTableBody');
+  var logTotalEl = document.getElementById('logTotal');
+  var logPagesEl = document.getElementById('logPages');
+  var logPageCount = Math.max(1, Math.ceil(logs.length / LOG_PAGE_SIZE));
+
+  function renderLogPage(page) {
+    logPage = Math.min(Math.max(1, page), logPageCount);
+    var start = (logPage - 1) * LOG_PAGE_SIZE;
+    var rows = logs.slice(start, start + LOG_PAGE_SIZE);
+
+    logTableBody.innerHTML = '';
+    rows.forEach(function (row) {
+      var tr = document.createElement('tr');
+      tr.innerHTML =
+        '<td>' + row.ip + '</td>' +
+        '<td>' + row.device + '</td>' +
+        '<td>' + row.time + '</td>';
+      logTableBody.appendChild(tr);
+    });
+
+    logTotalEl.textContent = '共 ' + logs.length + ' 条';
+    renderLogPager();
+  }
+
+  function renderLogPager() {
+    logPagesEl.innerHTML = '';
+
+    var prev = document.createElement('button');
+    prev.type = 'button';
+    prev.textContent = '‹';
+    prev.disabled = logPage === 1;
+    prev.addEventListener('click', function () { renderLogPage(logPage - 1); });
+    logPagesEl.appendChild(prev);
+
+    for (var i = 1; i <= logPageCount; i++) {
+      (function (pageNum) {
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.textContent = String(pageNum);
+        if (pageNum === logPage) btn.classList.add('current');
+        btn.addEventListener('click', function () { renderLogPage(pageNum); });
+        logPagesEl.appendChild(btn);
+      })(i);
+    }
+
+    var next = document.createElement('button');
+    next.type = 'button';
+    next.textContent = '›';
+    next.disabled = logPage === logPageCount;
+    next.addEventListener('click', function () { renderLogPage(logPage + 1); });
+    logPagesEl.appendChild(next);
+  }
+
+  renderLogPage(1);
+</script>
