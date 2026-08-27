@@ -155,32 +155,25 @@
     display:none !important;
   }
   .cat{
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    gap:4px;
-    padding:10px 4px;
-    background:transparent;
-    border:none;
-    border-radius:14px;
-    color:var(--blue-dim);
-    font-size:12px;
-    cursor:pointer;
-    transition:all .15s ease;
-  }
-  .cat .icon{
     position:relative;
-    width:30px;height:30px;
-    display:flex;align-items:center;justify-content:center;
-    font-size:16px;
-    border-radius:10px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:11px 4px;
     background:#ffffff;
-    box-shadow:0 1px 3px rgba(20,40,80,0.08);
+    border:none;
+    border-radius:12px;
+    color:var(--blue-dim);
+    font-size:12.5px;
+    font-weight:600;
+    cursor:pointer;
+    box-shadow:0 1px 3px rgba(20,40,80,0.06);
+    transition:all .15s ease;
   }
   .cat-badge{
     position:absolute;
     top:-5px;
-    right:-6px;
+    right:-5px;
     min-width:15px;
     height:15px;
     padding:0 3px;
@@ -195,16 +188,17 @@
   }
   .cat-badge[hidden]{display:none !important;}
   .cat.active{
+    background:var(--blue);
+    color:#ffffff;
+    font-weight:700;
+    box-shadow:0 3px 8px rgba(47,125,250,0.32);
+  }
+  .cat.active .cat-badge{
+    box-shadow:0 0 0 2px var(--blue);
+  }
+  .cat:not(.active):hover{
     background:var(--blue-soft);
     color:var(--blue);
-    font-weight:700;
-  }
-  .cat.active .icon{
-    background:var(--blue);
-    box-shadow:0 3px 8px rgba(47,125,250,0.35);
-  }
-  .cat:not(.active):hover .icon{
-    background:#ffffff;
   }
   .sidebar-actions{
     margin-top:6px;
@@ -528,13 +522,6 @@
     to{ opacity:1; transform:translateY(0); }
   }
   .record-date{font-size:11px; color:var(--text-sub);}
-  .empty-hint{
-    text-align:center;
-    color:var(--text-sub);
-    font-size:12px;
-    padding:32px 0;
-  }
-
   /* ---------- filter bar (领取记录) ---------- */
   .filter-bar{
     display:flex;
@@ -947,12 +934,12 @@
 
   <div class="body">
     <aside class="sidebar" id="sidebar">
-      <button class="cat active" data-cat="all"><span class="icon">🗂️<span class="cat-badge" data-cat-badge="all" hidden>0</span></span>全部活动</button>
-      <button class="cat" data-cat="电子"><span class="icon">🎰<span class="cat-badge" data-cat-badge="电子" hidden>0</span></span>电子</button>
-      <button class="cat" data-cat="视讯"><span class="icon">🎭<span class="cat-badge" data-cat-badge="视讯" hidden>0</span></span>视讯</button>
-      <button class="cat" data-cat="捕鱼"><span class="icon">🐟<span class="cat-badge" data-cat-badge="捕鱼" hidden>0</span></span>捕鱼</button>
-      <button class="cat" data-cat="体育"><span class="icon">⚽<span class="cat-badge" data-cat-badge="体育" hidden>0</span></span>体育</button>
-      <button class="cat" data-cat="出款福利"><span class="icon">💰<span class="cat-badge" data-cat-badge="出款福利" hidden>0</span></span>出款福利</button>
+      <button class="cat active" data-cat="all">全部活动<span class="cat-badge" data-cat-badge="all" hidden>0</span></button>
+      <button class="cat" data-cat="电子">电子<span class="cat-badge" data-cat-badge="电子" hidden>0</span></button>
+      <button class="cat" data-cat="视讯">视讯<span class="cat-badge" data-cat-badge="视讯" hidden>0</span></button>
+      <button class="cat" data-cat="捕鱼">捕鱼<span class="cat-badge" data-cat-badge="捕鱼" hidden>0</span></button>
+      <button class="cat" data-cat="体育">体育<span class="cat-badge" data-cat-badge="体育" hidden>0</span></button>
+      <button class="cat" data-cat="出款福利">出款福利<span class="cat-badge" data-cat-badge="出款福利" hidden>0</span></button>
 
       <div class="sidebar-actions">
         <button class="ghost-btn" id="sidebarRecordsBtn">领取记录</button>
@@ -1322,7 +1309,6 @@
               <span class="record-date">发放时间 08月18日 12:30</span>
             </div>
           </div>
-          <div class="empty-hint">— 仅展示最近 30 天领取记录 —</div>
         </div>
 
       </div>
@@ -1357,62 +1343,62 @@
   <div class="dev-section">
     <h3><span class="num">1</span>页面结构 &amp; 页签切换</h3>
     <ul>
-      <li>顶部 <b>活动 / 待领取 / 领取记录</b> 三个页签，纯前端状态切换，不刷新整页。</li>
-      <li>切换页签时，下方整体内容区会播放一次「快速往左扫入」的过渡动画，重复点击当前已激活页签不会重复触发。</li>
-      <li>左侧分类侧边栏<b>仅在「活动」页签下显示</b>，切到「待领取」「领取记录」时自动隐藏。</li>
+      <li>顶部 <b>活动 / 待领取 / 领取记录</b> 三个页签，纯前端切换，不刷新整页。</li>
+      <li>切换页签有一次「往左扫入」过渡动画，重复点当前页签不触发。</li>
+      <li>左侧分类侧边栏<b>仅「活动」页签显示</b>，其余页签自动隐藏。</li>
     </ul>
   </div>
 
   <div class="dev-section">
     <h3><span class="num">2</span>活动页</h3>
     <ul>
-      <li>卡片按分类展示（电子/视讯/捕鱼/体育/出款福利），点击侧边栏分类仅做本地筛选展示，不重新拉取数据。</li>
-      <li>部分卡片左上角展示「待领取」角标——这只是「该活动当前有奖励可领」的样式提示，不等同于「待领取」页面里的真实数据行，两者分开渲染，不复用同一份状态。</li>
+      <li>卡片按分类展示，点击侧边栏分类仅本地筛选，不重新拉取数据。</li>
+      <li>「待领取」角标只是样式提示，与「待领取」页的真实数据分开渲染，不复用同一状态。</li>
     </ul>
   </div>
 
   <div class="dev-section">
     <h3><span class="num">3</span>待领取页 <span class="rule-tag">重点规则</span></h3>
     <div class="rule-box">
-      <b>只展示系统自动发放的奖励</b>（如签到、新人礼包、VIP返水、砸金蛋等）；<b>人工审核 / 人工派发的奖励不出现在本页</b>，需通过人工通知或客服渠道单独触达。
+      <b>只展示系统自动发放的奖励</b>；<b>人工审核 / 人工派发的奖励不出现在本页</b>，需另走人工通知或客服渠道触达。
     </div>
     <ul>
-      <li>活动卡片中的<b>活动名称、奖励金额、奖励领取时间</b>均从 uulai 后台获取。</li>
-      <li>点击列表项非按钮区域 → 跳转到活动页对应卡片并高亮闪烁一次。</li>
-      <li>点击「立即领取」→ 飞金币 + 火花特效 → 移入领取记录（状态「已领取」）→ 顶部余额同步减少。</li>
-      <li>顶部「一键领取」按钮 → 错峰依次领取当前列表所有项，领取过程中按钮禁用，全部领完后自动隐藏。</li>
+      <li><b>活动名称、奖励金额、奖励领取时间</b>均从 uulai 后台获取。</li>
+      <li>点击列表项（非按钮区域）跳转到对应活动卡片并高亮一次。</li>
+      <li>点击「立即领取」：飞金币 + 火花特效，移入领取记录，余额同步减少。</li>
+      <li>「一键领取」错峰依次领取全部项，过程中按钮禁用，领完自动隐藏。</li>
     </ul>
   </div>
 
   <div class="dev-section">
     <h3><span class="num">4</span>领取记录页 <span class="rule-tag">重点规则</span></h3>
     <div class="rule-box">
-      与待领取页规则一致：<b>只记录自动发放奖励的领取流水</b>，人工派发记录不出现在本页，避免与客服渠道数据重复。
+      与待领取页一致：<b>只记录自动发放奖励的领取流水</b>，人工派发记录不出现在本页。
     </div>
     <ul>
-      <li>列表中的<b>活动名称、奖励金额、领取状态、发放时间</b>均从 uulai 后台获取。</li>
-      <li>所有记录统一为「已领取」状态。</li>
-      <li>今日 / 昨日 / 本月 / 上月筛选按真实日期计算，保证新产生的领取记录能正确落入对应筛选项。</li>
-      <li>「查看更多」按 今日/昨日 → 本月 → 上月 顺序逐级放宽查询范围，最多回溯到上月（系统仅支持查询近 2 个月）。</li>
-      <li>右上角「奖金」金额 = 当前筛选条件下已领取金额之和，随筛选条件实时重新计算。</li>
+      <li><b>活动名称、奖励金额、领取状态、发放时间</b>均从 uulai 后台获取。</li>
+      <li>统一为「已领取」状态。</li>
+      <li>今日 / 昨日 / 本月 / 上月按真实日期计算，保证新记录能正确归入对应筛选项。</li>
+      <li>「查看更多」逐级放宽：今日/昨日 → 本月 → 上月（最多回溯上月）。</li>
+      <li>「奖金」= 当前筛选下已领取金额之和，实时重新计算。</li>
     </ul>
   </div>
 
   <div class="dev-section">
     <h3><span class="num">5</span>领取特效 &amp; 动效</h3>
     <ul>
-      <li>点击领取：从「立即领取」按钮位置飞出一枚金币动画 + 火花粒子，落地后顶部金币徽标做一次弹跳 + 光晕反馈。</li>
-      <li>新增领取记录：以淡入动画插入到列表顶部。</li>
-      <li>所有特效都被限制在手机框范围内，不会溢出手机壳。</li>
+      <li>领取时飞金币 + 火花特效，顶部金币徽标做弹跳反馈。</li>
+      <li>新增记录以淡入动画插入列表顶部。</li>
+      <li>特效限制在手机框范围内，不会溢出。</li>
     </ul>
   </div>
 
   <div class="dev-section">
     <h3><span class="num">6</span>红点数字 <span class="rule-tag">相互关联</span></h3>
     <ul>
-      <li>顶部「活动 / 待领取」页签、左侧分类导航、底部导航「活动」上的红点，全部来自同一份待领取数据，会同步增减，不是各自独立的数字。</li>
-      <li>左侧分类导航中，「全部活动」显示待领取总数，其余每个分类显示该分类下的待领取数量。</li>
-      <li>全部领取完成后，所有位置的红点会一起消失，不会有的清空、有的还留着。</li>
+      <li>顶部页签、左侧分类导航、底部导航「活动」的红点同源同步，不是独立数字。</li>
+      <li>「全部活动」= 待领取总数，其余分类 = 该分类待领取数量。</li>
+      <li>全部领完后，所有红点一起消失。</li>
     </ul>
   </div>
 </aside>
