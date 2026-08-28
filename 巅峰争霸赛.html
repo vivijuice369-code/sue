@@ -102,7 +102,8 @@
     padding:16px 18px 0;
   }
   .brand{display:flex; align-items:center; gap:8px;}
-  .brand-mark{width:26px; height:26px; border-radius:7px; background:var(--grad-gold); display:flex; align-items:center; justify-content:center; font-size:14px;}
+  .brand-mark{width:26px; height:26px; border-radius:7px; overflow:hidden; flex-shrink:0; display:flex; align-items:center; justify-content:center;}
+  .brand-mark img{width:100%; height:100%; object-fit:cover; display:block;}
   .brand-name{font-size:12px; color:var(--ink-dim); letter-spacing:1px;}
   .rules-entry{
     font-size:12px; color:var(--ink-dim); border:1px solid var(--line); padding:5px 10px; border-radius:20px;
@@ -490,8 +491,8 @@
   <div class="home">
     <div class="topbar">
       <div class="brand">
-        <div class="brand-mark">⚔️</div>
-        <div class="brand-name">JUAN365 · 巅峰赛事</div>
+        <div class="brand-mark"><img src="data:image/png;base64,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" alt="U8 logo"></div>
+        <div class="brand-name">U8-S1巅峰赛</div>
       </div>
       <div class="rules-entry" onclick="openPanel('panel-rules')">📜 规则</div>
     </div>
