@@ -1,0 +1,1299 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>巅峰争霸赛 · 谁是本月流水之王</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-deep:#0A0C16;
+    --bg-panel:#12162A;
+    --bg-panel-2:#1B2140;
+    --bg-panel-3:#232A4E;
+    --gold:#E8B64A;
+    --gold-dim:#8A6E2E;
+    --crimson:#FF4B4B;
+    --jade:#33D6A6;
+    --ink:#F5F1E6;
+    --ink-dim:#8B92B4;
+    --ink-faint:#565D82;
+    --line:#262C4C;
+    --grad-gold: linear-gradient(135deg,#F7D488 0%,#E8B64A 45%,#B8842A 100%);
+    --grad-crimson: linear-gradient(135deg,#FF7A6B 0%,#FF4B4B 60%,#C22929 100%);
+    --grad-jade: linear-gradient(135deg,#6FF0C8 0%,#33D6A6 60%,#189B79 100%);
+  }
+  *{box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent;}
+  html,body{background:#000; height:100%;}
+  body{
+    font-family:'Noto Sans SC', -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    color:var(--ink);
+    display:flex; justify-content:center;
+  }
+  .num{font-family:'Rajdhani',sans-serif; font-weight:700;}
+
+  .stage{display:flex; align-items:flex-start; gap:28px; padding:36px 20px;}
+
+  /* ---------- right-side rules/annotation panel (desktop review only) ---------- */
+  .side-rules{
+    width:400px; flex-shrink:0; max-height:calc(100vh - 72px); overflow-y:auto;
+    background:var(--bg-panel); border:1px solid var(--line); border-radius:20px;
+    padding:24px 24px 30px; position:sticky; top:36px;
+  }
+  .side-rules::-webkit-scrollbar{width:4px;}
+  .side-rules::-webkit-scrollbar-thumb{background:var(--line); border-radius:4px;}
+  .side-rules-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:4px;}
+  .side-rules-head h1{font-size:17px; font-weight:700;}
+  .side-rules-head .badge{font-size:10px; color:var(--gold); border:1px solid rgba(232,182,74,.4); padding:3px 9px; border-radius:20px; letter-spacing:1px;}
+  .side-rules-sub{font-size:11.5px; color:var(--ink-faint); margin-bottom:20px;}
+  .qref-title{font-size:12px; color:var(--gold); font-weight:700; margin:22px 0 8px; letter-spacing:1px;}
+  .qref-row{display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px dashed var(--line); font-size:12px;}
+  .qref-row:last-child{border-bottom:none;}
+  .qref-row .k{color:var(--ink-dim);}
+  .qref-row .v{color:var(--gold); font-weight:700;}
+  @media (max-width: 980px){ .side-rules{display:none;} }
+
+  /* ---------- device frame for prototype viewing (phone-frame: fixed viewport, internal scroll) ---------- */
+  .device{
+    width:430px; max-width:100vw; height:calc(100vh - 72px); min-height:640px;
+    background:var(--bg-deep);
+    position:relative; overflow:hidden;
+    border-radius:32px; border:1px solid #262C4C;
+    box-shadow:0 0 0 6px #05060c, 0 20px 60px rgba(0,0,0,.6);
+  }
+  .device-notch{
+    position:absolute; top:0; left:50%; transform:translateX(-50%); width:120px; height:22px;
+    background:#05060c; border-radius:0 0 16px 16px; z-index:30; pointer-events:none;
+  }
+  ::-webkit-scrollbar{width:0; height:0;}
+
+  /* ---------- ambient bg texture ---------- */
+  .bg-glow{
+    position:absolute; inset:0; pointer-events:none; z-index:0; overflow:hidden;
+  }
+  .bg-glow::before{
+    content:''; position:absolute; top:-120px; left:-80px; width:340px; height:340px; border-radius:50%;
+    background:radial-gradient(circle, rgba(232,182,74,.25), transparent 70%);
+  }
+  .bg-glow::after{
+    content:''; position:absolute; bottom:120px; right:-100px; width:300px; height:300px; border-radius:50%;
+    background:radial-gradient(circle, rgba(255,75,75,.16), transparent 70%);
+  }
+  .hexbg{
+    position:absolute; inset:0; z-index:0; opacity:.5;
+    background-image:
+      linear-gradient(30deg, rgba(232,182,74,.045) 12%, transparent 12.5%, transparent 87%, rgba(232,182,74,.045) 87.5%, rgba(232,182,74,.045)),
+      linear-gradient(150deg, rgba(232,182,74,.045) 12%, transparent 12.5%, transparent 87%, rgba(232,182,74,.045) 87.5%, rgba(232,182,74,.045)),
+      linear-gradient(30deg, rgba(232,182,74,.045) 12%, transparent 12.5%, transparent 87%, rgba(232,182,74,.045) 87.5%, rgba(232,182,74,.045)),
+      linear-gradient(150deg, rgba(232,182,74,.045) 12%, transparent 12.5%, transparent 87%, rgba(232,182,74,.045) 87.5%, rgba(232,182,74,.045));
+    background-size:44px 76px; background-position:0 0, 0 0, 22px 38px, 22px 38px;
+  }
+
+  /* ================= HOME ================= */
+  .home{
+    position:relative; z-index:1; height:100%; overflow-y:auto; -webkit-overflow-scrolling:touch;
+    padding-bottom:110px; scroll-behavior:smooth;
+  }
+
+  .topbar{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:16px 18px 0;
+  }
+  .brand{display:flex; align-items:center; gap:8px;}
+  .brand-mark{width:26px; height:26px; border-radius:7px; background:var(--grad-gold); display:flex; align-items:center; justify-content:center; font-size:14px;}
+  .brand-name{font-size:12px; color:var(--ink-dim); letter-spacing:1px;}
+  .rules-entry{
+    font-size:12px; color:var(--ink-dim); border:1px solid var(--line); padding:5px 10px; border-radius:20px;
+    display:flex; align-items:center; gap:4px;
+  }
+
+  .rewards-banner{
+    margin:14px 20px 0; padding:13px 15px; border-radius:16px; cursor:pointer;
+    background:linear-gradient(120deg, rgba(232,182,74,.16) 0%, rgba(232,182,74,.04) 55%, var(--bg-panel) 100%);
+    border:1px solid rgba(232,182,74,.35);
+    display:flex; align-items:center; gap:12px; position:relative; overflow:hidden;
+  }
+  .rewards-banner::after{
+    content:''; position:absolute; top:-50%; right:-10%; width:120px; height:120px; border-radius:50%;
+    background:radial-gradient(circle, rgba(232,182,74,.2), transparent 70%);
+  }
+  .rewards-banner-icon{
+    width:38px; height:38px; border-radius:11px; background:var(--grad-gold); flex-shrink:0;
+    display:flex; align-items:center; justify-content:center; font-size:18px; position:relative;
+  }
+  .rewards-banner-dot{
+    position:absolute; top:-5px; right:-5px; min-width:15px; height:15px; padding:0 3px; border-radius:8px;
+    background:var(--crimson); color:#fff; font-size:9px; font-weight:700; display:flex; align-items:center; justify-content:center;
+    border:2px solid var(--bg-deep); animation:dotPulse 1.8s ease-in-out infinite;
+  }
+  @keyframes dotPulse{ 0%,100%{transform:scale(1);} 50%{transform:scale(1.18);} }
+  .rewards-banner-mid{flex:1; min-width:0; position:relative; z-index:1;}
+  .rewards-banner-title{font-size:14px; font-weight:700;}
+  .rewards-banner-sub{font-size:11px; color:var(--ink-dim); margin-top:2px;}
+  .rewards-banner-sub b{color:var(--gold); font-weight:700;}
+  .rewards-banner-arrow{font-size:22px; color:var(--gold); flex-shrink:0; position:relative; z-index:1;}
+
+  .hero{padding:18px 20px 6px; text-align:center;}
+  .hero-eyebrow{
+    font-size:11px; letter-spacing:3px; color:var(--gold); font-weight:700;
+    display:inline-block; padding:4px 12px; border:1px solid rgba(232,182,74,.4); border-radius:20px; margin-bottom:14px;
+  }
+  .hero-title{
+    font-size:34px; font-weight:900; line-height:1.15; letter-spacing:2px;
+    background:var(--grad-gold); -webkit-background-clip:text; background-clip:text; color:transparent;
+    filter:drop-shadow(0 2px 12px rgba(232,182,74,.25));
+  }
+  .hero-sub{font-size:13px; color:var(--ink-dim); margin-top:8px; letter-spacing:1px;}
+
+  .countdown{
+    margin:18px 20px 0; padding:14px 16px; border-radius:16px;
+    background:linear-gradient(180deg, var(--bg-panel-2), var(--bg-panel));
+    border:1px solid var(--line);
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  .countdown-label{font-size:12px; color:var(--ink-dim);}
+  .countdown-clock{display:flex; gap:6px; align-items:baseline;}
+  .cd-box{background:var(--bg-panel-3); border-radius:6px; padding:4px 7px; font-size:16px; min-width:28px; text-align:center;}
+  .cd-sep{color:var(--gold); font-size:14px;}
+
+  /* status card w/ signature hex badge */
+  .status-card{
+    margin:16px 20px 0; padding:18px; border-radius:20px;
+    background:linear-gradient(160deg, var(--bg-panel-2) 0%, var(--bg-panel) 100%);
+    border:1px solid var(--line);
+    display:flex; gap:14px; align-items:center; position:relative; overflow:hidden;
+  }
+  .status-card::after{
+    content:''; position:absolute; top:-40%; right:-20%; width:160px; height:160px; border-radius:50%;
+    background:radial-gradient(circle, rgba(232,182,74,.14), transparent 70%);
+  }
+  .hexwrap{position:relative; width:74px; height:74px; flex-shrink:0; cursor:pointer; animation:hexGlow 3s ease-in-out infinite;}
+  @keyframes hexGlow{ 0%,100%{filter:drop-shadow(0 0 0 rgba(232,182,74,0));} 50%{filter:drop-shadow(0 0 10px rgba(232,182,74,.45));} }
+  .hexwrap svg{position:absolute; inset:0; transform:rotate(-90deg);}
+  .hex-emblem{
+    position:absolute; inset:8px; clip-path:polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    background:var(--grad-gold); display:flex; align-items:center; justify-content:center; font-size:22px;
+  }
+  .status-info{flex:1; position:relative; z-index:1;}
+  .status-seg{font-size:11px; color:var(--gold); letter-spacing:1px; font-weight:700; margin-bottom:2px;}
+  .status-name{font-size:17px; font-weight:700;}
+  .status-row{display:flex; gap:18px; margin-top:10px;}
+  .status-item .num{font-size:18px; color:var(--ink);}
+  .status-item .lbl{font-size:10px; color:var(--ink-faint); margin-top:1px;}
+  .status-arrow{font-size:18px; color:var(--ink-faint);}
+
+  .not-qualified{
+    margin:10px 20px 0; padding:10px 14px; border-radius:12px;
+    background:rgba(255,75,75,.08); border:1px solid rgba(255,75,75,.25);
+    font-size:12px; color:#FFB3B3; display:flex; align-items:center; justify-content:space-between;
+  }
+  .not-qualified .bar-wrap{flex:1; height:5px; background:rgba(255,255,255,.08); border-radius:3px; margin:0 10px; overflow:hidden;}
+  .not-qualified .bar-fill{height:100%; background:var(--grad-crimson); border-radius:3px;}
+
+  .section-title{
+    margin:26px 20px 12px; display:flex; align-items:baseline; gap:8px;
+  }
+  .section-title .zh{font-size:16px; font-weight:700;}
+  .section-title .en{font-size:10px; color:var(--ink-faint); letter-spacing:2px; text-transform:uppercase;}
+
+  .grid4{display:grid; grid-template-columns:1fr 1fr; gap:12px; padding:0 20px;}
+  .op-card{
+    border-radius:18px; padding:16px 14px; position:relative; overflow:hidden; min-height:132px;
+    border:1px solid var(--line); background:var(--bg-panel); cursor:pointer;
+    display:flex; flex-direction:column; justify-content:space-between;
+  }
+  .op-card .icon{font-size:22px;}
+  .op-card .title{font-size:14px; font-weight:700; margin-top:8px;}
+  .op-card .stat{font-size:11px; color:var(--ink-dim); margin-top:4px;}
+  .op-card .stat b{color:var(--gold); font-weight:700;}
+  .op-card .op-detail-hint{position:absolute; top:12px; right:13px; z-index:1;}
+  .op-card::after{
+    content:''; position:absolute; bottom:-30px; right:-30px; width:90px; height:90px; border-radius:50%; opacity:.5;
+  }
+  .op-1::after{background:radial-gradient(circle, rgba(232,182,74,.22), transparent 70%);}
+  .op-2::after{background:radial-gradient(circle, rgba(51,214,166,.22), transparent 70%);}
+  .op-3::after{background:radial-gradient(circle, rgba(255,75,75,.22), transparent 70%);}
+  .op-4::after{background:radial-gradient(circle, rgba(148,120,255,.22), transparent 70%);}
+
+  .ticker-wrap{
+    margin:22px 0 0; padding:10px 0; background:var(--bg-panel); border-top:1px solid var(--line); border-bottom:1px solid var(--line);
+    overflow:hidden; white-space:nowrap;
+  }
+  .ticker{display:inline-block; padding-left:100%; animation:scroll-left 22s linear infinite;}
+  .ticker span{font-size:12px; color:var(--ink-dim); margin-right:36px;}
+  .ticker span b{color:var(--jade); font-weight:700;}
+  @keyframes scroll-left{ from{transform:translateX(0);} to{transform:translateX(-100%);} }
+
+  .promo-strip{padding:20px; display:flex; flex-direction:column; gap:10px;}
+  .promo-item{border-radius:14px; background:var(--bg-panel); border:1px solid var(--line); overflow:hidden; transition:border-color .2s;}
+  .promo-item.open{border-color:rgba(232,182,74,.35);}
+  .promo-head{display:flex; gap:10px; align-items:flex-start; padding:12px 14px; cursor:pointer;}
+  .promo-item .dot{width:22px; height:22px; border-radius:6px; background:var(--grad-gold); flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; color:#1a1200;}
+  .promo-item .txt{flex:1;}
+  .promo-item .txt b{font-size:13px; display:block;}
+  .promo-item .txt span{font-size:11.5px; color:var(--ink-dim); line-height:1.5;}
+  .promo-chev{font-size:11px; color:var(--ink-faint); transition:transform .25s; flex-shrink:0; margin-top:3px;}
+  .promo-item.open .promo-chev{transform:rotate(180deg); color:var(--gold);}
+  .promo-detail{max-height:0; overflow:hidden; transition:max-height .25s ease;}
+  .promo-item.open .promo-detail{max-height:220px;}
+  .promo-detail-inner{padding:0 14px 14px 46px; font-size:11.5px; color:var(--ink-dim); line-height:1.8; border-top:1px dashed var(--line); margin-top:2px; padding-top:10px;}
+  .promo-detail-inner li{list-style:none; position:relative; padding-left:14px; margin-bottom:4px;}
+  .promo-detail-inner li::before{content:'·'; position:absolute; left:0; color:var(--gold);}
+  .promo-quote{font-size:11.5px; color:var(--gold); font-style:italic; margin-top:6px; opacity:.9;}
+
+  .closing-banner{
+    margin:6px 20px 24px; padding:22px 18px; border-radius:18px; text-align:center; position:relative; overflow:hidden;
+    background:linear-gradient(160deg, var(--bg-panel-2), var(--bg-panel));
+    border:1px solid var(--line);
+  }
+  .closing-banner::before{content:''; position:absolute; inset:0; background:radial-gradient(circle at 50% 0%, rgba(232,182,74,.16), transparent 65%);}
+  .closing-banner .q1{font-size:15px; font-weight:700; position:relative; z-index:1;}
+  .closing-banner .q2{font-size:12px; color:var(--ink-dim); margin-top:6px; position:relative; z-index:1;}
+  .closing-banner .q3{font-size:13px; color:var(--gold); font-weight:700; letter-spacing:2px; margin-top:12px; position:relative; z-index:1;}
+
+  .cta-fixed{
+    position:sticky; bottom:0; left:0; right:0; z-index:5;
+    padding:12px 20px calc(14px + env(safe-area-inset-bottom));
+    background:linear-gradient(180deg, transparent, var(--bg-deep) 30%);
+  }
+  .cta-btn{
+    width:100%; padding:15px; border:none; border-radius:14px; background:var(--grad-gold);
+    color:#1a1200; font-size:15px; font-weight:900; letter-spacing:2px;
+    box-shadow:0 8px 24px rgba(232,182,74,.35);
+  }
+
+  /* ================= PANEL (drawer) — confined to device frame ================= */
+  .mask{
+    position:absolute; inset:0; background:rgba(0,0,0,.55); backdrop-filter:blur(3px); z-index:20;
+    opacity:0; pointer-events:none; transition:opacity .25s;
+  }
+  .mask.show{opacity:1; pointer-events:auto;}
+  .panel{
+    position:absolute; left:0; right:0; bottom:0; transform:translateY(100%); z-index:21;
+    width:100%; height:88%; max-height:88%;
+    background:var(--bg-deep); border-radius:22px 22px 0 0; border:1px solid var(--line); border-bottom:none;
+    transition:transform .34s cubic-bezier(.22,.9,.32,1);
+    display:flex; flex-direction:column; overflow:hidden;
+    box-shadow:0 -12px 40px rgba(0,0,0,.5);
+  }
+  .panel.show{transform:translateY(0);}
+  .panel-grip{width:36px; height:4px; background:var(--line); border-radius:3px; margin:10px auto 0; cursor:pointer;}
+  .panel-head{padding:10px 20px 14px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid var(--line);}
+  .panel-head h2{font-size:17px; font-weight:700;}
+  .panel-head .sub{font-size:11px; color:var(--ink-dim); margin-top:2px;}
+  .panel-link{color:var(--gold); cursor:pointer;}
+  .panel-link:active{opacity:.7;}
+  .panel-close{width:30px; height:30px; border-radius:50%; background:var(--bg-panel); display:flex; align-items:center; justify-content:center; color:var(--ink-dim); font-size:15px; transition:transform .15s;}
+  .panel-close:active{transform:scale(.88);}
+  .panel-body{flex:1; overflow-y:auto; padding:16px 20px 30px; -webkit-overflow-scrolling:touch;}
+
+  .tabs{display:flex; gap:8px; padding:12px 20px 0;}
+  .tab{flex:1; text-align:center; padding:9px 0; border-radius:10px; font-size:12.5px; color:var(--ink-dim); background:var(--bg-panel); border:1px solid var(--line); transition:transform .15s;}
+  .tab.active{background:var(--grad-gold); color:#1a1200; font-weight:700; border-color:transparent;}
+  .tab:active{transform:scale(.96);}
+
+  /* ---- leaderboard ---- */
+  .podium{display:flex; align-items:flex-end; gap:8px; padding:10px 0 18px;}
+  .pod{flex:1; text-align:center;}
+  .pod .avatar{width:52px; height:52px; border-radius:50%; margin:0 auto 6px; display:flex; align-items:center; justify-content:center; font-size:20px; border:2px solid var(--gold); background:var(--bg-panel-2);}
+  .pod.rank1 .avatar{width:64px; height:64px; font-size:24px; box-shadow:0 0 20px rgba(232,182,74,.5);}
+  .pod .pname{font-size:11.5px; color:var(--ink-dim);}
+  .pod .pval{font-size:13px; font-weight:700; color:var(--gold); margin-top:2px;}
+  .pod .base{margin-top:8px; border-radius:10px 10px 0 0; display:flex; align-items:flex-start; justify-content:center; padding-top:6px; font-weight:900; font-size:15px;}
+  .pod.rank1 .base{height:64px; background:linear-gradient(180deg,#3a2f10,#211a08); color:var(--gold);}
+  .pod.rank2 .base{height:48px; background:linear-gradient(180deg,#262a3c,#171a26); color:#C7CBE0;}
+  .pod.rank3 .base{height:36px; background:linear-gradient(180deg,#3a2416,#20140c); color:#E29A5C;}
+
+  .lb-row{display:flex; align-items:center; gap:10px; padding:10px 0; border-bottom:1px solid var(--line);}
+  .lb-rank{width:26px; text-align:center; font-size:14px; color:var(--ink-faint); font-weight:700;}
+  .lb-row .avatar-sm{width:34px; height:34px; border-radius:50%; background:var(--bg-panel-2); flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:14px;}
+  .lb-mid{flex:1; min-width:0;}
+  .lb-mid .lb-name{font-size:13px;}
+  .lb-mid .lb-badge{font-size:9.5px; color:var(--gold); background:rgba(232,182,74,.12); padding:1px 6px; border-radius:8px; display:inline-block; margin-top:2px;}
+  .lb-val{font-size:13.5px; font-weight:700; color:var(--ink);}
+  .lb-row.me{background:rgba(232,182,74,.06); border-radius:10px; padding:10px 8px; margin:0 -8px;}
+
+  .sticky-me{
+    position:sticky; bottom:0; margin:14px -20px -30px; padding:14px 20px calc(16px + env(safe-area-inset-bottom));
+    background:linear-gradient(180deg, transparent, var(--bg-deep) 20%);
+  }
+  .me-card{
+    background:var(--bg-panel-2); border:1px solid var(--gold-dim); border-radius:16px; padding:12px 14px;
+    display:flex; align-items:center; gap:10px;
+  }
+  .me-card .lb-rank{color:var(--gold);}
+  .me-gap{font-size:10.5px; color:var(--ink-dim); text-align:right;}
+  .me-gap b{color:var(--crimson); font-weight:700;}
+
+  .reward-zone-list{display:flex; flex-direction:column; gap:8px; margin-top:4px;}
+  .rz{display:flex; justify-content:space-between; align-items:center; padding:10px 12px; background:var(--bg-panel); border-radius:12px; border:1px solid var(--line); font-size:12px;}
+  .rz .rz-range{color:var(--ink-dim);}
+  .rz .rz-reward{color:var(--gold); font-weight:700;}
+
+  /* ---- tier ladder ---- */
+  .ladder{position:relative; padding-left:28px; margin-top:6px;}
+  .ladder::before{content:''; position:absolute; left:10px; top:6px; bottom:6px; width:2px; background:var(--line);}
+  .lstep{position:relative; padding-bottom:22px;}
+  .lstep:last-child{padding-bottom:0;}
+  .lstep .dot{position:absolute; left:-28px; top:2px; width:22px; height:22px; border-radius:50%; background:var(--bg-panel); border:2px solid var(--ink-faint); display:flex; align-items:center; justify-content:center; font-size:11px;}
+  .lstep.done .dot{background:var(--grad-jade); border-color:transparent; color:#06231a;}
+  .lstep.current .dot{background:var(--grad-gold); border-color:transparent; box-shadow:0 0 0 4px rgba(232,182,74,.18);}
+  .lcard{background:var(--bg-panel); border:1px solid var(--line); border-radius:14px; padding:12px 14px;}
+  .lstep.done .lcard{border-color:rgba(51,214,166,.3);}
+  .lstep.current .lcard{border-color:rgba(232,182,74,.4);}
+  .lhead{display:flex; justify-content:space-between; align-items:center;}
+  .lhead .lname{font-size:13.5px; font-weight:700;}
+  .lhead .lthresh{font-size:12px; color:var(--ink-dim);}
+  .lreward{font-size:12px; color:var(--gold); margin-top:5px;}
+  .lprog-wrap{height:6px; background:rgba(255,255,255,.06); border-radius:4px; margin-top:9px; overflow:hidden;}
+  .lprog-fill{height:100%; background:var(--grad-gold); border-radius:4px;}
+  .lstep.done .lprog-fill{background:var(--grad-jade);}
+  .lfoot{display:flex; justify-content:space-between; font-size:10.5px; color:var(--ink-faint); margin-top:5px;}
+  .lstep.done .lfoot{color:var(--jade);}
+  .claim-btn{margin-top:10px; width:100%; padding:8px; border-radius:9px; border:none; font-size:12px; font-weight:700; cursor:pointer;}
+  .claim-btn.can{background:var(--grad-jade); color:#06231a;}
+  .claim-btn.done{background:var(--bg-panel-3); color:var(--ink-faint); cursor:default;}
+
+  /* ---- daily ---- */
+  .daily-cd{display:flex; justify-content:space-between; align-items:center; padding:12px 14px; background:var(--bg-panel); border:1px solid var(--line); border-radius:14px; margin:14px 0;}
+  .daily-cd .l{font-size:12px; color:var(--ink-dim);}
+  .daily-cd .r{font-size:15px; color:var(--crimson); font-weight:700;}
+  .today-champ{display:flex; align-items:center; gap:12px; padding:16px; border-radius:16px; background:linear-gradient(135deg, rgba(232,182,74,.14), rgba(232,182,74,.02)); border:1px solid rgba(232,182,74,.3); margin-bottom:14px;}
+  .today-champ .em{font-size:30px;}
+  .today-champ .n{font-size:14px; font-weight:700;}
+  .today-champ .v{font-size:12px; color:var(--gold); margin-top:2px;}
+  .rise-row{display:flex; align-items:center; gap:10px; padding:10px 0; border-bottom:1px solid var(--line);}
+  .rise-badge{font-size:10.5px; color:var(--jade); background:rgba(51,214,166,.12); padding:2px 7px; border-radius:8px; display:flex; align-items:center; gap:2px;}
+  .break-row{display:flex; align-items:center; gap:10px; padding:10px 12px; background:var(--bg-panel); border-radius:12px; border:1px solid var(--line); margin-bottom:8px;}
+  .break-row .tag{font-size:10.5px; padding:3px 8px; border-radius:8px; background:rgba(255,75,75,.13); color:#FF8A8A; font-weight:700; flex-shrink:0;}
+
+  /* ---- lucky draw ---- */
+  .draw-chance{text-align:center; padding:14px 0 6px;}
+  .draw-chance .num{font-size:30px; color:var(--gold);}
+  .draw-chance .lbl{font-size:11.5px; color:var(--ink-dim); margin-top:2px;}
+  .prize-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin:16px 0;}
+  .prize-cell{aspect-ratio:1; border-radius:14px; background:var(--bg-panel); border:1px solid var(--line); display:flex; flex-direction:column; align-items:center; justify-content:center; font-size:11px; color:var(--ink-dim); gap:6px; position:relative; overflow:hidden;}
+  .prize-cell .em{font-size:22px;}
+  .prize-cell.hit{border-color:var(--gold); background:rgba(232,182,74,.08);}
+  .draw-btn{width:100%; padding:14px; border:none; border-radius:14px; background:var(--grad-crimson); color:#fff; font-size:15px; font-weight:900; letter-spacing:2px; box-shadow:0 8px 22px rgba(255,75,75,.3); margin-top:6px;}
+  .source-note{margin-top:16px; padding:12px 14px; background:var(--bg-panel); border-radius:12px; border:1px solid var(--line); font-size:11.5px; color:var(--ink-dim); line-height:1.7;}
+
+  /* ---- 奖励中心 ---- */
+  .settle-pending{text-align:center; padding:34px 20px 24px;}
+  .settle-pending .em{font-size:38px; opacity:.9;}
+  .settle-pending .t1{font-size:14px; font-weight:700; margin-top:12px;}
+  .settle-pending .t2{font-size:12px; color:var(--ink-dim); margin-top:6px; line-height:1.7;}
+  .settle-pending .t2 b{color:var(--gold);}
+  .rz.current{border-color:rgba(232,182,74,.4); background:rgba(232,182,74,.06);}
+  .rz .rz-tag{font-size:9.5px; color:var(--gold); background:rgba(232,182,74,.14); padding:1px 6px; border-radius:8px; margin-left:6px;}
+  .record-row{display:flex; align-items:center; gap:10px; padding:11px 12px; background:var(--bg-panel); border-radius:12px; border:1px solid var(--line); margin-bottom:8px;}
+  .record-row .rec-date{font-size:10px; color:var(--ink-faint); width:52px; flex-shrink:0; line-height:1.4;}
+  .record-row .rec-mid{flex:1; min-width:0;}
+  .record-row .rec-mid .rec-name{font-size:12.5px;}
+  .record-row .rec-mid .rec-sub{font-size:10px; color:var(--ink-faint); margin-top:2px;}
+  .record-row .rec-val{font-size:12px; color:var(--gold); font-weight:700; text-align:right;}
+  .rec-stack{display:flex; flex-direction:column; align-items:flex-end;}
+  .rec-status{font-size:9.5px; padding:2px 7px; border-radius:8px; margin-top:3px; display:inline-block;}
+  .rec-status.done{color:var(--jade); background:rgba(51,214,166,.12);}
+  .rec-status.pending{color:#FFB35C; background:rgba(255,179,92,.14);}
+  .empty-row{text-align:center; padding:8px 0; font-size:11px; color:var(--ink-faint);}
+
+  /* ---- segment ---- */
+  .seg-hero{text-align:center; padding:10px 0 6px;}
+  .seg-hex-lg{position:relative; width:132px; height:132px; margin:0 auto;}
+  .seg-hex-lg svg{position:absolute; inset:0; transform:rotate(-90deg);}
+  .seg-hex-lg .hex-emblem{inset:14px; font-size:40px;}
+  .seg-hero .sname{font-size:20px; font-weight:900; margin-top:10px;}
+  .seg-hero .sprog{font-size:11.5px; color:var(--ink-dim); margin-top:4px;}
+  .seg-track{display:flex; gap:6px; padding:18px 0 6px; overflow-x:auto;}
+  .seg-node{flex:1; min-width:64px; text-align:center; padding:10px 4px; border-radius:12px; background:var(--bg-panel); border:1px solid var(--line);}
+  .seg-node.on{border-color:var(--gold); background:rgba(232,182,74,.1);}
+  .seg-node .em2{font-size:18px;}
+  .seg-node .sn{font-size:10.5px; margin-top:4px; color:var(--ink-dim);}
+  .seg-node.on .sn{color:var(--gold); font-weight:700;}
+  .seg-benefit{display:flex; gap:10px; align-items:flex-start; padding:12px 14px; background:var(--bg-panel); border-radius:14px; border:1px solid var(--line); margin-top:10px;}
+  .seg-benefit .em3{font-size:18px;}
+  .seg-benefit b{font-size:13px; display:block;}
+  .seg-benefit span{font-size:11.5px; color:var(--ink-dim);}
+
+  /* ---- rules ---- */
+  .rule-sec{margin-bottom:18px;}
+  .rule-sec h3{font-size:13.5px; color:var(--gold); margin-bottom:8px; display:flex; align-items:center; gap:6px;}
+  .rule-sec p, .rule-sec li{font-size:12.5px; color:var(--ink-dim); line-height:1.8;}
+  .rule-sec ul{padding-left:18px;}
+  .rule-foot{font-size:11px; color:var(--ink-faint); text-align:center; margin-top:20px; padding-top:14px; border-top:1px solid var(--line);}
+
+  .toast{
+    position:absolute; left:50%; top:40%; transform:translate(-50%,-50%) scale(.85); z-index:40;
+    background:var(--bg-panel-2); border:1px solid var(--gold); border-radius:16px; padding:22px 28px; text-align:center;
+    opacity:0; pointer-events:none; transition:all .3s cubic-bezier(.34,1.56,.64,1);
+    box-shadow:0 12px 40px rgba(0,0,0,.5), 0 0 0 1px rgba(232,182,74,.15);
+  }
+  .toast.show{opacity:1; transform:translate(-50%,-50%) scale(1);}
+  .toast .em{font-size:34px; display:inline-block; animation:toastPop .5s ease;}
+  .toast .t1{font-size:15px; font-weight:700; margin-top:8px;}
+  .toast .t2{font-size:12px; color:var(--gold); margin-top:4px;}
+  @keyframes toastPop{ 0%{transform:scale(.4) rotate(-15deg);} 60%{transform:scale(1.15) rotate(6deg);} 100%{transform:scale(1) rotate(0);} }
+
+  /* ---------- micro-interactions ---------- */
+  .op-card, .promo-head, .claim-btn, .draw-btn, .cta-btn, .rules-entry, .rewards-banner, .hexwrap, .lb-row.me, .me-card{
+    transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .op-card:active, .promo-head:active, .rules-entry:active, .rewards-banner:active, .hexwrap:active{transform:scale(.96);}
+  .claim-btn.can:active, .draw-btn:active, .cta-btn:active{transform:scale(.97);}
+  .op-card:hover{border-color:rgba(232,182,74,.35); box-shadow:0 6px 20px rgba(0,0,0,.25);}
+
+  @keyframes fadeSlideUp{ from{opacity:0; transform:translateY(14px);} to{opacity:1; transform:translateY(0);} }
+  .hero, .countdown, .status-card, .not-qualified, .rewards-banner, .ticker-wrap, .closing-banner{
+    animation:fadeSlideUp .5s ease both;
+  }
+  .countdown{animation-delay:.05s;}
+  .status-card{animation-delay:.1s;}
+  .rewards-banner{animation-delay:.14s;}
+  .ticker-wrap{animation-delay:.2s;}
+  .grid4 .op-card{animation:fadeSlideUp .5s ease both;}
+  .grid4 .op-1{animation-delay:.24s;} .grid4 .op-2{animation-delay:.3s;} .grid4 .op-3{animation-delay:.36s;} .grid4 .op-4{animation-delay:.42s;}
+  .promo-strip .promo-item{animation:fadeSlideUp .45s ease both;}
+  .promo-strip .promo-item:nth-child(1){animation-delay:.46s;}
+  .promo-strip .promo-item:nth-child(2){animation-delay:.52s;}
+  .promo-strip .promo-item:nth-child(3){animation-delay:.58s;}
+  .promo-strip .promo-item:nth-child(4){animation-delay:.64s;}
+  .closing-banner{animation-delay:.7s;}
+
+  .countdown-clock .cd-box.tick{animation:cdTick .3s ease;}
+  @keyframes cdTick{ 0%{transform:scale(1);} 35%{transform:scale(1.1); color:var(--gold);} 100%{transform:scale(1);} }
+
+  .prize-cell{transition:transform .15s ease, box-shadow .2s ease;}
+  .prize-cell.hit{transform:scale(1.06); box-shadow:0 0 0 1px var(--gold), 0 0 18px rgba(232,182,74,.4);}
+  .shake{animation:shakeX .4s ease;}
+  @keyframes shakeX{ 0%,100%{transform:translateX(0);} 20%{transform:translateX(-6px);} 40%{transform:translateX(6px);} 60%{transform:translateX(-4px);} 80%{transform:translateX(4px);} }
+
+  .lb-row, .rise-row, .break-row{transition:background .15s ease;}
+  .lb-row:active, .rise-row:active, .break-row:active{background:rgba(255,255,255,.04);}
+
+  .op-detail-hint{
+    font-size:9.5px; color:var(--ink-faint); display:flex; align-items:center; gap:1px;
+    background:rgba(255,255,255,.05); border:1px solid var(--line); padding:2px 6px 2px 7px; border-radius:20px;
+  }
+  .op-card:hover .op-detail-hint, .op-card:active .op-detail-hint{color:var(--gold); border-color:rgba(232,182,74,.4);}
+</style>
+</head>
+<body>
+<div class="stage">
+<div class="device" id="device">
+  <div class="device-notch"></div>
+  <div class="bg-glow"></div><div class="hexbg"></div>
+
+  <!-- ================= HOME ================= -->
+  <div class="home">
+    <div class="topbar">
+      <div class="brand">
+        <div class="brand-mark">⚔️</div>
+        <div class="brand-name">JUAN365 · 巅峰赛事</div>
+      </div>
+      <div class="rules-entry" onclick="openPanel('panel-rules')">📜 规则</div>
+    </div>
+
+    <div class="hero">
+      <div class="hero-eyebrow">S1 · 巅峰争霸赛</div>
+      <div class="hero-title">谁是本月<br>流水之王</div>
+      <div class="hero-sub">累计有效流水，冲击巅峰排名，解锁全部奖励</div>
+    </div>
+
+    <div class="countdown">
+      <div class="countdown-label">距活动结束</div>
+      <div class="countdown-clock num" id="cdClock"><span class="cd-box" id="cdD">07</span> <span class="cd-sep">天</span> <span class="cd-box" id="cdH">12</span><span class="cd-sep">:</span><span class="cd-box" id="cdM">34</span><span class="cd-sep">:</span><span class="cd-box" id="cdS">56</span></div>
+    </div>
+
+    <div class="status-card">
+      <div class="hexwrap" onclick="openPanel('panel-segment')">
+        <svg viewBox="0 0 74 74"><circle cx="37" cy="37" r="33" fill="none" stroke="#232A4E" stroke-width="4"/><circle cx="37" cy="37" r="33" fill="none" stroke="url(#g1)" stroke-width="4" stroke-linecap="round" stroke-dasharray="207" stroke-dashoffset="120"/><defs><linearGradient id="g1"><stop offset="0%" stop-color="#F7D488"/><stop offset="100%" stop-color="#B8842A"/></linearGradient></defs></svg>
+        <div class="hex-emblem">🛡️</div>
+      </div>
+      <div class="status-info">
+        <div class="status-seg">精英段位 · ELITE</div>
+        <div class="status-name">当前总榜排名 第 18 名</div>
+        <div class="status-row">
+          <div class="status-item"><div class="num">¥126,400</div><div class="lbl">累计有效流水</div></div>
+          <div class="status-item"><div class="num" style="color:var(--jade)">↑7</div><div class="lbl">较昨日排名</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="rewards-banner" onclick="openPanel('panel-rewards')">
+      <div class="rewards-banner-icon">🏅<span class="rewards-banner-dot">1</span></div>
+      <div class="rewards-banner-mid">
+        <div class="rewards-banner-title">奖励中心</div>
+        <div class="rewards-banner-sub">已累计获得 <b>10</b> 笔奖励，1笔待兑换</div>
+      </div>
+      <div class="rewards-banner-arrow">›</div>
+    </div>
+
+    <div class="ticker-wrap">
+      <div class="ticker">
+        <span>🎉 <b>135****02</b> 突破 50万流水档位，解锁王者奖励</span>
+        <span>🎉 <b>188****76</b> 抽中神秘大奖</span>
+        <span>🎉 <b>151****40</b> 单日流水登顶，成为今日冲榜王</span>
+        <span>🎉 <b>139****18</b> 排名逆袭 45 位，荣获最强逆袭奖</span>
+        <span>🎉 <b>135****02</b> 突破 50万流水档位，解锁王者奖励</span>
+        <span>🎉 <b>188****76</b> 抽中神秘大奖</span>
+      </div>
+    </div>
+
+    <div class="section-title">
+      <div class="zh">四大机会</div>
+      <div class="en">Four Ways To Win</div>
+    </div>
+    <div class="grid4">
+      <div class="op-card op-1" onclick="openPanel('panel-leaderboard')">
+        <div class="icon">🏆</div>
+        <div class="title">总流水争霸榜</div>
+        <div class="stat">当前 <b>第18名</b> · 全力冲刺前十</div>
+        <div class="op-detail-hint">详情 <span>→</span></div>
+      </div>
+      <div class="op-card op-2" onclick="openPanel('panel-tiers')">
+        <div class="icon">🎯</div>
+        <div class="title">阶梯达标奖励</div>
+        <div class="stat">距下一档还差 <b>¥173,600</b></div>
+        <div class="op-detail-hint">详情 <span>→</span></div>
+      </div>
+      <div class="op-card op-3" onclick="openPanel('panel-daily')">
+        <div class="icon">🔥</div>
+        <div class="title">每日冲榜</div>
+        <div class="stat">距今日结算 <b id="homeDailyCd">05:12:33</b></div>
+        <div class="op-detail-hint">详情 <span>→</span></div>
+      </div>
+      <div class="op-card op-4" onclick="openPanel('panel-lucky')">
+        <div class="icon">🎁</div>
+        <div class="title">幸运抽奖</div>
+        <div class="stat">剩余 <b id="homeDrawChances">3次</b> 抽奖机会</div>
+        <div class="op-detail-hint">详情 <span>→</span></div>
+      </div>
+    </div>
+
+    <div class="section-title">
+      <div class="zh">玩法说明</div>
+      <div class="en">How It Works</div>
+    </div>
+    <div class="promo-strip">
+      <div class="promo-item" onclick="togglePromo(this)">
+        <div class="promo-head">
+          <div class="dot">01</div>
+          <div class="txt"><b>冲击总榜，争夺冠军大奖</b><span>现金+专属奖杯+至尊VIP+专属称号，多个获奖区间人人有机会</span></div>
+          <div class="promo-chev">▾</div>
+        </div>
+        <div class="promo-detail"><div class="promo-detail-inner">
+          <ul>
+            <li>不只前3名拿奖，1-100名共设5个获奖区间</li>
+            <li>冠军额外获得专属奖杯/证书、至尊VIP资格、专属称号</li>
+            <li>冠军还有机会获得活动宣传展示机会，登上荣誉墙</li>
+          </ul>
+        </div></div>
+      </div>
+      <div class="promo-item" onclick="togglePromo(this)">
+        <div class="promo-head">
+          <div class="dot">02</div>
+          <div class="txt"><b>达到指定流水，解锁阶梯奖励</b><span>不必争第一，累计流水到档即可稳定拿奖</span></div>
+          <div class="promo-chev">▾</div>
+        </div>
+        <div class="promo-detail"><div class="promo-detail-inner">
+          <ul>
+            <li>与排名完全无关，只看自己的累计流水是否达标</li>
+            <li>6个档位层层递进，每上一档解锁更高奖励</li>
+            <li>档位与段位晋升同步，达标即升级身份</li>
+          </ul>
+          <div class="promo-quote">"冠军我不一定拿得到，但50万流水档位我有机会完成。"</div>
+        </div></div>
+      </div>
+      <div class="promo-item" onclick="togglePromo(this)">
+        <div class="promo-head">
+          <div class="dot">03</div>
+          <div class="txt"><b>每日冲榜，赢取额外奖励</b><span>今日冲榜王 / 最强逆袭奖 / 流水突破奖，每天都能翻盘</span></div>
+          <div class="promo-chev">▾</div>
+        </div>
+        <div class="promo-detail"><div class="promo-detail-inner">
+          <ul>
+            <li>每日00:00重新结算，昨天排名不影响今天机会</li>
+            <li>今日冲榜王：当天流水最高即可拿奖，不看活动期间总量</li>
+            <li>最强逆袭奖：哪怕总榜靠后，单日排名跃升也能获奖</li>
+            <li>流水突破奖：当天首次突破10万/30万/50万即有惊喜</li>
+          </ul>
+        </div></div>
+      </div>
+      <div class="promo-item" onclick="togglePromo(this)">
+        <div class="promo-head">
+          <div class="dot">04</div>
+          <div class="txt"><b>达到门槛，即可参与幸运抽奖</b><span>流水越高，抽奖机会越多，人人都有机会中大奖</span></div>
+          <div class="promo-chev">▾</div>
+        </div>
+        <div class="promo-detail"><div class="promo-detail-inner">
+          <ul>
+            <li>只要达到最低门槛¥10,000，就能参与抽奖</li>
+            <li>流水越高，抽奖机会越多，上不封顶</li>
+            <li>奖品涵盖现金红包、优惠券、VIP权益、实物礼品与神秘大奖</li>
+          </ul>
+          <div class="promo-quote">"我不一定成为冠军，但只要参与，就有机会获得大奖。"</div>
+        </div></div>
+      </div>
+    </div>
+
+    <div class="closing-banner">
+      <div class="q1">谁能成为本次争霸赛的最终王者？</div>
+      <div class="q2">无论你是冲击冠军，还是挑战自己的流水目标<br>都有机会获得属于你的奖励</div>
+      <div class="q3">巅峰之战 · 即刻开启</div>
+    </div>
+  </div>
+
+  <!-- 底部固定CTA：跳转游戏大厅（实际开发需接入真实大厅/投注入口路由），而非重复总榜弹窗 -->
+  <div class="cta-fixed">
+    <button class="cta-btn" onclick="goToLobby()">🎮 去下注 · 冲刺流水</button>
+  </div>
+
+  <!-- ================= PANEL: 总流水争霸榜 ================= -->
+  <div class="panel" id="panel-leaderboard">
+    <div class="panel-grip" onclick="closePanel('panel-leaderboard')"></div>
+    <div class="panel-head">
+      <div><h2>总流水争霸榜</h2><div class="sub">实时更新 · 每5分钟结算一次 · <span class="panel-link" onclick="openRewardsTab('reward-total')">结算说明→</span></div></div>
+      <div class="panel-close" onclick="closePanel('panel-leaderboard')">✕</div>
+    </div>
+    <div class="panel-body">
+      <div class="podium">
+        <div class="pod rank2"><div class="avatar">👤</div><div class="pname">159****23</div><div class="pval">¥398,200</div><div class="base">2</div></div>
+        <div class="pod rank1"><div class="avatar">👑</div><div class="pname">138****88</div><div class="pval">¥526,800</div><div class="base">1</div></div>
+        <div class="pod rank3"><div class="avatar">👤</div><div class="pname">186****47</div><div class="pval">¥311,500</div><div class="base">3</div></div>
+      </div>
+
+      <div class="reward-zone-list">
+        <div class="rz"><span class="rz-range">第1名</span><span class="rz-reward">¥88,888+奖杯+至尊VIP+专属称号</span></div>
+        <div class="rz"><span class="rz-range">第2-3名</span><span class="rz-reward">¥18,888-38,888+VIP礼遇</span></div>
+        <div class="rz"><span class="rz-range">第4-10名</span><span class="rz-reward">¥5,888</span></div>
+        <div class="rz"><span class="rz-range">第11-30名</span><span class="rz-reward">¥1,888</span></div>
+        <div class="rz"><span class="rz-range">第31-100名</span><span class="rz-reward">¥888/优惠券礼包</span></div>
+      </div>
+
+      <div style="margin-top:18px;">
+        <div class="lb-row"><div class="lb-rank">4</div><div class="avatar-sm">👤</div><div class="lb-mid"><div class="lb-name">176****90</div><div class="lb-badge">精英</div></div><div class="lb-val">¥289,400</div></div>
+        <div class="lb-row"><div class="lb-rank">5</div><div class="avatar-sm">👤</div><div class="lb-mid"><div class="lb-name">133****61</div><div class="lb-badge">精英</div></div><div class="lb-val">¥265,100</div></div>
+        <div class="lb-row"><div class="lb-rank">6</div><div class="avatar-sm">👤</div><div class="lb-mid"><div class="lb-name">158****05</div><div class="lb-badge">精英</div></div><div class="lb-val">¥240,700</div></div>
+        <div class="lb-row"><div class="lb-rank">7</div><div class="avatar-sm">👤</div><div class="lb-mid"><div class="lb-name">137****88</div><div class="lb-badge">进阶者</div></div><div class="lb-val">¥198,300</div></div>
+        <div class="lb-row"><div class="lb-rank">8</div><div class="avatar-sm">👤</div><div class="lb-mid"><div class="lb-name">182****33</div><div class="lb-badge">进阶者</div></div><div class="lb-val">¥176,900</div></div>
+        <div class="lb-row"><div class="lb-rank">…</div><div class="avatar-sm" style="opacity:0;"></div><div class="lb-mid"></div><div class="lb-val"></div></div>
+        <div class="lb-row me"><div class="lb-rank">18</div><div class="avatar-sm">🙂</div><div class="lb-mid"><div class="lb-name">我的排名</div><div class="lb-badge">精英</div></div><div class="lb-val">¥126,400</div></div>
+        <div class="lb-row"><div class="lb-rank">19</div><div class="avatar-sm">👤</div><div class="lb-mid"><div class="lb-name">130****27</div><div class="lb-badge">精英</div></div><div class="lb-val">¥119,800</div></div>
+        <div class="lb-row"><div class="lb-rank">20</div><div class="avatar-sm">👤</div><div class="lb-mid"><div class="lb-name">177****54</div><div class="lb-badge">进阶者</div></div><div class="lb-val">¥108,200</div></div>
+      </div>
+    </div>
+    <div class="sticky-me">
+      <div class="me-card">
+        <div class="lb-rank">18</div>
+        <div class="avatar-sm">🙂</div>
+        <div class="lb-mid"><div class="lb-name">我的排名 · ¥126,400</div></div>
+        <div class="me-gap">距第17名还差 <b>¥7,900</b><br>距前10奖励区差 <b>¥163,000</b><br>距下一档位(30万)差 <b>¥173,600</b></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= PANEL: 流水阶梯达标奖励 ================= -->
+  <div class="panel" id="panel-tiers">
+    <div class="panel-grip" onclick="closePanel('panel-tiers')"></div>
+    <div class="panel-head">
+      <div><h2>流水阶梯达标奖励</h2><div class="sub">达到即解锁，不必争第一 · <span class="panel-link" onclick="openRewardsTab('reward-tier')">领取记录→</span></div></div>
+      <div class="panel-close" onclick="closePanel('panel-tiers')">✕</div>
+    </div>
+    <div class="panel-body">
+      <div class="ladder">
+        <div class="lstep done">
+          <div class="dot">✓</div>
+          <div class="lcard">
+            <div class="lhead"><span class="lname">入门礼包</span><span class="lthresh">满 ¥10,000</span></div>
+            <div class="lreward">8元红包 + 专属优惠券</div>
+            <div class="lprog-wrap"><div class="lprog-fill" style="width:100%"></div></div>
+            <div class="lfoot"><span>已达成</span><span>¥10,000/10,000</span></div>
+            <button class="claim-btn done">已领取</button>
+          </div>
+        </div>
+        <div class="lstep done">
+          <div class="dot">✓</div>
+          <div class="lcard">
+            <div class="lhead"><span class="lname">进阶奖励</span><span class="lthresh">满 ¥50,000</span></div>
+            <div class="lreward">88积分 + 服务体验券</div>
+            <div class="lprog-wrap"><div class="lprog-fill" style="width:100%"></div></div>
+            <div class="lfoot"><span>已达成</span><span>¥50,000/50,000</span></div>
+            <button class="claim-btn can" onclick="claimReward(this,'88积分 + 服务体验券','进阶奖励','累计流水满¥50,000')">立即领取</button>
+          </div>
+        </div>
+        <div class="lstep done">
+          <div class="dot">✓</div>
+          <div class="lcard">
+            <div class="lhead"><span class="lname">突破奖励</span><span class="lthresh">满 ¥100,000</span></div>
+            <div class="lreward">188元红包</div>
+            <div class="lprog-wrap"><div class="lprog-fill" style="width:100%"></div></div>
+            <div class="lfoot"><span>已达成</span><span>¥100,000/100,000</span></div>
+            <button class="claim-btn can" onclick="claimReward(this,'188元红包','突破奖励','累计流水满¥100,000')">立即领取</button>
+          </div>
+        </div>
+        <div class="lstep current">
+          <div class="dot">●</div>
+          <div class="lcard">
+            <div class="lhead"><span class="lname">精英奖励</span><span class="lthresh">满 ¥300,000</span></div>
+            <div class="lreward">VIP7资格7天 + 388元红包</div>
+            <div class="lprog-wrap"><div class="lprog-fill" style="width:42%"></div></div>
+            <div class="lfoot"><span>还差 ¥173,600</span><span>¥126,400/300,000</span></div>
+          </div>
+        </div>
+        <div class="lstep">
+          <div class="dot">🔒</div>
+          <div class="lcard">
+            <div class="lhead"><span class="lname">王者奖励</span><span class="lthresh">满 ¥500,000</span></div>
+            <div class="lreward">专属礼品 + 688元红包</div>
+            <div class="lprog-wrap"><div class="lprog-fill" style="width:25%"></div></div>
+            <div class="lfoot"><span>还差 ¥373,600</span><span>¥126,400/500,000</span></div>
+          </div>
+        </div>
+        <div class="lstep">
+          <div class="dot">🔒</div>
+          <div class="lcard">
+            <div class="lhead"><span class="lname">至尊奖励</span><span class="lthresh">满 ¥1,000,000</span></div>
+            <div class="lreward">神秘大奖 + 至尊VIP身份</div>
+            <div class="lprog-wrap"><div class="lprog-fill" style="width:13%"></div></div>
+            <div class="lfoot"><span>还差 ¥873,600</span><span>¥126,400/1,000,000</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= PANEL: 每日冲榜 ================= -->
+  <div class="panel" id="panel-daily">
+    <div class="panel-grip" onclick="closePanel('panel-daily')"></div>
+    <div class="panel-head">
+      <div><h2>每日冲榜</h2><div class="sub">每日归零重开，随时都有翻盘机会 · <span class="panel-link" onclick="openRewardsTab('reward-daily')">中奖记录→</span></div></div>
+      <div class="panel-close" onclick="closePanel('panel-daily')">✕</div>
+    </div>
+    <div class="tabs">
+      <div class="tab active" onclick="switchTab(this,'daily-champ')">今日冲榜王</div>
+      <div class="tab" onclick="switchTab(this,'daily-rise')">最强逆袭奖</div>
+      <div class="tab" onclick="switchTab(this,'daily-break')">流水突破奖</div>
+    </div>
+    <div class="panel-body">
+      <div class="daily-cd"><div class="l">距今日结算</div><div class="r num" id="dailyCdText">05:12:33</div></div>
+
+      <div id="daily-champ">
+        <div class="today-champ"><div class="em">🔥</div><div><div class="n">151****40</div><div class="v">今日流水 ¥88,200 · 暂列第1</div></div></div>
+        <div class="lb-row"><div class="lb-rank">2</div><div class="avatar-sm">👤</div><div class="lb-mid"><div class="lb-name">138****88</div></div><div class="lb-val">¥76,500</div></div>
+        <div class="lb-row"><div class="lb-rank">3</div><div class="avatar-sm">👤</div><div class="lb-mid"><div class="lb-name">159****23</div></div><div class="lb-val">¥69,900</div></div>
+        <div class="lb-row"><div class="lb-rank">4</div><div class="avatar-sm">👤</div><div class="lb-mid"><div class="lb-name">176****90</div></div><div class="lb-val">¥58,300</div></div>
+        <div class="lb-row me"><div class="lb-rank">12</div><div class="avatar-sm">🙂</div><div class="lb-mid"><div class="lb-name">我的今日流水</div></div><div class="lb-val">¥21,400</div></div>
+      </div>
+
+      <div id="daily-rise" style="display:none;">
+        <div class="today-champ" style="background:linear-gradient(135deg, rgba(51,214,166,.14), rgba(51,214,166,.02)); border-color:rgba(51,214,166,.3);">
+          <div class="em">🚀</div><div><div class="n">139****18</div><div class="v">昨日第82名 → 今日第37名</div></div>
+        </div>
+        <div class="rise-row"><div class="lb-rank">1</div><div class="avatar-sm">👤</div><div class="lb-mid"><div class="lb-name">139****18</div></div><div class="rise-badge">↑ 45位</div></div>
+        <div class="rise-row"><div class="lb-rank">2</div><div class="avatar-sm">👤</div><div class="lb-mid"><div class="lb-name">155****72</div></div><div class="rise-badge">↑ 38位</div></div>
+        <div class="rise-row"><div class="lb-rank">3</div><div class="avatar-sm">👤</div><div class="lb-mid"><div class="lb-name">183****09</div></div><div class="rise-badge">↑ 31位</div></div>
+        <div class="rise-row"><div class="lb-rank">4</div><div class="avatar-sm">👤</div><div class="lb-mid"><div class="lb-name">126****55</div></div><div class="rise-badge">↑ 24位</div></div>
+        <div class="rise-row me"><div class="lb-rank">-</div><div class="avatar-sm">🙂</div><div class="lb-mid"><div class="lb-name">我的名次变化</div></div><div class="rise-badge">↑ 7位</div></div>
+      </div>
+
+      <div id="daily-break" style="display:none;">
+        <div class="break-row"><span class="tag">首破50万</span><div class="lb-mid"><div class="lb-name">135****02</div></div><div class="lb-val" style="color:var(--gold); font-size:12px;">366元红包</div></div>
+        <div class="break-row"><span class="tag">首破30万</span><div class="lb-mid"><div class="lb-name">159****23</div></div><div class="lb-val" style="color:var(--gold); font-size:12px;">166元红包</div></div>
+        <div class="break-row"><span class="tag">首破10万</span><div class="lb-mid"><div class="lb-name">176****90</div></div><div class="lb-val" style="color:var(--gold); font-size:12px;">66元红包</div></div>
+        <div class="break-row"><span class="tag">首破10万</span><div class="lb-mid"><div class="lb-name">137****88</div></div><div class="lb-val" style="color:var(--gold); font-size:12px;">66元红包</div></div>
+        <div class="source-note">💡 每日00:00重新统计"首次突破"，同一档位每人每日仅可触发一次奖励。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= PANEL: 幸运抽奖 ================= -->
+  <div class="panel" id="panel-lucky">
+    <div class="panel-grip" onclick="closePanel('panel-lucky')"></div>
+    <div class="panel-head">
+      <div><h2>幸运抽奖</h2><div class="sub">达标门槛即可参与，流水越高机会越多 · <span class="panel-link" onclick="openRewardsTab('reward-lucky')">抽奖记录→</span></div></div>
+      <div class="panel-close" onclick="closePanel('panel-lucky')">✕</div>
+    </div>
+    <div class="panel-body">
+      <div class="draw-chance"><div class="num">3</div><div class="lbl">剩余抽奖机会</div></div>
+      <div class="prize-grid" id="prizeGrid">
+        <div class="prize-cell"><div class="em">🧧</div>8元红包</div>
+        <div class="prize-cell"><div class="em">🎟️</div>优惠券</div>
+        <div class="prize-cell"><div class="em">🧧</div>18元红包</div>
+        <div class="prize-cell"><div class="em">💎</div>VIP体验券</div>
+        <div class="prize-cell hit"><div class="em">✨</div>神秘大奖</div>
+        <div class="prize-cell"><div class="em">🧧</div>58元红包</div>
+        <div class="prize-cell"><div class="em">🎁</div>实物礼品</div>
+        <div class="prize-cell"><div class="em">🧧</div>188元红包</div>
+        <div class="prize-cell"><div class="em">🧧</div>888元红包</div>
+      </div>
+      <button class="draw-btn" onclick="doDraw()">立即抽奖</button>
+      <div class="source-note">
+        📌 抽奖机会获取方式：<br>
+        · 达到最低门槛¥10,000 → 获得1次基础机会<br>
+        · 每满¥50,000累计流水 → 额外获得1次机会<br>
+        · 每日首次登录参与活动 → 获得1次机会
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= PANEL: 段位体系 ================= -->
+  <div class="panel" id="panel-segment">
+    <div class="panel-grip" onclick="closePanel('panel-segment')"></div>
+    <div class="panel-head">
+      <div><h2>争霸段位</h2><div class="sub">累计流水自动晋升，逐级解锁权益</div></div>
+      <div class="panel-close" onclick="closePanel('panel-segment')">✕</div>
+    </div>
+    <div class="panel-body">
+      <div class="seg-hero">
+        <div class="seg-hex-lg">
+          <svg viewBox="0 0 132 132"><circle cx="66" cy="66" r="58" fill="none" stroke="#232A4E" stroke-width="6"/><circle cx="66" cy="66" r="58" fill="none" stroke="url(#g2)" stroke-width="6" stroke-linecap="round" stroke-dasharray="364" stroke-dashoffset="211"/><defs><linearGradient id="g2"><stop offset="0%" stop-color="#F7D488"/><stop offset="100%" stop-color="#B8842A"/></linearGradient></defs></svg>
+          <div class="hex-emblem">🛡️</div>
+        </div>
+        <div class="sname">精英段位 · ELITE</div>
+        <div class="sprog">距晋升「王者」还差 ¥173,600</div>
+      </div>
+
+      <div class="seg-track">
+        <div class="seg-node on"><div class="em2">🥉</div><div class="sn">新秀</div></div>
+        <div class="seg-node on"><div class="em2">🥈</div><div class="sn">进阶者</div></div>
+        <div class="seg-node on"><div class="em2">🥇</div><div class="sn">精英</div></div>
+        <div class="seg-node"><div class="em2">👑</div><div class="sn">王者</div></div>
+        <div class="seg-node"><div class="em2">💠</div><div class="sn">至尊</div></div>
+        <div class="seg-node"><div class="em2">🏵️</div><div class="sn">传奇</div></div>
+      </div>
+
+      <div class="section-title" style="margin:20px 0 8px; padding:0;"><div class="zh" style="font-size:14px;">当前段位权益</div></div>
+      <div class="seg-benefit"><div class="em3">🏷️</div><div><b>专属称号</b><span>「精英争霸者」称号展示于榜单头像框</span></div></div>
+      <div class="seg-benefit"><div class="em3">🖼️</div><div><b>专属头像框</b><span>精英段位限定金色头像框</span></div></div>
+
+      <div class="section-title" style="margin:20px 0 8px; padding:0;"><div class="zh" style="font-size:14px;">晋升「王者」可解锁</div></div>
+      <div class="seg-benefit" style="opacity:.6;"><div class="em3">👑</div><div><b>王者称号 + 紫金头像框</b><span>解锁更高档位的阶梯奖励资格</span></div></div>
+    </div>
+  </div>
+
+  <!-- ================= PANEL: 奖励中心 ================= -->
+  <div class="panel" id="panel-rewards">
+    <div class="panel-grip" onclick="closePanel('panel-rewards')"></div>
+    <div class="panel-head">
+      <div><h2>奖励中心</h2><div class="sub">我获得过的所有奖励，都在这里查</div></div>
+      <div class="panel-close" onclick="closePanel('panel-rewards')">✕</div>
+    </div>
+    <div class="tabs">
+      <div class="tab active" onclick="switchRewardTab(this,'reward-total')">总榜结算</div>
+      <div class="tab" onclick="switchRewardTab(this,'reward-daily')">每日中奖</div>
+      <div class="tab" onclick="switchRewardTab(this,'reward-tier')">阶梯已领</div>
+      <div class="tab" onclick="switchRewardTab(this,'reward-lucky')">抽奖记录</div>
+    </div>
+    <div class="panel-body">
+
+      <div id="reward-total">
+        <div class="settle-pending">
+          <div class="em">⏳</div>
+          <div class="t1">活动结束后自动结算</div>
+          <div class="t2">距结算还有 <b id="settleCdText">07天12小时</b><br>最终排名与总榜奖励将于活动结束后<br>自动发放到账户，并展示在这里</div>
+        </div>
+        <div class="reward-zone-list">
+          <div class="rz"><span class="rz-range">第1名</span><span class="rz-reward">¥88,888+奖杯+至尊VIP+专属称号</span></div>
+          <div class="rz"><span class="rz-range">第2-3名</span><span class="rz-reward">¥18,888-38,888+VIP礼遇</span></div>
+          <div class="rz"><span class="rz-range">第4-10名</span><span class="rz-reward">¥5,888</span></div>
+          <div class="rz current"><span class="rz-range">第11-30名 <span class="rz-tag">当前预计</span></span><span class="rz-reward">¥1,888</span></div>
+          <div class="rz"><span class="rz-range">第31-100名</span><span class="rz-reward">¥888/优惠券礼包</span></div>
+        </div>
+        <div class="source-note">💡 "当前预计"是按你现在的排名（第18名）估算的，活动结束前排名随时可能变化，一切以最终结算为准。</div>
+      </div>
+
+      <div id="reward-daily" style="display:none;">
+        <div class="record-row">
+          <div class="rec-date">08月23日</div>
+          <div class="rec-mid"><div class="rec-name">今日冲榜王</div><div class="rec-sub">当日流水登顶</div></div>
+          <div class="rec-stack"><div class="rec-val">+666元</div><span class="rec-status done">已发放</span></div>
+        </div>
+        <div class="record-row">
+          <div class="rec-date">08月22日</div>
+          <div class="rec-mid"><div class="rec-name">流水突破奖</div><div class="rec-sub">首次突破10万</div></div>
+          <div class="rec-stack"><div class="rec-val">+66元</div><span class="rec-status done">已发放</span></div>
+        </div>
+        <div class="record-row">
+          <div class="rec-date">08月21日</div>
+          <div class="rec-mid"><div class="rec-name">最强逆袭奖</div><div class="rec-sub">当日排名↑45位</div></div>
+          <div class="rec-stack"><div class="rec-val">+366元</div><span class="rec-status done">已发放</span></div>
+        </div>
+        <div class="empty-row">08月19日 - 08月20日 暂无中奖记录</div>
+        <div class="source-note">💡 每日冲榜奖励由系统自动发放到账户余额，无需手动领取，这里仅作记录查询。</div>
+      </div>
+
+      <div id="reward-tier" style="display:none;">
+        <div class="record-row">
+          <div class="rec-date">08月22日</div>
+          <div class="rec-mid"><div class="rec-name">突破奖励</div><div class="rec-sub">累计流水满¥100,000</div></div>
+          <div class="rec-stack"><div class="rec-val">188元红包</div><span class="rec-status done">已领取</span></div>
+        </div>
+        <div class="record-row">
+          <div class="rec-date">08月20日</div>
+          <div class="rec-mid"><div class="rec-name">进阶奖励</div><div class="rec-sub">累计流水满¥50,000</div></div>
+          <div class="rec-stack"><div class="rec-val">88积分+体验券</div><span class="rec-status done">已领取</span></div>
+        </div>
+        <div class="record-row">
+          <div class="rec-date">08月18日</div>
+          <div class="rec-mid"><div class="rec-name">入门礼包</div><div class="rec-sub">累计流水满¥10,000</div></div>
+          <div class="rec-stack"><div class="rec-val">8元红包+优惠券</div><span class="rec-status done">已领取</span></div>
+        </div>
+        <div class="source-note">💡 还有3个更高档位在等你解锁，去"阶梯达标奖励"里看看还差多少～</div>
+      </div>
+
+      <div id="reward-lucky" style="display:none;">
+        <div class="record-row">
+          <div class="rec-date">08月23日<br>14:20</div>
+          <div class="rec-mid"><div class="rec-name">58元红包</div></div>
+          <span class="rec-status done">已到账</span>
+        </div>
+        <div class="record-row">
+          <div class="rec-date">08月22日<br>09:05</div>
+          <div class="rec-mid"><div class="rec-name">优惠券</div></div>
+          <span class="rec-status done">已到账</span>
+        </div>
+        <div class="record-row">
+          <div class="rec-date">08月21日<br>20:11</div>
+          <div class="rec-mid"><div class="rec-name">实物礼品</div></div>
+          <span class="rec-status pending">兑换中</span>
+        </div>
+        <div class="record-row">
+          <div class="rec-date">08月20日<br>11:30</div>
+          <div class="rec-mid"><div class="rec-name">8元红包</div></div>
+          <span class="rec-status done">已到账</span>
+        </div>
+        <div class="source-note">💡 现金/优惠券类奖品自动到账；实物礼品需要登记收货信息，中奖后请留意站内信通知完成兑换。</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ================= PANEL: 活动规则 ================= -->
+  <div class="panel" id="panel-rules">
+    <div class="panel-grip" onclick="closePanel('panel-rules')"></div>
+    <div class="panel-head">
+      <div><h2>活动规则</h2><div class="sub">巅峰争霸赛 · 完整说明</div></div>
+      <div class="panel-close" onclick="closePanel('panel-rules')">✕</div>
+    </div>
+    <div class="panel-body">
+      <div class="rule-sec">
+        <h3>🗓️ 活动周期</h3>
+        <p>活动一共14天，全平台自动开启，不用你手动报名。活动期间你产生的有效流水，系统会自动帮你记下来，活动结束后统一结算发奖。</p>
+      </div>
+      <div class="rule-sec">
+        <h3>🎟️ 怎么参赛</h3>
+        <ul>
+          <li>不用点"报名"，只要你有流水产生，就已经算在参赛啦</li>
+          <li>累计有效流水满¥10,000，自动解锁排行榜排名和各种奖励资格</li>
+          <li>没到¥10,000之前，流水也在正常累计，一达标马上自动生效，不用你操心</li>
+          <li>撤单、退款的订单不算在有效流水里哦</li>
+        </ul>
+      </div>
+      <div class="rule-sec">
+        <h3>🏆 总榜怎么排</h3>
+        <p>按你活动期间的累计有效流水从高到低排名。不是只有前3名才有奖——一共设了5个获奖区间，第1名到第100名都有机会拿奖。冠军除了拿现金，还额外送专属奖杯、至尊VIP和专属称号。</p>
+      </div>
+      <div class="rule-sec">
+        <h3>🎯 阶梯奖励</h3>
+        <p>不用跟别人抢名次，只要你的流水到了对应档位，就能解锁那一档的奖励，跟排名完全没关系。从¥10,000到¥1,000,000，一共6个档位，越往上奖励越丰厚，达标随时可以领。</p>
+      </div>
+      <div class="rule-sec">
+        <h3>🔥 每天都有新机会</h3>
+        <ul>
+          <li><b>今日冲榜王</b>：当天流水最高的人拿奖</li>
+          <li><b>最强逆袭奖</b>：当天排名比前一天涨得最多的人拿奖</li>
+          <li><b>流水突破奖</b>：当天第一次突破10万/30万/50万流水的人拿奖</li>
+        </ul>
+        <p>每天0点重新开始计算，昨天的排名不占今天的便宜，天天都能翻盘。</p>
+      </div>
+      <div class="rule-sec">
+        <h3>🎁 幸运抽奖</h3>
+        <p>流水达到门槛就能抽奖，流水越高，抽奖机会越多。奖品有现金红包、优惠券、VIP权益、实物礼品，还有神秘大奖等你来抽，人人都有机会中大奖。</p>
+      </div>
+      <div class="rule-sec">
+        <h3>🛡️ 段位怎么升</h3>
+        <p>流水越高，段位越高：新秀 → 进阶者 → 精英 → 王者 → 至尊 → 传奇，一共6级。段位越高，能解锁的东西越多，比如专属称号、专属头像框等等。</p>
+      </div>
+      <div class="rule-sec">
+        <h3>💰 奖励什么时候到账</h3>
+        <ul>
+          <li><b>总榜排名奖励</b>：要等活动结束、最终排名公布后统一结算，3个工作日内发到你的账户</li>
+          <li><b>阶梯奖励</b>：不用等活动结束，达标随时能领，领取后马上到账</li>
+          <li><b>每日冲榜奖励</b>：每天0点结算后，系统自动发到你的账户余额，不用你操作</li>
+          <li><b>幸运抽奖</b>：抽完当场就知道结果，现金红包/优惠券马上到账；抽到实物礼品需要登记收货信息才能兑换</li>
+        </ul>
+      </div>
+      <div class="rule-foot">本活动最终解释权归平台所有</div>
+    </div>
+  </div>
+
+  <div class="mask" id="mask" onclick="closeAll()"></div>
+  <div class="toast" id="toast">
+    <div class="em" id="toastEm">🎉</div>
+    <div class="t1" id="toastT1">恭喜获得</div>
+    <div class="t2" id="toastT2">现金红包 58 元</div>
+  </div>
+</div>
+
+<!-- ================= 右侧：开发文档（活动规则描述，移动端隐藏） ================= -->
+<aside class="side-rules">
+  <div class="side-rules-head">
+    <h1>开发文档 · 规则描述</h1>
+    <div class="badge">DEV SPEC</div>
+  </div>
+  <div class="side-rules-sub">巅峰争霸赛 · 供研发对照实现，正文数值均为示例，以最终配置表为准</div>
+
+  <div class="rule-sec">
+    <h3>① 活动周期</h3>
+    <p>活动共14天，采用自动参赛机制，面向全体客户自动开放，无需手动报名或二次确认。活动期间产生的有效流水由系统自动统计，活动结束后统一结算发奖。</p>
+  </div>
+  <div class="rule-sec">
+    <h3>② 参赛与门槛</h3>
+    <ul>
+      <li>无报名环节，活动开始后账户自动纳入统计范围，产生有效流水即自动计入累计成绩</li>
+      <li>累计有效流水达到¥10,000，自动解锁排行榜排名展示及各项奖励评选资格</li>
+      <li>未达门槛期间流水仍正常累计，达标后自动解锁，无需任何客户端操作或后台触发</li>
+      <li>有效流水计算口径与平台现有流水统计规则保持一致，撤单/退款订单不计入</li>
+      <li>活动页/规则弹窗作为知情展示入口，客户是否点开查看不影响自动参赛与统计</li>
+    </ul>
+  </div>
+  <div class="rule-sec">
+    <h3>③ 总流水争霸榜</h3>
+    <p>按活动期间累计有效流水排名，设置5个获奖区间，避免奖励只集中在头部客户。排行榜每5分钟刷新一次，首页与榜单页需同步展示：当前排名、累计流水、与上一名差距、距下一奖励区间差距、距下一流水档位差距。</p>
+  </div>
+  <div class="rule-sec">
+    <h3>④ 流水阶梯达标奖励</h3>
+    <p>累计流水达到对应档位即可解锁奖励，判定与排名无关。达标后由客户主动领取，不设领取时限（活动结束前均可领取），未领取奖励在活动结束后统一清算方式另行约定。</p>
+  </div>
+  <div class="rule-sec">
+    <h3>⑤ 每日冲榜奖励</h3>
+    <ul>
+      <li>今日冲榜王：当日有效流水最高的客户，每日00:00重新结算，与总榜排名无关</li>
+      <li>最强逆袭奖：当日总榜排名较前一日提升名次最多的客户</li>
+      <li>流水突破奖：当日首次突破指定流水档位的客户，同一档位每人每日限触发一次</li>
+      <li>发放方式：由系统在每日结算后自动发放至客户账户余额，无需客户手动领取；发放记录写入"奖励中心-每日中奖"供查询</li>
+    </ul>
+  </div>
+  <div class="rule-sec">
+    <h3>⑥ 幸运抽奖</h3>
+    <p>累计流水达到最低门槛即可参与抽奖，抽奖机会数随流水档位累加（详见首页"抽奖机会来源"说明）。奖品含现金红包、优惠券、VIP权益、实物礼品及神秘大奖，中奖结果实时到账，实物礼品另走线下核销流程。</p>
+  </div>
+  <div class="rule-sec">
+    <h3>⑦ 争霸段位</h3>
+    <p>根据累计流水自动划分六个段位，段位与流水阶梯档位同步晋升，无需额外操作。段位越高解锁权益越多，包括专属称号、专属头像框等，具体权益清单以最终配置为准。</p>
+  </div>
+  <div class="rule-sec">
+    <h3>⑧ 结算与发放说明</h3>
+    <ul>
+      <li>总榜排名奖励：活动结束后统一结算，公布最终排行榜，结算后3个工作日内发放至客户账户，逾期未到账走客诉补偿流程</li>
+      <li>阶梯达标奖励：活动进行中即可由客户主动领取，无需等待活动结束（详见④）</li>
+      <li>每日冲榜奖励：每日00:00自动结算并发放至账户余额，无需客户操作（详见⑤）</li>
+      <li>幸运抽奖：即时开奖、即时出结果，现金/优惠券类实时到账，实物礼品另走线下核销流程（详见⑥）</li>
+    </ul>
+  </div>
+  <div class="rule-sec">
+    <h3>⑨ 异常处理</h3>
+    <ul>
+      <li>总榜同流水并列：按达标时间先后排序，先达标者靠前</li>
+      <li>排行榜数据存在最长5分钟延迟，前端需展示"实时更新"字样而非精确到秒</li>
+      <li>疑似异常流水（如刷量/套利）由风控系统标记后暂停其奖励资格，人工复核</li>
+    </ul>
+  </div>
+
+  <div class="qref-title">流水阶梯档位速查</div>
+  <div class="qref-row"><span class="k">入门礼包</span><span class="v">¥10,000</span></div>
+  <div class="qref-row"><span class="k">进阶奖励</span><span class="v">¥50,000</span></div>
+  <div class="qref-row"><span class="k">突破奖励</span><span class="v">¥100,000</span></div>
+  <div class="qref-row"><span class="k">精英奖励</span><span class="v">¥300,000</span></div>
+  <div class="qref-row"><span class="k">王者奖励</span><span class="v">¥500,000</span></div>
+  <div class="qref-row"><span class="k">至尊奖励</span><span class="v">¥1,000,000</span></div>
+
+  <div class="qref-title">总榜奖励区间速查</div>
+  <div class="qref-row"><span class="k">第1名</span><span class="v">¥88,888+专属权益</span></div>
+  <div class="qref-row"><span class="k">第2-3名</span><span class="v">¥18,888-38,888</span></div>
+  <div class="qref-row"><span class="k">第4-10名</span><span class="v">¥5,888</span></div>
+  <div class="qref-row"><span class="k">第11-30名</span><span class="v">¥1,888</span></div>
+  <div class="qref-row"><span class="k">第31-100名</span><span class="v">¥888/礼包</span></div>
+
+  <div class="rule-foot">本活动最终解释权归平台所有</div>
+</aside>
+</div>
+
+
+<script>
+  function goToLobby(){
+    showToast('🎮','即将为您跳转','前往游戏大厅，继续冲刺流水');
+  }
+  function claimReward(btn, rewardText, tierName, tierSub){
+    if(btn.classList.contains('done')) return;
+    btn.classList.remove('can');
+    btn.classList.add('done');
+    btn.textContent = '已领取';
+    btn.disabled = true;
+    showToast('🎁','领取成功', rewardText);
+    if(tierName) addTierRecord(tierName, tierSub||'', rewardText);
+  }
+  function togglePromo(el){
+    const isOpen = el.classList.contains('open');
+    document.querySelectorAll('.promo-item').forEach(p=>p.classList.remove('open'));
+    if(!isOpen) el.classList.add('open');
+  }
+  function openPanel(id){
+    document.getElementById('mask').classList.add('show');
+    document.getElementById(id).classList.add('show');
+  }
+  function closePanel(id){
+    document.getElementById(id).classList.remove('show');
+    document.getElementById('mask').classList.remove('show');
+  }
+  function closeAll(){
+    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('show'));
+    document.getElementById('mask').classList.remove('show');
+  }
+  function switchTab(el, targetId){
+    el.parentElement.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+    el.classList.add('active');
+    ['daily-champ','daily-rise','daily-break'].forEach(id=>{
+      document.getElementById(id).style.display = (id===targetId)?'block':'none';
+    });
+  }
+  function switchRewardTab(el, targetId){
+    el.parentElement.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+    el.classList.add('active');
+    ['reward-total','reward-daily','reward-tier','reward-lucky'].forEach(id=>{
+      document.getElementById(id).style.display = (id===targetId)?'block':'none';
+    });
+  }
+  function openRewardsTab(targetId){
+    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('show'));
+    openPanel('panel-rewards');
+    const tabIds = ['reward-total','reward-daily','reward-tier','reward-lucky'];
+    const tabEls = document.querySelectorAll('#panel-rewards .tab');
+    tabEls.forEach((t,i)=>t.classList.toggle('active', tabIds[i]===targetId));
+    tabIds.forEach(id=>{
+      document.getElementById(id).style.display = (id===targetId)?'block':'none';
+    });
+  }
+  function addTierRecord(name, sub, val){
+    const list = document.getElementById('reward-tier');
+    const note = list.querySelector('.source-note');
+    const row = document.createElement('div');
+    row.className = 'record-row';
+    row.innerHTML = '<div class="rec-date">刚刚</div><div class="rec-mid"><div class="rec-name">'+name+'</div><div class="rec-sub">'+sub+'</div></div><div class="rec-stack"><div class="rec-val">'+val+'</div><span class="rec-status done">已领取</span></div>';
+    list.insertBefore(row, list.firstChild);
+  }
+  function addLuckyRecord(name){
+    const list = document.getElementById('reward-lucky');
+    const row = document.createElement('div');
+    row.className = 'record-row';
+    row.innerHTML = '<div class="rec-date">刚刚</div><div class="rec-mid"><div class="rec-name">'+name+'</div></div><span class="rec-status done">已到账</span>';
+    list.insertBefore(row, list.firstChild);
+  }
+
+  // countdown to end of activity (demo: fixed 7d) — only the unit that actually changes value gets the tick flash
+  let remain = 7*86400 + 12*3600 + 34*60 + 56;
+  let prevUnits = {d:7, h:12, m:34, s:56};
+  let prevSettleText = '';
+  function setUnit(id, val, key){
+    const el = document.getElementById(id);
+    const text = String(val).padStart(2,'0');
+    if(el.textContent !== text) el.textContent = text;
+    if(val !== prevUnits[key]){
+      el.classList.remove('tick');
+      void el.offsetWidth;
+      el.classList.add('tick');
+      prevUnits[key] = val;
+    }
+  }
+  setInterval(()=>{
+    remain--;
+    if(remain<0) remain=0;
+    const d = Math.floor(remain/86400);
+    const h = Math.floor((remain%86400)/3600);
+    const m = Math.floor((remain%3600)/60);
+    const s = remain%60;
+    setUnit('cdD', d, 'd');
+    setUnit('cdH', h, 'h');
+    setUnit('cdM', m, 'm');
+    setUnit('cdS', s, 's');
+    // 同步"奖励中心 · 总榜结算"里的倒计时文案，保持和首页倒计时一致
+    const settleText = String(d).padStart(2,'0')+'天'+String(h).padStart(2,'0')+'小时';
+    if(settleText !== prevSettleText){
+      const settleEl = document.getElementById('settleCdText');
+      if(settleEl) settleEl.textContent = settleText;
+      prevSettleText = settleText;
+    }
+  }, 1000);
+
+  // 每日冲榜倒计时（距当日00:00结算），首页卡片与每日冲榜弹窗内共用同一份计时，避免两处数字不同步
+  let dailyRemain = 5*3600 + 12*60 + 33;
+  setInterval(()=>{
+    dailyRemain--;
+    if(dailyRemain < 0) dailyRemain = 24*3600 - 1; // 演示用：倒计时到0后模拟次日重新开始
+    const h = Math.floor(dailyRemain/3600);
+    const m = Math.floor((dailyRemain%3600)/60);
+    const s = dailyRemain%60;
+    const text = String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+    const el1 = document.getElementById('homeDailyCd');
+    const el2 = document.getElementById('dailyCdText');
+    if(el1) el1.textContent = text;
+    if(el2) el2.textContent = text;
+  }, 1000);
+
+  const prizes = [
+    {em:'🧧',t:'8元红包'},{em:'🎟️',t:'优惠券'},{em:'🧧',t:'18元红包'},
+    {em:'💎',t:'VIP体验券'},{em:'✨',t:'神秘大奖'},{em:'🧧',t:'58元红包'},
+    {em:'🎁',t:'实物礼品'},{em:'🧧',t:'188元红包'},{em:'🧧',t:'888元红包'}
+  ];
+  let drawing=false;
+  function doDraw(){
+    if(drawing) return;
+    const chanceBox = document.querySelector('.draw-chance');
+    const chanceEl = document.querySelector('.draw-chance .num');
+    let chances = parseInt(chanceEl.textContent);
+    if(chances<=0){
+      showToast('😅','暂无抽奖机会','完成流水阶梯可获得更多机会');
+      chanceBox.classList.remove('shake'); void chanceBox.offsetWidth; chanceBox.classList.add('shake');
+      return;
+    }
+    drawing = true;
+    const cells = document.querySelectorAll('.prize-cell');
+    let count=0;
+    let speed=90;
+    const spin=()=>{
+      cells.forEach(c=>c.classList.remove('hit'));
+      const idx = Math.floor(Math.random()*cells.length);
+      cells[idx].classList.add('hit');
+      count++;
+      if(count>16){
+        const finalIdx = Math.floor(Math.random()*prizes.length);
+        cells.forEach(c=>c.classList.remove('hit'));
+        cells[finalIdx].classList.add('hit');
+        const remainChances = chances-1;
+        chanceEl.textContent = remainChances;
+        const homeStat = document.getElementById('homeDrawChances');
+        if(homeStat) homeStat.textContent = remainChances+'次';
+        drawing=false;
+        showToast(prizes[finalIdx].em,'恭喜获得', prizes[finalIdx].t);
+        addLuckyRecord(prizes[finalIdx].t);
+        return;
+      }
+      speed += 8; // ease out — slows toward the end for a "landing" feel
+      setTimeout(spin, speed);
+    };
+    spin();
+  }
+  function showToast(em,t1,t2){
+    document.getElementById('toastEm').textContent=em;
+    document.getElementById('toastT1').textContent=t1;
+    document.getElementById('toastT2').textContent=t2;
+    const el=document.getElementById('toast');
+    el.classList.add('show');
+    setTimeout(()=>el.classList.remove('show'), 1800);
+  }
+</script>
+</body>
+</html>
