@@ -159,16 +159,22 @@
     display:flex;
     align-items:center;
     justify-content:center;
-    padding:11px 4px;
+    padding:11px 3px;
     background:#ffffff;
     border:none;
     border-radius:12px;
     color:var(--blue-dim);
     font-size:12.5px;
     font-weight:600;
+    white-space:nowrap;
     cursor:pointer;
     box-shadow:0 1px 3px rgba(20,40,80,0.06);
     transition:all .15s ease;
+  }
+  /* 分类名称最多支持后台配置 6 个字，超过 4 个字时自动缩小字号以保证单行放得下 */
+  .cat.cat-sm{
+    font-size:10.5px;
+    letter-spacing:-0.3px;
   }
   .cat-badge{
     position:absolute;
@@ -936,7 +942,7 @@
     <aside class="sidebar" id="sidebar">
       <button class="cat active" data-cat="all">全部活动<span class="cat-badge" data-cat-badge="all" hidden>0</span></button>
       <button class="cat" data-cat="电子">电子<span class="cat-badge" data-cat-badge="电子" hidden>0</span></button>
-      <button class="cat" data-cat="视讯">视讯<span class="cat-badge" data-cat-badge="视讯" hidden>0</span></button>
+      <button class="cat cat-sm" data-cat="视讯">真人视讯专区<span class="cat-badge" data-cat-badge="视讯" hidden>0</span></button>
       <button class="cat" data-cat="捕鱼">捕鱼<span class="cat-badge" data-cat-badge="捕鱼" hidden>0</span></button>
       <button class="cat" data-cat="体育">体育<span class="cat-badge" data-cat-badge="体育" hidden>0</span></button>
       <button class="cat" data-cat="出款福利">出款福利<span class="cat-badge" data-cat-badge="出款福利" hidden>0</span></button>
@@ -1242,7 +1248,7 @@
           <div class="popover-options">
             <button class="opt-pill active" data-type="all" data-label="全部类型">全部类型</button>
             <button class="opt-pill" data-type="电子" data-label="电子">电子</button>
-            <button class="opt-pill" data-type="视讯" data-label="视讯">视讯</button>
+            <button class="opt-pill" data-type="视讯" data-label="真人视讯专区">真人视讯专区</button>
             <button class="opt-pill" data-type="捕鱼" data-label="捕鱼">捕鱼</button>
             <button class="opt-pill" data-type="体育" data-label="体育">体育</button>
             <button class="opt-pill" data-type="出款福利" data-label="出款福利">出款福利</button>
@@ -1354,6 +1360,7 @@
     <ul>
       <li>卡片按分类展示，点击侧边栏分类仅本地筛选，不重新拉取数据。</li>
       <li>「待领取」角标只是样式提示，与「待领取」页的真实数据分开渲染，不复用同一状态。</li>
+      <li>左侧分类名称后台最多可配置 <b>6 个字</b>；字数较多时需要缩小字号才能单行放下，具体缩小到多大以设计稿为准。</li>
     </ul>
   </div>
 
