@@ -1,0 +1,1023 @@
+<title>彩票投注报表</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600;700&family=Inter:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#eef1f6;
+    --surface:#ffffff;
+    --surface-2:#f7f9fc;
+    --border:#e3e8f0;
+    --border-strong:#d3dae6;
+    --text:#1e2532;
+    --text-muted:#6b7686;
+    --text-faint:#9aa4b2;
+    --accent:#3468d6;
+    --accent-hover:#2957bd;
+    --accent-tint:#eaf1ff;
+    --accent-tint-strong:#dbe8ff;
+    --row-alt:#f8fafc;
+    --tab-inactive:#525b6b;
+    --danger:#d94f4f;
+    --shadow: 0 1px 2px rgba(30,37,50,.04), 0 8px 24px rgba(30,37,50,.06);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#12151b;
+      --surface:#1a1e26;
+      --surface-2:#20242e;
+      --border:#2b303c;
+      --border-strong:#383e4c;
+      --text:#e7eaf0;
+      --text-muted:#98a1b3;
+      --text-faint:#6c7688;
+      --accent:#5b8def;
+      --accent-hover:#7aa2f2;
+      --accent-tint:#1d2a45;
+      --accent-tint-strong:#243456;
+      --row-alt:#1e222b;
+      --tab-inactive:#9aa3b5;
+      --danger:#e2716f;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#12151b;
+    --surface:#1a1e26;
+    --surface-2:#20242e;
+    --border:#2b303c;
+    --border-strong:#383e4c;
+    --text:#e7eaf0;
+    --text-muted:#98a1b3;
+    --text-faint:#6c7688;
+    --accent:#5b8def;
+    --accent-hover:#7aa2f2;
+    --accent-tint:#1d2a45;
+    --accent-tint-strong:#243456;
+    --row-alt:#1e222b;
+    --tab-inactive:#9aa3b5;
+    --danger:#e2716f;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:"Noto Sans SC","Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    font-size:13px;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  .app-shell{
+    display:flex;
+    align-items:stretch;
+    min-height:100vh;
+  }
+  .page{
+    flex:1;
+    min-width:0;
+    max-width:1400px;
+    padding:20px;
+  }
+
+  /* Sidebar */
+  .sidebar{
+    flex:none;
+    width:220px;
+    background:var(--surface);
+    border-right:1px solid var(--border);
+    padding:10px 0 16px;
+    overflow-y:auto;
+  }
+  .nav-item{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:11px 18px;
+    font-size:13.5px;
+    color:var(--text);
+    cursor:pointer;
+    user-select:none;
+  }
+  .nav-item svg{ color:var(--text-muted); }
+  .nav-item .nav-chevron{
+    margin-left:auto;
+    color:var(--text-faint);
+    transition:transform .15s ease;
+  }
+  .nav-item.open .nav-chevron{ transform:rotate(180deg); }
+  .nav-group{
+    display:flex;
+    flex-direction:column;
+  }
+  .nav-group[hidden]{ display:none; }
+  .nav-sub{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:9px 18px 9px 20px;
+    font-size:13px;
+    color:var(--text-muted);
+    cursor:pointer;
+    user-select:none;
+  }
+  .nav-sub svg{ color:var(--text-faint); flex:none; }
+  .nav-sub.leaf{ padding-left:44px; }
+  .nav-sub.active{
+    background:var(--surface-2);
+    color:var(--accent);
+    font-weight:600;
+    border-radius:6px;
+    margin:0 6px;
+    width:calc(100% - 12px);
+  }
+  .nav-sub.active svg{ color:var(--accent); }
+  .nav-divider{
+    height:1px;
+    background:var(--border);
+    margin:6px 0;
+  }
+  .card{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:10px;
+    box-shadow:var(--shadow);
+    overflow:hidden;
+  }
+
+  /* Tabs */
+  .tabs{
+    display:flex;
+    gap:28px;
+    padding:0 20px;
+    border-bottom:1px solid var(--border);
+  }
+  .tab{
+    position:relative;
+    padding:14px 2px;
+    font-size:14px;
+    color:var(--tab-inactive);
+    cursor:pointer;
+    user-select:none;
+  }
+  .tab.active{
+    color:var(--accent);
+    font-weight:600;
+  }
+  .tab.active::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:-1px;
+    height:2px;
+    background:var(--accent);
+    border-radius:2px 2px 0 0;
+  }
+
+  /* Filter bar */
+  .filters{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:end;
+    gap:14px 18px;
+    padding:18px 20px;
+    border-bottom:1px solid var(--border);
+  }
+  .field{
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+  }
+  .field.new .field-label{
+    color:var(--accent);
+  }
+  .field-label{
+    font-size:12px;
+    color:var(--text-muted);
+    white-space:nowrap;
+  }
+  select, .date-input, .jump-input{
+    height:32px;
+    border:1px solid var(--border-strong);
+    border-radius:6px;
+    background:var(--surface);
+    color:var(--text);
+    font:inherit;
+    padding:0 10px;
+    outline:none;
+    transition:border-color .15s ease;
+  }
+  select{
+    min-width:150px;
+    appearance:none;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none'><path d='M4 6l4 4 4-4' stroke='%236b7686' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+    background-repeat:no-repeat;
+    background-position:right 8px center;
+    padding-right:28px;
+  }
+  select.new-filter{
+    border-color:var(--accent);
+    background-color:var(--accent-tint);
+  }
+  select:focus, .date-input:focus, .jump-input:focus{
+    border-color:var(--accent);
+  }
+  .date-range{
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .date-input{
+    width:128px;
+    color:var(--text-faint);
+  }
+  .date-sep{ color:var(--text-faint); }
+  .btn{
+    height:32px;
+    border-radius:6px;
+    border:1px solid transparent;
+    font:inherit;
+    font-weight:500;
+    padding:0 16px;
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    cursor:pointer;
+    transition:background-color .15s ease, border-color .15s ease;
+  }
+  .btn-primary{
+    background:var(--accent);
+    color:#fff;
+  }
+  .btn-primary:hover{ background:var(--accent-hover); }
+  .btn-ghost{
+    background:var(--surface);
+    border-color:var(--border-strong);
+    color:var(--text-muted);
+  }
+  .btn-ghost:hover{ border-color:var(--text-faint); color:var(--text); }
+
+  /* Summary strip */
+  .summary-wrap{
+    padding:16px 20px 4px;
+  }
+  .summary-wrap .scroll{ overflow-x:auto; }
+  .summary-table{
+    border-collapse:collapse;
+    width:100%;
+    min-width:1900px;
+  }
+  .summary-table th, .summary-table td{
+    padding:10px 14px;
+    text-align:left;
+    white-space:nowrap;
+    border-bottom:1px solid var(--border);
+  }
+  .summary-table thead th{
+    background:var(--surface-2);
+    color:var(--text-muted);
+    font-weight:500;
+    font-size:12px;
+    border-top:1px solid var(--border);
+  }
+  .summary-table thead th:first-child{ border-left:1px solid var(--border); border-top-left-radius:6px; }
+  .summary-table thead th:last-child{ border-right:1px solid var(--border); border-top-right-radius:6px; }
+  .summary-table tbody td{
+    font-family:"Inter","Noto Sans SC",sans-serif;
+    font-variant-numeric:tabular-nums;
+    font-weight:600;
+    border-left:1px solid var(--border);
+  }
+  .summary-table tbody td:last-child{ border-right:1px solid var(--border); border-bottom-left-radius:6px; border-bottom-right-radius:6px;}
+  .summary-table tbody td:first-child{ border-bottom-left-radius:6px; }
+
+  /* Detail table */
+  .table-wrap{
+    padding:18px 20px 8px;
+  }
+  .table-scroll{
+    overflow-x:auto;
+    border:1px solid var(--border);
+    border-radius:8px;
+  }
+  table.detail{
+    border-collapse:collapse;
+    width:100%;
+    min-width:2600px;
+  }
+  table.detail th{
+    background:var(--surface-2);
+    color:var(--text-muted);
+    font-weight:600;
+    font-size:12.5px;
+    text-align:left;
+    padding:11px 14px;
+    white-space:nowrap;
+    border-bottom:1px solid var(--border);
+  }
+  table.detail th.new-col, table.detail td.new-col{
+    background:var(--accent-tint);
+  }
+  table.detail th.new-col{ color:var(--accent); }
+  table.detail td{
+    padding:11px 14px;
+    white-space:nowrap;
+    border-bottom:1px solid var(--border);
+    color:var(--text);
+  }
+  table.detail td.num{
+    font-family:"Inter","Noto Sans SC",sans-serif;
+    font-variant-numeric:tabular-nums;
+    text-align:right;
+  }
+  table.detail tbody tr:nth-child(even):not(.empty-row) td:not(.new-col){
+    background:var(--row-alt);
+  }
+  table.detail td.game-cell{
+    font-weight:600;
+    vertical-align:middle;
+    background:var(--surface);
+  }
+  .market-pill{
+    display:inline-block;
+    padding:2px 10px;
+    border-radius:100px;
+    font-size:12px;
+    font-weight:600;
+    background:var(--accent-tint-strong);
+    color:var(--accent);
+  }
+  td.profit-pos{ color:var(--accent); }
+  td.profit-neg{ color:var(--danger); }
+  td.cell-dash{ color:var(--text-faint); text-align:center; }
+  .rtp-link{ color:var(--accent); cursor:pointer; }
+  .info-ico{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    width:13px;
+    height:13px;
+    margin-left:3px;
+    border-radius:50%;
+    border:1px solid var(--text-faint);
+    color:var(--text-faint);
+    font-size:9px;
+    line-height:1;
+    vertical-align:middle;
+    cursor:help;
+  }
+  .empty-row td{
+    text-align:center;
+    color:var(--text-faint);
+    padding:36px 14px;
+    background:var(--surface) !important;
+  }
+
+  /* RTP detail modal */
+  .modal-overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(20,24,32,.45);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:24px;
+    z-index:1000;
+  }
+  .modal-overlay[hidden]{ display:none; }
+  .modal-card{
+    background:var(--surface);
+    border-radius:10px;
+    box-shadow:var(--shadow);
+    width:100%;
+    max-width:460px;
+    max-height:min(560px, 86vh);
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
+  }
+  .modal-head{
+    display:flex;
+    align-items:center;
+    padding:12px 14px;
+    border-bottom:1px solid var(--border);
+  }
+  .modal-close{
+    width:24px;
+    height:24px;
+    border:none;
+    background:none;
+    color:var(--text-muted);
+    font-size:16px;
+    line-height:1;
+    cursor:pointer;
+    border-radius:6px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .modal-close:hover{ background:var(--surface-2); color:var(--text); }
+  .modal-tabs{
+    display:flex;
+    gap:24px;
+    padding:0 18px;
+    border-bottom:1px solid var(--border);
+  }
+  .modal-tab{
+    position:relative;
+    padding:12px 2px;
+    font-size:13.5px;
+    font-weight:600;
+    color:var(--accent);
+  }
+  .modal-tab::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:-1px;
+    height:2px;
+    background:var(--accent);
+    border-radius:2px 2px 0 0;
+  }
+  .modal-body{
+    overflow-y:auto;
+    padding:14px 18px 18px;
+  }
+  .modal-body table{
+    width:100%;
+    border-collapse:collapse;
+  }
+  .modal-body th{
+    background:var(--surface-2);
+    color:var(--text-muted);
+    font-weight:600;
+    font-size:12px;
+    text-align:left;
+    padding:9px 12px;
+    border-bottom:1px solid var(--border);
+    white-space:nowrap;
+  }
+  .modal-body th:first-child{ border-top-left-radius:6px; }
+  .modal-body th:last-child{ border-top-right-radius:6px; }
+  .modal-body td{
+    padding:9px 12px;
+    border-bottom:1px solid var(--border);
+    white-space:nowrap;
+  }
+  .modal-body tbody tr:nth-child(even) td{ background:var(--row-alt); }
+  .modal-body td.num{
+    font-family:"Inter","Noto Sans SC",sans-serif;
+    font-variant-numeric:tabular-nums;
+    text-align:right;
+  }
+  .modal-empty{
+    padding:32px 8px;
+    text-align:center;
+    color:var(--text-faint);
+  }
+
+  /* Footer / pagination */
+  .footer{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:12px;
+    padding:16px 20px 20px;
+    color:var(--text-muted);
+    font-size:12.5px;
+  }
+  .pager{
+    display:flex;
+    align-items:center;
+    gap:6px;
+  }
+  .pg-btn{
+    min-width:28px;
+    height:28px;
+    border:1px solid var(--border-strong);
+    background:var(--surface);
+    color:var(--text-muted);
+    border-radius:6px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    font:inherit;
+    padding:0 6px;
+  }
+  .pg-btn:hover{ border-color:var(--accent); color:var(--accent); }
+  .pg-btn.active{
+    background:var(--accent);
+    border-color:var(--accent);
+    color:#fff;
+  }
+  .pg-btn[disabled]{ opacity:.4; cursor:not-allowed; }
+  .pager-extra{
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .jump-input{ width:48px; text-align:center; padding:0 6px; }
+
+  svg{ display:block; flex:none; }
+
+  /* Rule note */
+  .rule-note{
+    border:1px solid var(--border);
+    border-left:3px solid var(--accent);
+    background:var(--accent-tint);
+    border-radius:8px;
+    padding:14px 18px;
+    margin-bottom:16px;
+  }
+  .rule-note h2{
+    margin:0 0 8px;
+    font-size:13px;
+    font-weight:700;
+    color:var(--accent);
+  }
+  .rule-note ol{
+    margin:0;
+    padding-left:18px;
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+  }
+  .rule-note li{
+    color:var(--text);
+    font-size:12.5px;
+    line-height:1.6;
+  }
+  .rule-note b{ color:var(--text); font-weight:600; }
+</style>
+
+<div class="app-shell">
+  <nav class="sidebar">
+    <div class="nav-item">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg>
+      首页
+      <svg class="nav-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+    </div>
+    <div class="nav-item">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="8" r="3.4"/><path d="M5 20c1.2-4 4-6 7-6s5.8 2 7 6"/></svg>
+      会员
+      <svg class="nav-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+    </div>
+    <div class="nav-item">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="18" height="12" rx="1.6"/><path d="M9 20h6M12 16v4"/></svg>
+      审核
+      <svg class="nav-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+    </div>
+
+    <div class="nav-item open" id="reportsToggle">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M6 3h9l4 4v14H6z"/><path d="M15 3v4h4"/></svg>
+      报表
+      <svg class="nav-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+    </div>
+    <div class="nav-group" id="reportsGroup">
+      <div class="nav-sub">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 11v2l4 1 12-5V7L7 12l-4-1z"/><path d="M9 15l1 5 3-1.5"/></svg>
+        会员全民推广报表
+      </div>
+      <div class="nav-sub">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="9" cy="9" r="3"/><circle cx="17" cy="10" r="2.4"/><path d="M4 19c.6-3.2 2.6-5 5-5s4.4 1.8 5 5"/><path d="M14.5 14.3c2 .3 3.3 1.9 3.8 4.7"/></svg>
+        会员推广团队报表
+      </div>
+      <div class="nav-sub">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 8a8 8 0 0 1 14-4.9M20 4v4h-4"/><path d="M20 16a8 8 0 0 1-14 4.9M4 20v-4h4"/></svg>
+        会员充值提现报表
+      </div>
+      <div class="nav-sub">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3l8 9-8 9-8-9z"/></svg>
+        充值转换率报表
+      </div>
+      <div class="nav-sub">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3l7 6-2.5 9h-9L5 9z"/></svg>
+        代理统计报表
+      </div>
+      <div class="nav-sub">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 20V10M11 20V4M18 20v-7"/></svg>
+        中奖记录
+      </div>
+      <div class="nav-sub active">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
+        游戏收益
+      </div>
+      <div class="nav-sub">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="18" height="16" rx="1.6"/><path d="M8 4v16M3 10h18"/></svg>
+        会员盈亏
+      </div>
+      <div class="nav-sub">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="18" height="16" rx="1.6"/><path d="M3 9h18M9 9v11"/></svg>
+        会员活动金报表
+      </div>
+      <div class="nav-sub">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        会员充值提现汇总表
+      </div>
+      <div class="nav-sub leaf">回归玩家福利赠送报表</div>
+    </div>
+
+    <div class="nav-divider"></div>
+    <div class="nav-item">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="18" height="16" rx="1.8"/><path d="M3 9h18"/></svg>
+      界面
+      <svg class="nav-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+    </div>
+    <div class="nav-item">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="3"/><path d="M19.4 13.5a7.6 7.6 0 0 0 0-3l1.8-1.4-2-3.4-2.1.6a7.7 7.7 0 0 0-2.6-1.5L14 2h-4l-.5 2.2a7.7 7.7 0 0 0-2.6 1.5l-2.1-.6-2 3.4L4.6 10a7.6 7.6 0 0 0 0 3l-1.8 1.5 2 3.4 2.1-.6c.8.7 1.6 1.2 2.6 1.5L10 22h4l.5-2.2c1-.3 1.8-.8 2.6-1.5l2.1.6 2-3.4z"/></svg>
+      系统
+      <svg class="nav-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+    </div>
+  </nav>
+
+  <div class="page">
+  <div class="rule-note">
+    <h2>本次改动 · 规则说明</h2>
+    <ol>
+      <li>筛选区新增「<b>盘口</b>」下拉筛选，数据列表同步新增「盘口」列，用于区分同一玩法在不同盘口下的独立数据。</li>
+      <li>六合彩类的 2 款游戏存在多个盘口（如盘口A、盘口B），同一玩法名称的数据会按盘口拆分为不同行。</li>
+      <li>其他彩票默认只有一个盘口，统一归入「盘口A」，不做拆分。</li>
+      <li>点击「理论RTP」列的「查看」按钮弹出的明细窗口，会直接展示该玩法在<b>所有盘口</b>下的玩法名称与理论RTP数据，不受当前盘口筛选影响。</li>
+    </ol>
+  </div>
+  <div class="card">
+
+    <div class="tabs">
+      <div class="tab">按类型</div>
+      <div class="tab active">彩票（按彩票）</div>
+      <div class="tab">彩票（按会员）</div>
+    </div>
+
+    <div class="filters">
+      <div class="field">
+        <span class="field-label">分类</span>
+        <select><option>彩票</option></select>
+      </div>
+      <div class="field">
+        <span class="field-label">平台</span>
+        <select><option>JCP彩票</option></select>
+      </div>
+      <div class="field">
+        <span class="field-label">游戏</span>
+        <select><option>Hong Kong Mark Six</option></select>
+      </div>
+      <div class="field new">
+        <span class="field-label">盘口</span>
+        <select id="marketFilter" class="new-filter">
+          <option value="">全部</option>
+          <option value="盘口A">盘口A</option>
+          <option value="盘口B">盘口B</option>
+        </select>
+      </div>
+      <div class="field">
+        <span class="field-label">玩法名称</span>
+        <select id="nameFilter">
+          <option value="">玩法</option>
+          <option value="特码">特码</option>
+          <option value="两面">两面</option>
+          <option value="色波">色波</option>
+          <option value="特码头数">特码头数</option>
+          <option value="特码尾数">特码尾数</option>
+        </select>
+      </div>
+      <div class="field">
+        <span class="field-label">日期</span>
+        <div class="date-range">
+          <input class="date-input" placeholder="开始日期" readonly>
+          <span class="date-sep">—</span>
+          <input class="date-input" placeholder="结束日期" readonly>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" style="color:var(--text-faint)"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg>
+        </div>
+      </div>
+      <button class="btn btn-primary" id="searchBtn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+        搜索
+      </button>
+      <button class="btn btn-ghost" id="resetBtn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>
+        重置
+      </button>
+    </div>
+
+    <div class="summary-wrap">
+      <div class="scroll">
+        <table class="summary-table">
+          <thead>
+            <tr>
+              <th>玩家数量</th><th>投注笔数</th><th>已结算笔数</th><th>未结算笔数</th>
+              <th>取消笔数</th><th>有效笔数</th><th>投注金额</th><th>已结算金额</th>
+              <th>未结算金额</th><th>取消金额</th><th>有效投注</th><th>派奖金额</th>
+              <th>实际输赢金额</th><th>总返水金额</th><th>实际返水率</th><th>盈利率</th>
+              <th>和局局数</th><th>和局金额</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>113</td><td>2,776</td><td>2,211</td><td>555</td>
+              <td>10</td><td>2,766</td><td>394,716</td><td>387,511</td>
+              <td>7,015</td><td>190</td><td>387,511</td><td>463,083.05</td>
+              <td class="profit-pos">75,572.05</td><td>19,316.37</td><td>4.98%</td>
+              <td class="profit-neg">-24.49%</td><td>0</td><td>0</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <div class="table-scroll">
+        <table class="detail">
+          <thead>
+            <tr>
+              <th>游戏</th>
+              <th class="new-col">盘口</th>
+              <th>玩法名称</th>
+              <th>玩家数量</th>
+              <th>投注笔数</th>
+              <th>已结算笔数</th>
+              <th>未结算笔数</th>
+              <th>取消笔数</th>
+              <th>有效笔数</th>
+              <th>投注金额</th>
+              <th>已结算金额</th>
+              <th>未结算金额</th>
+              <th>取消金额</th>
+              <th>有效投注</th>
+              <th>派奖金额</th>
+              <th>实际输赢金额</th>
+              <th>返水金额</th>
+              <th>实际返水率</th>
+              <th>实际RTP<span class="info-ico" title="实际派奖金额 ÷ 有效投注">i</span></th>
+              <th>理论RTP</th>
+              <th>理论盈利率</th>
+              <th>预期抽佣金额<span class="info-ico" title="按理论盈利率估算的预期抽佣">i</span></th>
+              <th>盈利率<span class="info-ico" title="实际输赢金额 ÷ 有效投注">i</span></th>
+              <th>和局局数</th>
+              <th>和局金额</th>
+            </tr>
+          </thead>
+          <tbody id="tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="footer">
+      <div id="totalLabel">共 35 条</div>
+      <div class="pager-extra">
+        <div class="pager" id="pager"></div>
+        <select id="pageSizeSelect" style="min-width:90px;">
+          <option>10条/页</option>
+        </select>
+        <span>前往</span>
+        <input class="jump-input" id="jumpInput" value="1">
+        <span>页</span>
+      </div>
+    </div>
+
+  </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="rtpModal" hidden>
+  <div class="modal-card">
+    <div class="modal-head">
+      <button class="modal-close" id="rtpModalClose" aria-label="关闭">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 5l14 14M19 5L5 19"/></svg>
+      </button>
+    </div>
+    <div class="modal-tabs">
+      <div class="modal-tab">香港六合彩</div>
+    </div>
+    <div class="modal-body" id="rtpModalBody"></div>
+  </div>
+</div>
+
+<script>
+  const rows = [
+    { game:"Hong Kong Mark Six", market:"盘口A", name:"特码",    players:2, bet:1730, settled:1499, unsettled:221, cancelled:10, valid:1720, betAmt:366309, settledAmt:361047, unsettledAmt:5072, cancelAmt:190, validBet:361047, payout:403699.51,
+      winLoss:42652.51, rebate:17926.45, rebateRate:"4.97%", actualRTP:"111.81%", theoreticalRTP:"查看", theoreticalProfitRate:"-4.56%", expectedCommission:-105.1805, profitRate:"-16.78%", drawCount:0, drawAmount:0 },
+    { game:"Hong Kong Mark Six", market:"盘口A", name:"两面",     players:2, bet:94,   settled:70,   unsettled:24,  cancelled:0,  valid:94,   betAmt:9034,   settledAmt:8800,   unsettledAmt:234,  cancelAmt:0,   validBet:8800,   payout:10969.45,
+      winLoss:2169.45, rebate:329.76, rebateRate:"3.75%", actualRTP:"124.65%", theoreticalRTP:"查看", theoreticalProfitRate:"-0.60%", expectedCommission:-1.9580, profitRate:"-28.40%", drawCount:0, drawAmount:0 },
+    { game:"Hong Kong Mark Six", market:"盘口B", name:"色波",     players:2, bet:24,   settled:14,   unsettled:10,  cancelled:0,  valid:24,   betAmt:128,    settledAmt:93,     unsettledAmt:35,   cancelAmt:0,   validBet:93,     payout:103.07,
+      winLoss:10.07, rebate:4.02, rebateRate:"4.32%", actualRTP:"110.83%", theoreticalRTP:"查看", theoreticalProfitRate:"2.30%", expectedCommission:0.4380, profitRate:"-15.15%", drawCount:0, drawAmount:0 },
+    { game:"Hong Kong Mark Six", market:"盘口A", name:"特码头数", players:2, bet:36,   settled:24,   unsettled:12,  cancelled:0,  valid:36,   betAmt:343,    settledAmt:280,    unsettledAmt:63,   cancelAmt:0,   validBet:280,    payout:376,
+      winLoss:96, rebate:12.52, rebateRate:"4.47%", actualRTP:"134.29%", theoreticalRTP:"-", theoreticalProfitRate:"-", expectedCommission:"-", profitRate:"-38.76%", drawCount:0, drawAmount:0 },
+    { game:"Hong Kong Mark Six", market:"盘口B", name:"特码尾数", players:2, bet:62,   settled:33,   unsettled:29,  cancelled:0,  valid:62,   betAmt:513,    settledAmt:320,    unsettledAmt:193,  cancelAmt:0,   validBet:320,    payout:180,
+      winLoss:-140, rebate:20.33, rebateRate:"6.35%", actualRTP:"56.25%", theoreticalRTP:"查看", theoreticalProfitRate:"0.85%", expectedCommission:1.2980, profitRate:"37.40%", drawCount:0, drawAmount:0 },
+  ];
+
+  const fmt = n => n.toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+
+  const RTP_NUMBERS = [10, 20, 30, 40, 49, 39, 29, 19, 9, 8];
+  const RTP_BATCHES = ["特码a", "特码b", "特码c", "特码d"];
+  const rtpBreakdown = {
+    "特码": RTP_BATCHES.flatMap(batchName =>
+      RTP_NUMBERS.map(num => ({ name: batchName, number: num, rtp: "99.59%" }))
+    )
+  };
+
+  function openRtpModal(name){
+    const body = document.getElementById("rtpModalBody");
+    const data = rtpBreakdown[name];
+    if(data && data.length){
+      let html = '<table><thead><tr><th>玩法名称</th><th>下注号码</th><th>理论RTP</th></tr></thead><tbody>';
+      data.forEach(d => {
+        html += '<tr><td>' + d.name + '</td><td class="num">' + d.number + '</td><td class="num">' + d.rtp + '</td></tr>';
+      });
+      html += '</tbody></table>';
+      body.innerHTML = html;
+    }else{
+      body.innerHTML = '<div class="modal-empty">该玩法暂无理论RTP明细示例数据</div>';
+    }
+    document.getElementById("rtpModal").hidden = false;
+  }
+
+  function closeRtpModal(){
+    document.getElementById("rtpModal").hidden = true;
+  }
+
+  document.getElementById("tbody").addEventListener("click", (e) => {
+    const link = e.target.closest(".rtp-link");
+    if(link) openRtpModal(link.dataset.name);
+  });
+
+  document.getElementById("rtpModalClose").addEventListener("click", closeRtpModal);
+  document.getElementById("rtpModal").addEventListener("click", (e) => {
+    if(e.target.id === "rtpModal") closeRtpModal();
+  });
+  document.addEventListener("keydown", (e) => {
+    if(e.key === "Escape") closeRtpModal();
+  });
+
+  let state = { market: "", name: "", page: 1 };
+  const TOTAL_PAGES = 4;
+
+  function groupSpans(list, keyFn){
+    const spans = new Array(list.length).fill(0);
+    let i = 0;
+    while(i < list.length){
+      let j = i + 1;
+      while(j < list.length && keyFn(list[j]) === keyFn(list[i])) j++;
+      spans[i] = j - i;
+      i = j;
+    }
+    return spans;
+  }
+
+  function render(){
+    const tbody = document.getElementById("tbody");
+    tbody.innerHTML = "";
+
+    if(state.page !== 1){
+      const tr = document.createElement("tr");
+      tr.className = "empty-row";
+      tr.innerHTML = '<td colspan="25">第 ' + state.page + ' 页暂无示例数据 — 本页仅用于演示分页样式</td>';
+      tbody.appendChild(tr);
+      return;
+    }
+
+    const filtered = rows.filter(r =>
+      (!state.market || r.market === state.market) &&
+      (!state.name || r.name === state.name)
+    );
+
+    if(filtered.length === 0){
+      const tr = document.createElement("tr");
+      tr.className = "empty-row";
+      tr.innerHTML = '<td colspan="25">没有符合筛选条件的数据</td>';
+      tbody.appendChild(tr);
+      return;
+    }
+
+    const gameSpans = groupSpans(filtered, r => r.game);
+
+    filtered.forEach((r, idx) => {
+      const tr = document.createElement("tr");
+
+      let cells = "";
+      if(gameSpans[idx] > 0){
+        cells += '<td class="game-cell" rowspan="' + gameSpans[idx] + '">' + r.game + '</td>';
+      }
+      cells += '<td class="new-col"><span class="market-pill">' + r.market + '</span></td>';
+      cells += '<td>' + r.name + '</td>';
+      cells += '<td class="num">' + r.players + '</td>';
+      cells += '<td class="num">' + fmt(r.bet) + '</td>';
+      cells += '<td class="num">' + fmt(r.settled) + '</td>';
+      cells += '<td class="num">' + fmt(r.unsettled) + '</td>';
+      cells += '<td class="num">' + fmt(r.cancelled) + '</td>';
+      cells += '<td class="num">' + fmt(r.valid) + '</td>';
+      cells += '<td class="num">' + fmt(r.betAmt) + '</td>';
+      cells += '<td class="num">' + fmt(r.settledAmt) + '</td>';
+      cells += '<td class="num">' + fmt(r.unsettledAmt) + '</td>';
+      cells += '<td class="num">' + fmt(r.cancelAmt) + '</td>';
+      cells += '<td class="num">' + fmt(r.validBet) + '</td>';
+      cells += '<td class="num">' + fmt(r.payout) + '</td>';
+
+      const wlClass = r.winLoss >= 0 ? "profit-pos" : "profit-neg";
+      cells += '<td class="num ' + wlClass + '">' + (r.winLoss >= 0 ? "+" : "-") + fmt(Math.abs(r.winLoss)) + '</td>';
+
+      cells += '<td class="num">' + fmt(r.rebate) + '</td>';
+      cells += '<td class="num">' + r.rebateRate + '</td>';
+      cells += '<td class="num">' + r.actualRTP + '</td>';
+
+      if(r.theoreticalRTP === "-"){
+        cells += '<td class="num cell-dash">-</td>';
+      }else{
+        cells += '<td class="num"><span class="rtp-link" data-name="' + r.name + '">' + r.theoreticalRTP + '</span></td>';
+      }
+
+      if(r.theoreticalProfitRate === "-"){
+        cells += '<td class="num cell-dash">-</td>';
+      }else{
+        const tprClass = r.theoreticalProfitRate.trim().startsWith("-") ? "profit-neg" : "profit-pos";
+        cells += '<td class="num ' + tprClass + '">' + r.theoreticalProfitRate + '</td>';
+      }
+
+      if(r.expectedCommission === "-"){
+        cells += '<td class="num cell-dash">-</td>';
+      }else{
+        const ecClass = r.expectedCommission >= 0 ? "profit-pos" : "profit-neg";
+        const ecAbs = Math.abs(r.expectedCommission).toLocaleString("en-US", { minimumFractionDigits: 4, maximumFractionDigits: 4 });
+        cells += '<td class="num ' + ecClass + '">' + (r.expectedCommission >= 0 ? "" : "-") + ecAbs + '</td>';
+      }
+
+      const prClass = r.profitRate.trim().startsWith("-") ? "profit-neg" : "profit-pos";
+      cells += '<td class="num ' + prClass + '">' + r.profitRate + '</td>';
+
+      cells += '<td class="num">' + r.drawCount + '</td>';
+      cells += '<td class="num">' + r.drawAmount + '</td>';
+
+      tr.innerHTML = cells;
+      tbody.appendChild(tr);
+    });
+  }
+
+  function renderPager(){
+    const pager = document.getElementById("pager");
+    pager.innerHTML = "";
+
+    const prev = document.createElement("button");
+    prev.className = "pg-btn";
+    prev.textContent = "‹";
+    prev.disabled = state.page === 1;
+    prev.onclick = () => goToPage(state.page - 1);
+    pager.appendChild(prev);
+
+    for(let p = 1; p <= TOTAL_PAGES; p++){
+      const b = document.createElement("button");
+      b.className = "pg-btn" + (p === state.page ? " active" : "");
+      b.textContent = p;
+      b.onclick = () => goToPage(p);
+      pager.appendChild(b);
+    }
+
+    const next = document.createElement("button");
+    next.className = "pg-btn";
+    next.textContent = "›";
+    next.disabled = state.page === TOTAL_PAGES;
+    next.onclick = () => goToPage(state.page + 1);
+    pager.appendChild(next);
+  }
+
+  function goToPage(p){
+    if(p < 1 || p > TOTAL_PAGES) return;
+    state.page = p;
+    document.getElementById("jumpInput").value = p;
+    renderPager();
+    render();
+  }
+
+  document.getElementById("searchBtn").addEventListener("click", () => {
+    state.market = document.getElementById("marketFilter").value;
+    state.name = document.getElementById("nameFilter").value;
+    state.page = 1;
+    document.getElementById("jumpInput").value = 1;
+    renderPager();
+    render();
+  });
+
+  document.getElementById("resetBtn").addEventListener("click", () => {
+    document.getElementById("marketFilter").value = "";
+    document.getElementById("nameFilter").value = "";
+    state = { market: "", name: "", page: 1 };
+    document.getElementById("jumpInput").value = 1;
+    renderPager();
+    render();
+  });
+
+  document.getElementById("jumpInput").addEventListener("keydown", (e) => {
+    if(e.key === "Enter"){
+      const v = parseInt(e.target.value, 10);
+      if(!isNaN(v)) goToPage(v);
+    }
+  });
+
+  renderPager();
+  render();
+
+  document.getElementById("reportsToggle").addEventListener("click", function(){
+    this.classList.toggle("open");
+    document.getElementById("reportsGroup").hidden = !this.classList.contains("open");
+  });
+</script>
