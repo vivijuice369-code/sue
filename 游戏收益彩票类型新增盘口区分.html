@@ -347,6 +347,9 @@
     background:var(--accent-tint-strong);
     color:var(--accent);
   }
+  table.detail td.name-col, table.detail th.name-col{
+    box-shadow:inset 0 0 0 1px var(--accent);
+  }
   td.profit-pos{ color:var(--accent); }
   td.profit-neg{ color:var(--danger); }
   td.cell-dash{ color:var(--text-faint); text-align:center; }
@@ -666,8 +669,8 @@
         <span class="field-label">盘口</span>
         <select id="marketFilter" class="new-filter">
           <option value="">全部</option>
-          <option value="盘口A">盘口A</option>
-          <option value="盘口B">盘口B</option>
+          <option value="A">A</option>
+          <option value="B">B</option>
         </select>
       </div>
       <div class="field">
@@ -795,25 +798,25 @@
 
 <script>
   const rows = [
-    { game:"Hong Kong Mark Six", market:"盘口A", name:"特码",    players:2, bet:1730, settled:1499, unsettled:221, cancelled:10, valid:1720, betAmt:366309, settledAmt:361047, unsettledAmt:5072, cancelAmt:190, validBet:361047, payout:403699.51,
+    { game:"Hong Kong Mark Six", market:"A", name:"特码",    players:2, bet:1730, settled:1499, unsettled:221, cancelled:10, valid:1720, betAmt:366309, settledAmt:361047, unsettledAmt:5072, cancelAmt:190, validBet:361047, payout:403699.51,
       winLoss:42652.51, rebate:17926.45, rebateRate:"4.97%", actualRTP:"111.81%", theoreticalRTP:"查看", theoreticalProfitRate:"-4.56%", expectedCommission:-105.1805, profitRate:"-16.78%", drawCount:0, drawAmount:0 },
-    { game:"Hong Kong Mark Six", market:"盘口A", name:"两面",     players:2, bet:94,   settled:70,   unsettled:24,  cancelled:0,  valid:94,   betAmt:9034,   settledAmt:8800,   unsettledAmt:234,  cancelAmt:0,   validBet:8800,   payout:10969.45,
+    { game:"Hong Kong Mark Six", market:"A", name:"两面",     players:2, bet:94,   settled:70,   unsettled:24,  cancelled:0,  valid:94,   betAmt:9034,   settledAmt:8800,   unsettledAmt:234,  cancelAmt:0,   validBet:8800,   payout:10969.45,
       winLoss:2169.45, rebate:329.76, rebateRate:"3.75%", actualRTP:"124.65%", theoreticalRTP:"查看", theoreticalProfitRate:"-0.60%", expectedCommission:-1.9580, profitRate:"-28.40%", drawCount:0, drawAmount:0 },
-    { game:"Hong Kong Mark Six", market:"盘口B", name:"色波",     players:2, bet:24,   settled:14,   unsettled:10,  cancelled:0,  valid:24,   betAmt:128,    settledAmt:93,     unsettledAmt:35,   cancelAmt:0,   validBet:93,     payout:103.07,
+    { game:"Hong Kong Mark Six", market:"B", name:"色波",     players:2, bet:24,   settled:14,   unsettled:10,  cancelled:0,  valid:24,   betAmt:128,    settledAmt:93,     unsettledAmt:35,   cancelAmt:0,   validBet:93,     payout:103.07,
       winLoss:10.07, rebate:4.02, rebateRate:"4.32%", actualRTP:"110.83%", theoreticalRTP:"查看", theoreticalProfitRate:"2.30%", expectedCommission:0.4380, profitRate:"-15.15%", drawCount:0, drawAmount:0 },
-    { game:"Hong Kong Mark Six", market:"盘口A", name:"特码头数", players:2, bet:36,   settled:24,   unsettled:12,  cancelled:0,  valid:36,   betAmt:343,    settledAmt:280,    unsettledAmt:63,   cancelAmt:0,   validBet:280,    payout:376,
+    { game:"Hong Kong Mark Six", market:"A", name:"特码头数", players:2, bet:36,   settled:24,   unsettled:12,  cancelled:0,  valid:36,   betAmt:343,    settledAmt:280,    unsettledAmt:63,   cancelAmt:0,   validBet:280,    payout:376,
       winLoss:96, rebate:12.52, rebateRate:"4.47%", actualRTP:"134.29%", theoreticalRTP:"-", theoreticalProfitRate:"-", expectedCommission:"-", profitRate:"-38.76%", drawCount:0, drawAmount:0 },
-    { game:"Hong Kong Mark Six", market:"盘口B", name:"特码尾数", players:2, bet:62,   settled:33,   unsettled:29,  cancelled:0,  valid:62,   betAmt:513,    settledAmt:320,    unsettledAmt:193,  cancelAmt:0,   validBet:320,    payout:180,
+    { game:"Hong Kong Mark Six", market:"B", name:"特码尾数", players:2, bet:62,   settled:33,   unsettled:29,  cancelled:0,  valid:62,   betAmt:513,    settledAmt:320,    unsettledAmt:193,  cancelAmt:0,   validBet:320,    payout:180,
       winLoss:-140, rebate:20.33, rebateRate:"6.35%", actualRTP:"56.25%", theoreticalRTP:"查看", theoreticalProfitRate:"0.85%", expectedCommission:1.2980, profitRate:"37.40%", drawCount:0, drawAmount:0 },
   ];
 
   const fmt = n => n.toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 2 });
 
   const RTP_NUMBERS = [10, 20, 30, 40, 49, 39, 29, 19, 9, 8];
-  const RTP_BATCHES = ["特码a", "特码b", "特码c", "特码d"];
+  const RTP_MARKET_LETTERS = ["a", "b", "c", "d"];
   const rtpBreakdown = {
-    "特码": RTP_BATCHES.flatMap(batchName =>
-      RTP_NUMBERS.map(num => ({ name: batchName, number: num, rtp: "99.59%" }))
+    "特码": RTP_MARKET_LETTERS.flatMap(letter =>
+      RTP_NUMBERS.map(num => ({ market: letter, name: "特码", number: num, rtp: "99.59%" }))
     )
   };
 
@@ -821,9 +824,9 @@
     const body = document.getElementById("rtpModalBody");
     const data = rtpBreakdown[name];
     if(data && data.length){
-      let html = '<table><thead><tr><th>玩法名称</th><th>下注号码</th><th>理论RTP</th></tr></thead><tbody>';
+      let html = '<table><thead><tr><th>盘口</th><th>玩法名称</th><th>下注号码</th><th>理论RTP</th></tr></thead><tbody>';
       data.forEach(d => {
-        html += '<tr><td>' + d.name + '</td><td class="num">' + d.number + '</td><td class="num">' + d.rtp + '</td></tr>';
+        html += '<tr><td>' + d.market + '</td><td>' + d.name + '</td><td class="num">' + d.number + '</td><td class="num">' + d.rtp + '</td></tr>';
       });
       html += '</tbody></table>';
       body.innerHTML = html;
