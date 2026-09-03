@@ -18,6 +18,8 @@
     --row-alt:#f8fafc;
     --tab-inactive:#525b6b;
     --danger:#d94f4f;
+    --warn:#e08a1e;
+    --warn-tint:#fff1de;
     --shadow: 0 1px 2px rgba(30,37,50,.04), 0 8px 24px rgba(30,37,50,.06);
   }
   @media (prefers-color-scheme: dark){
@@ -37,6 +39,8 @@
       --row-alt:#1e222b;
       --tab-inactive:#9aa3b5;
       --danger:#e2716f;
+      --warn:#f0a13f;
+      --warn-tint:#3a2c14;
       --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
     }
   }
@@ -56,6 +60,8 @@
     --row-alt:#1e222b;
     --tab-inactive:#9aa3b5;
     --danger:#e2716f;
+    --warn:#f0a13f;
+    --warn-tint:#3a2c14;
     --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
   }
 
@@ -173,6 +179,35 @@
     background:var(--accent);
     border-radius:2px 2px 0 0;
   }
+  .tab-view[hidden]{ display:none; }
+  .new-flag{
+    display:inline-block;
+    width:6px;
+    height:6px;
+    border-radius:50%;
+    background:var(--warn);
+    margin-left:5px;
+    vertical-align:middle;
+  }
+  .tab-badge{
+    display:inline-block;
+    margin-left:6px;
+    padding:1px 7px;
+    border-radius:100px;
+    font-size:10.5px;
+    font-weight:700;
+    letter-spacing:.02em;
+    background:var(--warn);
+    color:#fff;
+    vertical-align:middle;
+    transform:translateY(-1px);
+  }
+  .copy-cell{
+    display:inline-flex;
+    align-items:center;
+    gap:5px;
+  }
+  .copy-cell svg{ color:var(--text-faint); cursor:pointer; }
 
   /* Filter bar */
   .filters{
@@ -647,11 +682,12 @@
   <div class="card">
 
     <div class="tabs">
-      <div class="tab">按类型</div>
-      <div class="tab active">彩票（按彩票）</div>
-      <div class="tab">彩票（按会员）</div>
+      <div class="tab" data-view="view-type">按类型</div>
+      <div class="tab active" data-view="view-ticket">彩票（按彩票）<span class="tab-badge">有改动</span></div>
+      <div class="tab" data-view="view-member">彩票（按会员）<span class="tab-badge">有改动</span></div>
     </div>
 
+    <div class="tab-view active" id="view-ticket">
     <div class="filters">
       <div class="field">
         <span class="field-label">分类</span>
@@ -677,7 +713,7 @@
         </select>
       </div>
       <div class="field new">
-        <span class="field-label">盘口</span>
+        <span class="field-label">盘口<span class="new-flag"></span></span>
         <select id="marketFilter" class="new-filter">
           <option value="">全部</option>
           <option value="A">A</option>
@@ -734,7 +770,7 @@
           <thead>
             <tr>
               <th>游戏</th>
-              <th class="new-col">盘口</th>
+              <th class="new-col">盘口<span class="new-flag"></span></th>
               <th>玩法名称</th>
               <th>玩家数量</th>
               <th>投注笔数</th>
@@ -752,7 +788,7 @@
               <th>返水金额</th>
               <th>实际返水率</th>
               <th>实际RTP<span class="info-ico" title="实际派奖金额 ÷ 有效投注">i</span></th>
-              <th>理论RTP</th>
+              <th>理论RTP<span class="new-flag" title="查看按钮为新增功能"></span></th>
               <th>理论盈利率</th>
               <th>预期抽佣金额<span class="info-ico" title="按理论盈利率估算的预期抽佣">i</span></th>
               <th>盈利率<span class="info-ico" title="实际输赢金额 ÷ 有效投注">i</span></th>
@@ -777,7 +813,143 @@
         <span>页</span>
       </div>
     </div>
+    </div>
 
+    <div class="tab-view" id="view-member" hidden>
+      <div class="filters">
+        <div class="field">
+          <span class="field-label">会员ID</span>
+          <input class="date-input" style="width:150px;" placeholder="请输入会员ID">
+        </div>
+        <div class="field">
+          <span class="field-label">会员账号</span>
+          <input class="date-input" style="width:150px;" value="U8testqtox2s">
+        </div>
+        <div class="field">
+          <span class="field-label">游戏</span>
+          <select><option>Hong Kong Mark Six</option></select>
+        </div>
+        <div class="field">
+          <span class="field-label">玩法名称</span>
+          <select id="memberNameFilter">
+            <option value="">全部玩法</option>
+            <option value="特码">特码</option>
+            <option value="两面">两面</option>
+            <option value="色波">色波</option>
+            <option value="特码头数">特码头数</option>
+            <option value="特码尾数">特码尾数</option>
+          </select>
+        </div>
+        <div class="field new">
+          <span class="field-label">盘口<span class="new-flag"></span></span>
+          <select id="memberMarketFilter" class="new-filter">
+            <option value="">全部</option>
+            <option value="A">A</option>
+            <option value="B">B</option>
+          </select>
+        </div>
+        <div class="field">
+          <span class="field-label">日期</span>
+          <div class="date-range">
+            <input class="date-input" value="2026-03-07" readonly>
+            <span class="date-sep">—</span>
+            <input class="date-input" value="2026-09-03" readonly>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" style="color:var(--text-faint)"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg>
+          </div>
+        </div>
+        <button class="btn btn-primary" id="memberSearchBtn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+          搜索
+        </button>
+        <button class="btn btn-ghost" id="memberResetBtn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>
+          重置
+        </button>
+      </div>
+
+      <div class="summary-wrap">
+        <div class="scroll">
+          <table class="summary-table">
+            <thead>
+              <tr>
+                <th>投注笔数</th><th>已结算笔数</th><th>未结算笔数</th><th>取消笔数</th>
+                <th>有效笔数</th><th>投注金额</th><th>已结算金额</th><th>未结算金额</th>
+                <th>取消金额</th><th>有效投注</th><th>派奖金额</th><th>实际输赢金额</th>
+                <th>总返水金额</th><th>实际返水率</th><th>盈利率</th><th>和局局数</th><th>和局金额</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>4</td><td>4</td><td>0</td><td>0</td>
+                <td>4</td><td>400</td><td>400</td><td>0</td>
+                <td>0</td><td>400</td><td>0</td><td class="profit-neg">-400</td>
+                <td>4</td><td>1.00%</td><td class="profit-pos">99.00%</td><td>0</td><td>0</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <div class="table-scroll">
+          <table class="detail">
+            <thead>
+              <tr>
+                <th>会员ID</th>
+                <th>会员账号</th>
+                <th>游戏</th>
+                <th class="new-col">盘口<span class="new-flag"></span></th>
+                <th>玩法名称</th>
+                <th>下注号码</th>
+                <th>投注笔数</th>
+                <th>已结算笔数</th>
+                <th>未结算笔数</th>
+                <th>取消笔数</th>
+                <th>有效笔数</th>
+                <th>投注金额</th>
+                <th>已结算金额</th>
+                <th>未结算金额</th>
+                <th>取消金额</th>
+                <th>有效投注</th>
+                <th>派奖金额</th>
+                <th>实际输赢金额</th>
+                <th>返水金额</th>
+                <th>实际返水率</th>
+                <th>实际RTP<span class="info-ico" title="实际派奖金额 ÷ 有效投注">i</span></th>
+                <th>理论RTP</th>
+                <th>理论盈利率</th>
+                <th>预期抽佣金额<span class="info-ico" title="按理论盈利率估算的预期抽佣">i</span></th>
+                <th>盈利率<span class="info-ico" title="实际输赢金额 ÷ 有效投注">i</span></th>
+                <th>和局局数</th>
+                <th>和局金额</th>
+              </tr>
+            </thead>
+            <tbody id="memberTbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="footer">
+        <div>共 4 条</div>
+        <div class="pager-extra">
+          <div class="pager">
+            <button class="pg-btn" disabled>‹</button>
+            <button class="pg-btn active">1</button>
+            <button class="pg-btn" disabled>›</button>
+          </div>
+          <select style="min-width:90px;">
+            <option>10条/页</option>
+          </select>
+          <span>前往</span>
+          <input class="jump-input" value="1">
+          <span>页</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-view" id="view-type" hidden>
+      <div style="padding:70px 20px; text-align:center; color:var(--text-faint);">该视图暂无示例数据</div>
+    </div>
   </div>
   </div>
 </div>
@@ -1023,4 +1195,110 @@
     this.classList.toggle("open");
     document.getElementById("reportsGroup").hidden = !this.classList.contains("open");
   });
+
+  // Tab switching
+  document.querySelectorAll(".tab").forEach(tab => {
+    tab.addEventListener("click", () => {
+      document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+      tab.classList.add("active");
+      document.querySelectorAll(".tab-view").forEach(v => { v.hidden = true; });
+      document.getElementById(tab.dataset.view).hidden = false;
+    });
+  });
+
+  // 彩票（按会员）view
+  const copyIcon = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="9" y="9" width="12" height="12" rx="1.5"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>';
+
+  const memberInfo = { id: "84390", account: "U8testqtox2s", game: "Hong Kong Mark Six" };
+  const memberRows = [
+    { market:"A", name:"特码", betNo:"01", bet:1, settled:1, unsettled:0, cancelled:0, valid:1, betAmt:100, settledAmt:100, unsettledAmt:0, cancelAmt:0, validBet:100, payout:0,
+      winLoss:-100, rebate:1, rebateRate:"1.0000%", actualRTP:"0.0000%", theoreticalRTP:"-", theoreticalProfitRate:"-", expectedCommission:"-", profitRate:"99.0000%", drawCount:0, drawAmount:0 },
+    { market:"A", name:"特码", betNo:"01", bet:1, settled:1, unsettled:0, cancelled:0, valid:1, betAmt:100, settledAmt:100, unsettledAmt:0, cancelAmt:0, validBet:100, payout:0,
+      winLoss:-100, rebate:3, rebateRate:"3.0000%", actualRTP:"0.0000%", theoreticalRTP:"-", theoreticalProfitRate:"-", expectedCommission:"-", profitRate:"97.0000%", drawCount:0, drawAmount:0 },
+    { market:"A", name:"特码", betNo:"01", bet:1, settled:1, unsettled:0, cancelled:0, valid:1, betAmt:100, settledAmt:100, unsettledAmt:0, cancelAmt:0, validBet:100, payout:0,
+      winLoss:-100, rebate:0, rebateRate:"0.0000%", actualRTP:"0.0000%", theoreticalRTP:"-", theoreticalProfitRate:"-", expectedCommission:"-", profitRate:"100.0000%", drawCount:0, drawAmount:0 },
+    { market:"A", name:"特码", betNo:"01", bet:1, settled:1, unsettled:0, cancelled:0, valid:1, betAmt:100, settledAmt:100, unsettledAmt:0, cancelAmt:0, validBet:100, payout:0,
+      winLoss:-100, rebate:0, rebateRate:"0.0000%", actualRTP:"0.0000%", theoreticalRTP:"-", theoreticalProfitRate:"-", expectedCommission:"-", profitRate:"100.0000%", drawCount:0, drawAmount:0 },
+  ];
+
+  let memberState = { market: "", name: "" };
+
+  function renderMember(){
+    const tbody = document.getElementById("memberTbody");
+    tbody.innerHTML = "";
+
+    const filtered = memberRows.filter(r =>
+      (!memberState.market || r.market === memberState.market) &&
+      (!memberState.name || r.name === memberState.name)
+    );
+
+    if(filtered.length === 0){
+      const tr = document.createElement("tr");
+      tr.className = "empty-row";
+      tr.innerHTML = '<td colspan="27">没有符合筛选条件的数据</td>';
+      tbody.appendChild(tr);
+      return;
+    }
+
+    const gameSpans = groupSpans(filtered, () => memberInfo.game);
+
+    filtered.forEach((r, idx) => {
+      const tr = document.createElement("tr");
+      let cells = "";
+
+      cells += '<td><span class="copy-cell">' + copyIcon + memberInfo.id + '</span></td>';
+      cells += '<td><span class="copy-cell">' + copyIcon + memberInfo.account + '</span></td>';
+      if(gameSpans[idx] > 0){
+        cells += '<td class="game-cell" rowspan="' + gameSpans[idx] + '">' + memberInfo.game + '</td>';
+      }
+      cells += '<td class="new-col"><span class="market-pill">' + r.market + '</span></td>';
+      cells += '<td>' + r.name + '</td>';
+      cells += '<td class="num">' + r.betNo + '</td>';
+      cells += '<td class="num">' + fmt(r.bet) + '</td>';
+      cells += '<td class="num">' + fmt(r.settled) + '</td>';
+      cells += '<td class="num">' + fmt(r.unsettled) + '</td>';
+      cells += '<td class="num">' + fmt(r.cancelled) + '</td>';
+      cells += '<td class="num">' + fmt(r.valid) + '</td>';
+      cells += '<td class="num">' + fmt(r.betAmt) + '</td>';
+      cells += '<td class="num">' + fmt(r.settledAmt) + '</td>';
+      cells += '<td class="num">' + fmt(r.unsettledAmt) + '</td>';
+      cells += '<td class="num">' + fmt(r.cancelAmt) + '</td>';
+      cells += '<td class="num">' + fmt(r.validBet) + '</td>';
+      cells += '<td class="num">' + fmt(r.payout) + '</td>';
+
+      const wlClass = r.winLoss >= 0 ? "profit-pos" : "profit-neg";
+      cells += '<td class="num ' + wlClass + '">' + (r.winLoss >= 0 ? "+" : "-") + fmt(Math.abs(r.winLoss)) + '</td>';
+
+      cells += '<td class="num">' + fmt(r.rebate) + '</td>';
+      cells += '<td class="num">' + r.rebateRate + '</td>';
+      cells += '<td class="num">' + r.actualRTP + '</td>';
+      cells += '<td class="num cell-dash">' + r.theoreticalRTP + '</td>';
+      cells += '<td class="num cell-dash">' + r.theoreticalProfitRate + '</td>';
+      cells += '<td class="num cell-dash">' + r.expectedCommission + '</td>';
+
+      const prClass = r.profitRate.trim().startsWith("-") ? "profit-neg" : "profit-pos";
+      cells += '<td class="num ' + prClass + '">' + r.profitRate + '</td>';
+
+      cells += '<td class="num">' + r.drawCount + '</td>';
+      cells += '<td class="num">' + r.drawAmount + '</td>';
+
+      tr.innerHTML = cells;
+      tbody.appendChild(tr);
+    });
+  }
+
+  document.getElementById("memberSearchBtn").addEventListener("click", () => {
+    memberState.market = document.getElementById("memberMarketFilter").value;
+    memberState.name = document.getElementById("memberNameFilter").value;
+    renderMember();
+  });
+
+  document.getElementById("memberResetBtn").addEventListener("click", () => {
+    document.getElementById("memberMarketFilter").value = "";
+    document.getElementById("memberNameFilter").value = "";
+    memberState = { market: "", name: "" };
+    renderMember();
+  });
+
+  renderMember();
 </script>
