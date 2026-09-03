@@ -110,31 +110,7 @@
     display:flex; align-items:center; gap:4px;
   }
 
-  .rewards-banner{
-    margin:14px 20px 0; padding:13px 15px; border-radius:16px; cursor:pointer;
-    background:linear-gradient(120deg, rgba(232,182,74,.16) 0%, rgba(232,182,74,.04) 55%, var(--bg-panel) 100%);
-    border:1px solid rgba(232,182,74,.35);
-    display:flex; align-items:center; gap:12px; position:relative; overflow:hidden;
-  }
-  .rewards-banner::after{
-    content:''; position:absolute; top:-50%; right:-10%; width:120px; height:120px; border-radius:50%;
-    background:radial-gradient(circle, rgba(232,182,74,.2), transparent 70%);
-  }
-  .rewards-banner-icon{
-    width:38px; height:38px; border-radius:11px; background:var(--grad-gold); flex-shrink:0;
-    display:flex; align-items:center; justify-content:center; font-size:18px; position:relative;
-  }
-  .rewards-banner-dot{
-    position:absolute; top:-5px; right:-5px; min-width:15px; height:15px; padding:0 3px; border-radius:8px;
-    background:var(--crimson); color:#fff; font-size:9px; font-weight:700; display:flex; align-items:center; justify-content:center;
-    border:2px solid var(--bg-deep); animation:dotPulse 1.8s ease-in-out infinite;
-  }
   @keyframes dotPulse{ 0%,100%{transform:scale(1);} 50%{transform:scale(1.18);} }
-  .rewards-banner-mid{flex:1; min-width:0; position:relative; z-index:1;}
-  .rewards-banner-title{font-size:14px; font-weight:700;}
-  .rewards-banner-sub{font-size:11px; color:var(--ink-dim); margin-top:2px;}
-  .rewards-banner-sub b{color:var(--gold); font-weight:700;}
-  .rewards-banner-arrow{font-size:22px; color:var(--gold); flex-shrink:0; position:relative; z-index:1;}
 
   .hero{padding:18px 20px 6px; text-align:center;}
   .hero-eyebrow{
@@ -194,29 +170,42 @@
   .not-qualified .bar-fill{height:100%; background:var(--grad-crimson); border-radius:3px;}
 
   .section-title{
-    margin:26px 20px 12px; display:flex; align-items:baseline; gap:8px;
+    margin:26px 20px 10px; display:flex; align-items:baseline; gap:8px;
   }
   .section-title .zh{font-size:16px; font-weight:700;}
   .section-title .en{font-size:10px; color:var(--ink-faint); letter-spacing:2px; text-transform:uppercase;}
 
-  .grid4{display:grid; grid-template-columns:1fr 1fr; gap:12px; padding:0 20px;}
-  .op-card{
-    border-radius:18px; padding:16px 14px; position:relative; overflow:hidden; min-height:132px;
-    border:1px solid var(--line); background:var(--bg-panel); cursor:pointer;
-    display:flex; flex-direction:column; justify-content:space-between;
+  /* 四大机会 + 奖励中心：合并成一个表格化列表，一行一个入口 */
+  .op-table{
+    margin:0 20px; border-radius:16px; overflow:hidden;
+    background:var(--bg-panel); border:1px solid var(--line);
   }
-  .op-card .icon{font-size:22px;}
-  .op-card .title{font-size:14px; font-weight:700; margin-top:8px;}
-  .op-card .stat{font-size:11px; color:var(--ink-dim); margin-top:4px;}
-  .op-card .stat b{color:var(--gold); font-weight:700;}
-  .op-card .op-detail-hint{position:absolute; top:12px; right:13px; z-index:1;}
-  .op-card::after{
-    content:''; position:absolute; bottom:-30px; right:-30px; width:90px; height:90px; border-radius:50%; opacity:.5;
+  .op-row{
+    display:flex; align-items:center; gap:12px; padding:13px 14px;
+    border-bottom:1px solid var(--line); cursor:pointer;
   }
-  .op-1::after{background:radial-gradient(circle, rgba(232,182,74,.22), transparent 70%);}
-  .op-2::after{background:radial-gradient(circle, rgba(51,214,166,.22), transparent 70%);}
-  .op-3::after{background:radial-gradient(circle, rgba(255,75,75,.22), transparent 70%);}
-  .op-4::after{background:radial-gradient(circle, rgba(148,120,255,.22), transparent 70%);}
+  .op-row:last-child{border-bottom:none;}
+  .op-row-icon{
+    width:34px; height:34px; border-radius:10px; flex-shrink:0; font-size:16px; position:relative;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .op-1 .op-row-icon{background:rgba(232,182,74,.16);}
+  .op-2 .op-row-icon{background:rgba(51,214,166,.16);}
+  .op-3 .op-row-icon{background:rgba(255,75,75,.16);}
+  .op-4 .op-row-icon{background:rgba(148,120,255,.16);}
+  .op-5{border-top:6px solid var(--bg-deep);}
+  .op-5 .op-row-icon{background:var(--bg-panel-3);}
+  .op-row-dot{
+    position:absolute; top:-4px; right:-4px; min-width:14px; height:14px; padding:0 3px; border-radius:8px;
+    background:var(--crimson); color:#fff; font-size:8.5px; font-weight:700; display:flex; align-items:center; justify-content:center;
+    border:2px solid var(--bg-panel); animation:dotPulse 1.8s ease-in-out infinite;
+  }
+  .op-row-mid{flex:1; min-width:0;}
+  .op-row-mid .title{font-size:13.5px; font-weight:700;}
+  .op-row-mid .stat{font-size:10.5px; color:var(--ink-dim); margin-top:2px;}
+  .op-row-mid .stat b{color:var(--gold); font-weight:700;}
+  .op-row-arrow{font-size:19px; color:var(--ink-faint); flex-shrink:0;}
+  .op-row:active{background:rgba(255,255,255,.04);}
 
   .ticker-wrap{
     margin:22px 0 0; padding:10px 0; background:var(--bg-panel); border-top:1px solid var(--line); border-bottom:1px solid var(--line);
@@ -227,32 +216,15 @@
   .ticker span b{color:var(--jade); font-weight:700;}
   @keyframes scroll-left{ from{transform:translateX(0);} to{transform:translateX(-100%);} }
 
-  .promo-strip{padding:20px; display:flex; flex-direction:column; gap:10px;}
-  .promo-item{border-radius:14px; background:var(--bg-panel); border:1px solid var(--line); overflow:hidden; transition:border-color .2s;}
-  .promo-item.open{border-color:rgba(232,182,74,.35);}
-  .promo-head{display:flex; gap:10px; align-items:flex-start; padding:12px 14px; cursor:pointer;}
-  .promo-item .dot{width:22px; height:22px; border-radius:6px; background:var(--grad-gold); flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; color:#1a1200;}
-  .promo-item .txt{flex:1;}
-  .promo-item .txt b{font-size:13px; display:block;}
-  .promo-item .txt span{font-size:11.5px; color:var(--ink-dim); line-height:1.5;}
-  .promo-chev{font-size:11px; color:var(--ink-faint); transition:transform .25s; flex-shrink:0; margin-top:3px;}
-  .promo-item.open .promo-chev{transform:rotate(180deg); color:var(--gold);}
-  .promo-detail{max-height:0; overflow:hidden; transition:max-height .25s ease;}
-  .promo-item.open .promo-detail{max-height:220px;}
-  .promo-detail-inner{padding:0 14px 14px 46px; font-size:11.5px; color:var(--ink-dim); line-height:1.8; border-top:1px dashed var(--line); margin-top:2px; padding-top:10px;}
-  .promo-detail-inner li{list-style:none; position:relative; padding-left:14px; margin-bottom:4px;}
-  .promo-detail-inner li::before{content:'·'; position:absolute; left:0; color:var(--gold);}
-  .promo-quote{font-size:11.5px; color:var(--gold); font-style:italic; margin-top:6px; opacity:.9;}
+  .panel-intro{font-size:11.5px; color:var(--ink-dim); line-height:1.7; margin-bottom:14px; padding-bottom:14px; border-bottom:1px dashed var(--line);}
+  .panel-intro-quote{display:block; color:var(--gold); font-style:italic; margin-top:5px; opacity:.9;}
 
   .closing-banner{
-    margin:6px 20px 24px; padding:22px 18px; border-radius:18px; text-align:center; position:relative; overflow:hidden;
-    background:linear-gradient(160deg, var(--bg-panel-2), var(--bg-panel));
-    border:1px solid var(--line);
+    margin:22px 20px 24px; padding:0 6px; text-align:center;
   }
-  .closing-banner::before{content:''; position:absolute; inset:0; background:radial-gradient(circle at 50% 0%, rgba(232,182,74,.16), transparent 65%);}
-  .closing-banner .q1{font-size:15px; font-weight:700; position:relative; z-index:1;}
-  .closing-banner .q2{font-size:12px; color:var(--ink-dim); margin-top:6px; position:relative; z-index:1;}
-  .closing-banner .q3{font-size:13px; color:var(--gold); font-weight:700; letter-spacing:2px; margin-top:12px; position:relative; z-index:1;}
+  .closing-banner .q1{font-size:14px; font-weight:700; color:var(--ink-dim);}
+  .closing-banner .q2{font-size:11.5px; color:var(--ink-faint); margin-top:6px;}
+  .closing-banner .q3{font-size:12px; color:var(--gold); font-weight:700; letter-spacing:2px; margin-top:10px;}
 
   .cta-fixed{
     position:sticky; bottom:0; left:0; right:0; z-index:5;
@@ -439,29 +411,21 @@
   @keyframes toastPop{ 0%{transform:scale(.4) rotate(-15deg);} 60%{transform:scale(1.15) rotate(6deg);} 100%{transform:scale(1) rotate(0);} }
 
   /* ---------- micro-interactions ---------- */
-  .op-card, .promo-head, .claim-btn, .draw-btn, .cta-btn, .rules-entry, .rewards-banner, .hexwrap, .lb-row.me, .me-card{
+  .claim-btn, .draw-btn, .cta-btn, .rules-entry, .op-row, .hexwrap, .lb-row.me, .me-card{
     transition:transform .15s ease, box-shadow .15s ease;
   }
-  .op-card:active, .promo-head:active, .rules-entry:active, .rewards-banner:active, .hexwrap:active{transform:scale(.96);}
+  .rules-entry:active, .op-row:active, .hexwrap:active{transform:scale(.96);}
   .claim-btn.can:active, .draw-btn:active, .cta-btn:active{transform:scale(.97);}
-  .op-card:hover{border-color:rgba(232,182,74,.35); box-shadow:0 6px 20px rgba(0,0,0,.25);}
 
   @keyframes fadeSlideUp{ from{opacity:0; transform:translateY(14px);} to{opacity:1; transform:translateY(0);} }
-  .hero, .countdown, .status-card, .not-qualified, .rewards-banner, .ticker-wrap, .closing-banner{
+  .hero, .countdown, .status-card, .not-qualified, .op-table, .ticker-wrap, .closing-banner{
     animation:fadeSlideUp .5s ease both;
   }
   .countdown{animation-delay:.05s;}
-  .status-card{animation-delay:.1s;}
-  .rewards-banner{animation-delay:.14s;}
-  .ticker-wrap{animation-delay:.2s;}
-  .grid4 .op-card{animation:fadeSlideUp .5s ease both;}
-  .grid4 .op-1{animation-delay:.24s;} .grid4 .op-2{animation-delay:.3s;} .grid4 .op-3{animation-delay:.36s;} .grid4 .op-4{animation-delay:.42s;}
-  .promo-strip .promo-item{animation:fadeSlideUp .45s ease both;}
-  .promo-strip .promo-item:nth-child(1){animation-delay:.46s;}
-  .promo-strip .promo-item:nth-child(2){animation-delay:.52s;}
-  .promo-strip .promo-item:nth-child(3){animation-delay:.58s;}
-  .promo-strip .promo-item:nth-child(4){animation-delay:.64s;}
-  .closing-banner{animation-delay:.7s;}
+  .ticker-wrap{animation-delay:.1s;}
+  .status-card{animation-delay:.16s;}
+  .op-table{animation-delay:.22s;}
+  .closing-banner{animation-delay:.28s;}
 
   .countdown-clock .cd-box.tick{animation:cdTick .3s ease;}
   @keyframes cdTick{ 0%{transform:scale(1);} 35%{transform:scale(1.1); color:var(--gold);} 100%{transform:scale(1);} }
@@ -473,12 +437,6 @@
 
   .lb-row, .rise-row, .break-row{transition:background .15s ease;}
   .lb-row:active, .rise-row:active, .break-row:active{background:rgba(255,255,255,.04);}
-
-  .op-detail-hint{
-    font-size:9.5px; color:var(--ink-faint); display:flex; align-items:center; gap:1px;
-    background:rgba(255,255,255,.05); border:1px solid var(--line); padding:2px 6px 2px 7px; border-radius:20px;
-  }
-  .op-card:hover .op-detail-hint, .op-card:active .op-detail-hint{color:var(--gold); border-color:rgba(232,182,74,.4);}
 </style>
 </head>
 <body>
@@ -508,6 +466,17 @@
       <div class="countdown-clock num" id="cdClock"><span class="cd-box" id="cdD">07</span> <span class="cd-sep">天</span> <span class="cd-box" id="cdH">12</span><span class="cd-sep">:</span><span class="cd-box" id="cdM">34</span><span class="cd-sep">:</span><span class="cd-box" id="cdS">56</span></div>
     </div>
 
+    <div class="ticker-wrap">
+      <div class="ticker">
+        <span>🎉 <b>135****02</b> 突破 50万经验值档位，解锁王者奖励</span>
+        <span>🎉 <b>188****76</b> 抽中神秘大奖</span>
+        <span>🎉 <b>151****40</b> 单日经验值登顶，成为今日冲榜王</span>
+        <span>🎉 <b>139****18</b> 排名逆袭 45 位，荣获最强逆袭奖</span>
+        <span>🎉 <b>135****02</b> 突破 50万经验值档位，解锁王者奖励</span>
+        <span>🎉 <b>188****76</b> 抽中神秘大奖</span>
+      </div>
+    </div>
+
     <div class="status-card">
       <div class="hexwrap" onclick="openPanel('panel-segment')">
         <svg viewBox="0 0 74 74"><circle cx="37" cy="37" r="33" fill="none" stroke="#232A4E" stroke-width="4"/><circle cx="37" cy="37" r="33" fill="none" stroke="url(#g1)" stroke-width="4" stroke-linecap="round" stroke-dasharray="207" stroke-dashoffset="120"/><defs><linearGradient id="g1"><stop offset="0%" stop-color="#F7D488"/><stop offset="100%" stop-color="#B8842A"/></linearGradient></defs></svg>
@@ -523,120 +492,50 @@
       </div>
     </div>
 
-    <div class="rewards-banner" onclick="openPanel('panel-rewards')">
-      <div class="rewards-banner-icon">🏅<span class="rewards-banner-dot">1</span></div>
-      <div class="rewards-banner-mid">
-        <div class="rewards-banner-title">奖励中心</div>
-        <div class="rewards-banner-sub">已累计获得 <b>10</b> 笔奖励，1笔待兑换</div>
-      </div>
-      <div class="rewards-banner-arrow">›</div>
-    </div>
-
-    <div class="ticker-wrap">
-      <div class="ticker">
-        <span>🎉 <b>135****02</b> 突破 50万经验值档位，解锁王者奖励</span>
-        <span>🎉 <b>188****76</b> 抽中神秘大奖</span>
-        <span>🎉 <b>151****40</b> 单日经验值登顶，成为今日冲榜王</span>
-        <span>🎉 <b>139****18</b> 排名逆袭 45 位，荣获最强逆袭奖</span>
-        <span>🎉 <b>135****02</b> 突破 50万经验值档位，解锁王者奖励</span>
-        <span>🎉 <b>188****76</b> 抽中神秘大奖</span>
-      </div>
-    </div>
-
     <div class="section-title">
       <div class="zh">四大机会</div>
       <div class="en">Four Ways To Win</div>
     </div>
-    <div class="grid4">
-      <div class="op-card op-1" onclick="openPanel('panel-leaderboard')">
-        <div class="icon">🏆</div>
-        <div class="title">总经验值争霸榜</div>
-        <div class="stat">当前 <b>第18名</b> · 全力冲刺前十</div>
-        <div class="op-detail-hint">详情 <span>→</span></div>
-      </div>
-      <div class="op-card op-2" onclick="openPanel('panel-tiers')">
-        <div class="icon">🎯</div>
-        <div class="title">阶梯达标奖励</div>
-        <div class="stat">距下一档还差 <b>173,600经验值</b></div>
-        <div class="op-detail-hint">详情 <span>→</span></div>
-      </div>
-      <div class="op-card op-3" onclick="openPanel('panel-daily')">
-        <div class="icon">🔥</div>
-        <div class="title">每日冲榜</div>
-        <div class="stat">距今日结算 <b id="homeDailyCd">05:12:33</b></div>
-        <div class="op-detail-hint">详情 <span>→</span></div>
-      </div>
-      <div class="op-card op-4" onclick="openPanel('panel-lucky')">
-        <div class="icon">🎁</div>
-        <div class="title">幸运抽奖</div>
-        <div class="stat">剩余 <b id="homeDrawChances">3次</b> 抽奖机会</div>
-        <div class="op-detail-hint">详情 <span>→</span></div>
-      </div>
-    </div>
-
-    <div class="section-title">
-      <div class="zh">玩法说明</div>
-      <div class="en">How It Works</div>
-    </div>
-    <div class="promo-strip">
-      <div class="promo-item" onclick="togglePromo(this)">
-        <div class="promo-head">
-          <div class="dot">01</div>
-          <div class="txt"><b>冲击总榜，争夺冠军大奖</b><span>现金+专属奖杯+至尊VIP+专属称号，多个获奖区间人人有机会</span></div>
-          <div class="promo-chev">▾</div>
+    <div class="op-table">
+      <div class="op-row op-1" onclick="openPanel('panel-leaderboard')">
+        <div class="op-row-icon">🏆</div>
+        <div class="op-row-mid">
+          <div class="title">总经验值争霸榜</div>
+          <div class="stat">当前 <b>第18名</b> · 全力冲刺前十</div>
         </div>
-        <div class="promo-detail"><div class="promo-detail-inner">
-          <ul>
-            <li>不只前3名拿奖，1-100名共设5个获奖区间</li>
-            <li>冠军额外获得专属奖杯/证书、至尊VIP资格、专属称号</li>
-            <li>冠军还有机会获得活动宣传展示机会，登上荣誉墙</li>
-          </ul>
-        </div></div>
+        <div class="op-row-arrow">›</div>
       </div>
-      <div class="promo-item" onclick="togglePromo(this)">
-        <div class="promo-head">
-          <div class="dot">02</div>
-          <div class="txt"><b>达到指定经验值，解锁阶梯奖励</b><span>不必争第一，累计经验值到档即可稳定拿奖</span></div>
-          <div class="promo-chev">▾</div>
+      <div class="op-row op-2" onclick="openPanel('panel-tiers')">
+        <div class="op-row-icon">🎯</div>
+        <div class="op-row-mid">
+          <div class="title">阶梯达标奖励</div>
+          <div class="stat">距下一档还差 <b>173,600经验值</b></div>
         </div>
-        <div class="promo-detail"><div class="promo-detail-inner">
-          <ul>
-            <li>与排名完全无关，只看自己的累计经验值是否达标</li>
-            <li>6个档位层层递进，每上一档解锁更高奖励</li>
-            <li>档位与段位晋升同步，达标即升级身份</li>
-          </ul>
-          <div class="promo-quote">"冠军我不一定拿得到，但50万经验值档位我有机会完成。"</div>
-        </div></div>
+        <div class="op-row-arrow">›</div>
       </div>
-      <div class="promo-item" onclick="togglePromo(this)">
-        <div class="promo-head">
-          <div class="dot">03</div>
-          <div class="txt"><b>每日冲榜，赢取额外奖励</b><span>今日冲榜王 / 最强逆袭奖 / 经验值突破奖，每天都能翻盘</span></div>
-          <div class="promo-chev">▾</div>
+      <div class="op-row op-3" onclick="openPanel('panel-daily')">
+        <div class="op-row-icon">🔥</div>
+        <div class="op-row-mid">
+          <div class="title">每日冲榜</div>
+          <div class="stat">距今日结算 <b id="homeDailyCd">05:12:33</b></div>
         </div>
-        <div class="promo-detail"><div class="promo-detail-inner">
-          <ul>
-            <li>每日00:00重新结算，昨天排名不影响今天机会</li>
-            <li>今日冲榜王：当天经验值最高即可拿奖，不看活动期间总量</li>
-            <li>最强逆袭奖：哪怕总榜靠后，单日排名跃升也能获奖</li>
-            <li>经验值突破奖：当天首次突破10万/30万/50万即有惊喜</li>
-          </ul>
-        </div></div>
+        <div class="op-row-arrow">›</div>
       </div>
-      <div class="promo-item" onclick="togglePromo(this)">
-        <div class="promo-head">
-          <div class="dot">04</div>
-          <div class="txt"><b>达到门槛，即可参与幸运抽奖</b><span>经验值越高，抽奖机会越多，人人都有机会中大奖</span></div>
-          <div class="promo-chev">▾</div>
+      <div class="op-row op-4" onclick="openPanel('panel-lucky')">
+        <div class="op-row-icon">🎁</div>
+        <div class="op-row-mid">
+          <div class="title">幸运抽奖</div>
+          <div class="stat">剩余 <b id="homeDrawChances">3次</b> 抽奖机会</div>
         </div>
-        <div class="promo-detail"><div class="promo-detail-inner">
-          <ul>
-            <li>只要达到最低门槛10,000经验值，就能参与抽奖</li>
-            <li>经验值越高，抽奖机会越多，上不封顶</li>
-            <li>奖品涵盖现金红包、优惠券、VIP权益、实物礼品与神秘大奖</li>
-          </ul>
-          <div class="promo-quote">"我不一定成为冠军，但只要参与，就有机会获得大奖。"</div>
-        </div></div>
+        <div class="op-row-arrow">›</div>
+      </div>
+      <div class="op-row op-5" onclick="openPanel('panel-rewards')">
+        <div class="op-row-icon">🏅<span class="op-row-dot">1</span></div>
+        <div class="op-row-mid">
+          <div class="title">奖励中心</div>
+          <div class="stat">已累计获得 <b>10</b> 笔奖励，1笔待兑换</div>
+        </div>
+        <div class="op-row-arrow">›</div>
       </div>
     </div>
 
@@ -660,6 +559,7 @@
       <div class="panel-close" onclick="closePanel('panel-leaderboard')">✕</div>
     </div>
     <div class="panel-body">
+      <div class="panel-intro">不只前3名拿奖——1到100名共设5个获奖区间，冠军额外拿专属奖杯、至尊VIP和专属称号。</div>
       <div class="podium">
         <div class="pod rank2"><div class="avatar">👤</div><div class="pname">159****23</div><div class="pval">398,200</div><div class="base">2</div></div>
         <div class="pod rank1"><div class="avatar">👑</div><div class="pname">138****88</div><div class="pval">526,800</div><div class="base">1</div></div>
@@ -704,6 +604,7 @@
       <div class="panel-close" onclick="closePanel('panel-tiers')">✕</div>
     </div>
     <div class="panel-body">
+      <div class="panel-intro">不用跟别人抢名次，达到对应经验值档位就能解锁奖励。<span class="panel-intro-quote">"冠军我不一定拿得到，但50万经验值档位我有机会完成。"</span></div>
       <div class="ladder">
         <div class="lstep done">
           <div class="dot">✓</div>
@@ -779,6 +680,7 @@
       <div class="tab" onclick="switchTab(this,'daily-break')">经验值突破奖</div>
     </div>
     <div class="panel-body">
+      <div class="panel-intro">每天0点重新结算，昨天排名不影响今天——总榜靠后也能翻盘。</div>
       <div class="daily-cd"><div class="l">距今日结算</div><div class="r num" id="dailyCdText">05:12:33</div></div>
 
       <div id="daily-champ">
@@ -818,6 +720,7 @@
       <div class="panel-close" onclick="closePanel('panel-lucky')">✕</div>
     </div>
     <div class="panel-body">
+      <div class="panel-intro">达到门槛就能抽，经验值越高机会越多。<span class="panel-intro-quote">"我不一定成为冠军，但只要参与，就有机会获得大奖。"</span></div>
       <div class="draw-chance"><div class="num">3</div><div class="lbl">剩余抽奖机会</div></div>
       <div class="prize-grid" id="prizeGrid">
         <div class="prize-cell"><div class="em">🧧</div>8元红包</div>
@@ -1136,11 +1039,6 @@
     btn.disabled = true;
     showToast('🎁','领取成功', rewardText);
     if(tierName) addTierRecord(tierName, tierSub||'', rewardText);
-  }
-  function togglePromo(el){
-    const isOpen = el.classList.contains('open');
-    document.querySelectorAll('.promo-item').forEach(p=>p.classList.remove('open'));
-    if(!isOpen) el.classList.add('open');
   }
   function openPanel(id){
     document.getElementById('mask').classList.add('show');
