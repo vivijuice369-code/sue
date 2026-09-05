@@ -34,7 +34,17 @@
   }
   .num{font-family:'Rajdhani',sans-serif; font-weight:700;}
 
-  .stage{display:flex; align-items:flex-start; gap:28px; padding:36px 20px;}
+  .stage{display:flex; align-items:flex-start; gap:28px; padding:36px 20px; flex-wrap:wrap;}
+  .device-col{display:flex; flex-direction:column; align-items:center; gap:12px;}
+  .state-tag{
+    font-size:12px; font-weight:700; padding:6px 16px; border-radius:20px; letter-spacing:1px; white-space:nowrap;
+  }
+  .state-tag-live{background:rgba(255,75,75,.14); color:#FF6B6B; border:1px solid rgba(255,75,75,.4);}
+  .state-tag-ended{background:rgba(51,214,166,.14); color:var(--jade); border:1px solid rgba(51,214,166,.4);}
+  .state-tag-dev{background:rgba(255,255,255,.06); color:var(--ink-dim); border:1px solid var(--line);}
+  .device-static .status-card{cursor:default;}
+  .device-static .ticker{animation:none;}
+  .device-static .hexwrap{animation:none;}
 
   /* ---------- right-side rules/annotation panel (desktop review only) ---------- */
   .side-rules{
@@ -53,7 +63,7 @@
   .qref-row:last-child{border-bottom:none;}
   .qref-row .k{color:var(--ink-dim);}
   .qref-row .v{color:var(--gold); font-weight:700;}
-  @media (max-width: 980px){ .side-rules{display:none;} }
+  @media (max-width: 980px){ .dev-col{display:none;} }
 
   /* ---------- device frame for prototype viewing (phone-frame: fixed viewport, internal scroll) ---------- */
   .device{
@@ -263,7 +273,7 @@
 
   /* ================= PANEL (drawer) — confined to device frame ================= */
   .mask{
-    position:absolute; inset:0; background:rgba(0,0,0,.55); backdrop-filter:blur(3px); z-index:20;
+    position:absolute; inset:0; background:rgba(0,0,0,.68); z-index:20;
     opacity:0; pointer-events:none; transition:opacity .25s;
     will-change:opacity; transform:translateZ(0);
   }
@@ -563,6 +573,8 @@
 </head>
 <body>
 <div class="stage">
+<div class="device-col">
+<div class="state-tag state-tag-live">🔴 活动进行中</div>
 <div class="device" id="device">
   <div class="device-notch"></div>
   <div class="bg-glow"></div><div class="hexbg"></div>
@@ -743,11 +755,11 @@
         <div class="lstep done">
           <div class="dot">✓</div>
           <div class="lcard">
-            <div class="lhead"><span class="lname">突破奖励</span><span class="lthresh">满 100,000经验值</span></div>
+            <div class="lhead"><span class="lname">里程碑奖励</span><span class="lthresh">满 100,000经验值</span></div>
             <div class="lreward">188元红包</div>
             <div class="lprog-wrap"><div class="lprog-fill" style="width:100%"></div></div>
             <div class="lfoot"><span>已达标 ✓</span><span>100,000/100,000</span></div>
-            <button class="claim-btn can" data-key="tier3" data-reward="188元红包" data-tier="突破奖励" data-sub="累计经验值满100,000" onclick="claimReward(this)">立即领取</button>
+            <button class="claim-btn can" data-key="tier3" data-reward="188元红包" data-tier="里程碑奖励" data-sub="累计经验值满100,000" onclick="claimReward(this)">立即领取</button>
           </div>
         </div>
         <div class="lstep current">
@@ -827,9 +839,9 @@
         </div>
         <div class="claim-row">
           <div class="claim-row-icon">🧧</div>
-          <div class="claim-row-mid"><b>突破奖励</b><span>累计经验值满100,000</span></div>
+          <div class="claim-row-mid"><b>里程碑奖励</b><span>累计经验值满100,000</span></div>
           <div class="claim-row-val">188元红包</div>
-          <button class="claim-btn can inline" data-key="tier3" data-reward="188元红包" data-tier="突破奖励" data-sub="累计经验值满100,000" onclick="claimReward(this)">领取</button>
+          <button class="claim-btn can inline" data-key="tier3" data-reward="188元红包" data-tier="里程碑奖励" data-sub="累计经验值满100,000" onclick="claimReward(this)">领取</button>
         </div>
       </div>
 
@@ -889,6 +901,13 @@
         <div class="break-row"><span class="tag">首破10万</span><div class="lb-mid"><div class="lb-name">176****90</div></div><div class="lb-val" style="color:var(--gold); font-size:12px;">66元红包</div></div>
         <div class="break-row"><span class="tag">首破10万</span><div class="lb-mid"><div class="lb-name">137****88</div></div><div class="lb-val" style="color:var(--gold); font-size:12px;">66元红包</div></div>
         <div class="source-note">💡 每天0点重新统计，同一个档位每人每天只能拿一次突破奖。</div>
+      </div>
+
+      <div class="mini-list-title">我的中奖记录</div>
+      <div id="dailyRecentList">
+        <div class="mini-row"><span class="mini-time">08-23</span><span class="mini-name">今日冲榜王 · +666元</span><span class="mini-status">已到账</span></div>
+        <div class="mini-row"><span class="mini-time">08-22</span><span class="mini-name">经验值突破奖 · +66元</span><span class="mini-status">已到账</span></div>
+        <div class="mini-row"><span class="mini-time">08-21</span><span class="mini-name">最强逆袭奖 · +366元</span><span class="mini-status">已到账</span></div>
       </div>
     </div>
   </div>
@@ -955,18 +974,36 @@
         <div class="seg-node"><div class="em2">🏵️</div><div class="sn">传奇</div></div>
       </div>
 
-      <div class="section-title" style="margin:20px 0 8px; padding:0;"><div class="zh" style="font-size:14px;">当前段位对应奖励</div></div>
+      <div class="section-title" style="margin:20px 0 8px; padding:0;"><div class="zh" style="font-size:14px;">段位奖励一览</div></div>
       <div class="seg-benefit">
-        <div class="em3">🧧</div>
-        <div class="seg-benefit-mid"><b>突破奖励</b><span>去"阶梯达标奖励"里领取</span></div>
-        <div class="seg-benefit-val">188元红包</div>
+        <div class="em3">🥉</div>
+        <div class="seg-benefit-mid"><b>新秀</b><span>已达成，活动结束后发放</span></div>
+        <div class="seg-benefit-val">8元红包</div>
       </div>
-
-      <div class="section-title" style="margin:20px 0 8px; padding:0;"><div class="zh" style="font-size:14px;">晋升「王者」可解锁</div></div>
+      <div class="seg-benefit">
+        <div class="em3">🥈</div>
+        <div class="seg-benefit-mid"><b>进阶者</b><span>已达成，活动结束后发放</span></div>
+        <div class="seg-benefit-val">30元红包</div>
+      </div>
+      <div class="seg-benefit">
+        <div class="em3">🥇</div>
+        <div class="seg-benefit-mid"><b>精英（当前段位）</b><span>已达成，活动结束后发放</span></div>
+        <div class="seg-benefit-val">88元红包</div>
+      </div>
       <div class="seg-benefit locked">
-        <div class="em3">💎</div>
-        <div class="seg-benefit-mid"><b>精英奖励</b><span>累计满300,000经验值后解锁</span></div>
-        <div class="seg-benefit-val">VIP7天+388元</div>
+        <div class="em3">👑</div>
+        <div class="seg-benefit-mid"><b>王者</b><span>累计满300,000经验值后达成</span></div>
+        <div class="seg-benefit-val">288元红包+专属称号</div>
+      </div>
+      <div class="seg-benefit locked">
+        <div class="em3">💠</div>
+        <div class="seg-benefit-mid"><b>至尊</b><span>累计满500,000经验值后达成</span></div>
+        <div class="seg-benefit-val">588元红包+专属头像框</div>
+      </div>
+      <div class="seg-benefit locked">
+        <div class="em3">🏵️</div>
+        <div class="seg-benefit-mid"><b>传奇</b><span>累计满1,000,000经验值后达成</span></div>
+        <div class="seg-benefit-val">1888元红包+称号+头像框</div>
       </div>
     </div>
   </div>
@@ -1015,13 +1052,14 @@
       </div>
       <div class="rule-sec">
         <h3>🛡️ 段位怎么升</h3>
-        <p>经验值越高，段位越高：新秀 → 进阶者 → 精英 → 王者 → 至尊 → 传奇，一共6级，跟"阶梯达标奖励"的档位是对应的。每升一级能看到一份对应奖励（奖金/虚拟卡/实物都有可能）。</p>
+        <p>经验值越高，段位越高：新秀 → 进阶者 → 精英 → 王者 → 至尊 → 传奇，一共6级。每个段位对应一份奖励，按活动结束时你的最终段位发放，跟"阶梯达标奖励"是两套不同的奖励，不会互相影响。</p>
       </div>
       <div class="rule-sec">
         <h3>💰 奖励什么时候到账</h3>
         <ul>
           <li><b>总榜排名奖励</b>：要等活动结束、最终排名公布后统一结算，3个工作日内发到你的账户</li>
-          <li><b>阶梯奖励</b>：不用等活动结束，达标随时能领，领取后马上到账</li>
+          <li><b>段位奖励</b>：同样要等活动结束，按你的最终段位统一结算发放</li>
+          <li><b>阶梯奖励</b>：不用等活动结束，达标随时能领，领取后马上到账；活动结束后页面还会保留一段时间，没领的仍然可以补领，但页面下架后就真的领不到了，记得别忘领</li>
           <li><b>每日冲榜奖励</b>：每天0点结算后，系统自动发到你的账户余额，不用你操作</li>
           <li><b>幸运抽奖</b>：抽完当场就知道结果，现金红包/优惠券马上到账；抽到实物礼品需要登记收货信息才能兑换</li>
         </ul>
@@ -1030,7 +1068,7 @@
     </div>
   </div>
 
-  <div class="mask" id="mask" onclick="closeAll()"></div>
+  <div class="mask" id="mask" onclick="closeAllIn(this)"></div>
   <div class="toast" id="toast">
     <div class="em" id="toastEm">🎉</div>
     <div class="t1" id="toastT1">恭喜获得</div>
@@ -1052,8 +1090,319 @@
     </div>
   </div>
 </div>
+<!-- /.device (进行中) -->
+</div>
+<!-- /.device-col -->
+
+<div class="device-col">
+<div class="state-tag state-tag-ended">✅ 活动已结束</div>
+<div class="device device-static" id="deviceEnded">
+  <div class="device-notch"></div>
+  <div class="bg-glow"></div><div class="hexbg"></div>
+
+  <div class="home">
+    <div class="topbar">
+      <div class="brand">
+        <div class="brand-mark"><img src="data:image/png;base64,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" alt="U8 logo"></div>
+        <div class="brand-name">U8-S1巅峰赛</div>
+      </div>
+      <div class="rules-entry" onclick="openPanel('panel-rules-ended')">📜 规则</div>
+    </div>
+
+    <div class="hero">
+      <div class="hero-eyebrow">S1 · 巅峰争霸赛</div>
+      <div class="hero-title">王者之争<br>经验称尊</div>
+      <div class="hero-sub">活动已结束，感谢你的参与！</div>
+    </div>
+
+    <div class="countdown" style="border-color:rgba(255,75,75,.35);">
+      <div class="countdown-label" style="color:#FF8A8A;">🏁 活动已结束 · 距页面下架</div>
+      <div class="countdown-clock num" id="cdClockEnded" style="color:var(--crimson);">
+        <span class="cd-box" id="cdEndedD" style="background:rgba(255,75,75,.14);">03</span> <span class="cd-sep" style="color:var(--crimson);">天</span>
+        <span class="cd-box" id="cdEndedH" style="background:rgba(255,75,75,.14);">08</span><span class="cd-sep" style="color:var(--crimson);">:</span>
+        <span class="cd-box" id="cdEndedM" style="background:rgba(255,75,75,.14);">42</span><span class="cd-sep" style="color:var(--crimson);">:</span>
+        <span class="cd-box" id="cdEndedS" style="background:rgba(255,75,75,.14);">15</span>
+      </div>
+    </div>
+
+    <div class="ticker-wrap">
+      <div class="ticker">
+        <span>🏆 恭喜 <b>138****88</b> 荣获本届巅峰王者</span>
+        <span>🎉 <b>135****02</b> 解锁王者段位最终奖励</span>
+        <span>🎉 <b>188****76</b> 抽中神秘大奖</span>
+        <span>🏆 恭喜 <b>138****88</b> 荣获本届巅峰王者</span>
+        <span>🎉 <b>135****02</b> 解锁王者段位最终奖励</span>
+      </div>
+    </div>
+
+    <div class="status-card">
+      <div class="hexwrap">
+        <svg viewBox="0 0 74 74"><circle cx="37" cy="37" r="33" fill="none" stroke="#232A4E" stroke-width="4"/><circle cx="37" cy="37" r="33" fill="none" stroke="url(#gEnd)" stroke-width="4" stroke-linecap="round" stroke-dasharray="207" stroke-dashoffset="0"/><defs><linearGradient id="gEnd"><stop offset="0%" stop-color="#6FF0C8"/><stop offset="100%" stop-color="#189B79"/></linearGradient></defs></svg>
+        <div class="hex-emblem">🏆</div>
+      </div>
+      <div class="status-info">
+        <div class="status-seg">精英段位 · ELITE（最终段位）</div>
+        <div class="status-name">最终总榜排名 第 18 名</div>
+        <div class="status-row">
+          <div class="status-item"><div class="num">126,400</div><div class="lbl">最终VIP经验值</div></div>
+          <div class="status-item"><div class="num" style="color:var(--jade)">¥1,888</div><div class="lbl">总榜奖励·已发放</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="quick-claim" onclick="openPanel('panel-claim-ended')">
+      <div class="quick-claim-icon">⏳</div>
+      <div class="quick-claim-mid">
+        <div class="quick-claim-title">还有1项奖励没领，尽快领取</div>
+        <div class="quick-claim-sub">页面下架后未领取将无法找回</div>
+      </div>
+      <div class="quick-claim-btn">去领取 ›</div>
+    </div>
+
+    <div class="section-title">
+      <div class="zh">四大机会</div>
+      <div class="en">Four Ways To Win</div>
+    </div>
+    <div class="op-table">
+      <div class="op-row op-1" onclick="openPanel('panel-leaderboard-ended')">
+        <div class="op-row-icon">🏆</div>
+        <div class="op-row-mid"><div class="title">总经验值争霸榜</div></div>
+        <div class="op-row-badge">最终第18名</div>
+        <div class="op-row-arrow">›</div>
+      </div>
+      <div class="op-row op-2" onclick="openPanel('panel-tiers-ended')">
+        <div class="op-row-icon">🎯</div>
+        <div class="op-row-mid"><div class="title">阶梯达标奖励</div></div>
+        <div class="op-row-badge">还有1项待领</div>
+        <div class="op-row-arrow">›</div>
+      </div>
+      <div class="op-row op-3" onclick="openPanel('panel-daily-ended')">
+        <div class="op-row-icon">🔥</div>
+        <div class="op-row-mid"><div class="title">每日冲榜</div></div>
+        <div class="op-row-badge">已结束</div>
+        <div class="op-row-arrow">›</div>
+      </div>
+      <div class="op-row op-4" onclick="openPanel('panel-lucky-ended')">
+        <div class="op-row-icon">🎁</div>
+        <div class="op-row-mid"><div class="title">幸运抽奖</div></div>
+        <div class="op-row-badge">已结束</div>
+        <div class="op-row-arrow">›</div>
+      </div>
+    </div>
+
+    <div class="closing-banner">
+      <div class="q1">S1赛季圆满落幕</div>
+      <div class="q2">感谢每一位王者的参与<br>下一赛季，敬请期待</div>
+      <div class="q3">S2 · 即将开启</div>
+    </div>
+  </div>
+
+  <div class="cta-fixed">
+    <button class="cta-btn" style="background:var(--bg-panel-3); color:var(--ink-faint);" disabled>🏆 敬请期待下一赛季</button>
+  </div>
+
+  <!-- ================= PANEL(已结束): 总经验值争霸榜 ================= -->
+  <div class="panel" id="panel-leaderboard-ended">
+    <div class="panel-grip" onclick="closePanel('panel-leaderboard-ended')"></div>
+    <div class="panel-head">
+      <div><h2>总经验值争霸榜</h2><div class="sub">活动已结束 · 最终结算</div></div>
+      <div class="panel-close" onclick="closePanel('panel-leaderboard-ended')">✕</div>
+    </div>
+    <div class="panel-body">
+      <div class="podium">
+        <div class="pod rank2"><div class="avatar">👤</div><div class="pname">159****23</div><div class="pval">398,200</div><div class="base">2</div></div>
+        <div class="pod rank1"><div class="avatar">👑</div><div class="pname">138****88</div><div class="pval">526,800</div><div class="base">1</div></div>
+        <div class="pod rank3"><div class="avatar">👤</div><div class="pname">186****47</div><div class="pval">311,500</div><div class="base">3</div></div>
+      </div>
+      <div class="mystat" style="margin-bottom:14px;">
+        <div class="mystat-icon">🏆</div>
+        <div class="mystat-mid"><b>我的最终排名：第18名</b><span>126,400经验值 · 奖励¥1,888已发放</span></div>
+      </div>
+      <div class="reward-zone-list">
+        <div class="rz"><span class="rz-range">第1名</span><span class="rz-reward">¥88,888+奖杯+至尊VIP+专属称号</span></div>
+        <div class="rz"><span class="rz-range">第2-3名</span><span class="rz-reward">¥18,888-38,888+VIP礼遇</span></div>
+        <div class="rz"><span class="rz-range">第4-10名</span><span class="rz-reward">¥5,888</span></div>
+        <div class="rz"><span class="rz-range">第11-30名</span><span class="rz-reward">¥1,888</span></div>
+        <div class="rz"><span class="rz-range">第31-100名</span><span class="rz-reward">¥888/优惠券礼包</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= PANEL(已结束): 经验值阶梯达标奖励 ================= -->
+  <div class="panel" id="panel-tiers-ended">
+    <div class="panel-grip" onclick="closePanel('panel-tiers-ended')"></div>
+    <div class="panel-head">
+      <div><h2>经验值阶梯达标奖励</h2><div class="sub">活动已结束</div></div>
+      <div class="panel-close" onclick="closePanel('panel-tiers-ended')">✕</div>
+    </div>
+    <div class="panel-body">
+      <div class="ladder">
+        <div class="lstep done">
+          <div class="dot">✓</div>
+          <div class="lcard">
+            <div class="lhead"><span class="lname">入门礼包</span><span class="lthresh">满 10,000经验值</span></div>
+            <div class="lreward">8元红包 + 专属优惠券</div>
+            <div class="lprog-wrap"><div class="lprog-fill" style="width:100%"></div></div>
+            <div class="lfoot"><span>已达标 ✓ 已领取</span><span>10,000/10,000</span></div>
+          </div>
+        </div>
+        <div class="lstep done">
+          <div class="dot">✓</div>
+          <div class="lcard">
+            <div class="lhead"><span class="lname">进阶奖励</span><span class="lthresh">满 50,000经验值</span></div>
+            <div class="lreward">88积分 + 服务体验券</div>
+            <div class="lprog-wrap"><div class="lprog-fill" style="width:100%"></div></div>
+            <div class="lfoot"><span>已达标 ✓ 已领取</span><span>50,000/50,000</span></div>
+          </div>
+        </div>
+        <div class="lstep done">
+          <div class="dot">✓</div>
+          <div class="lcard">
+            <div class="lhead"><span class="lname">里程碑奖励</span><span class="lthresh">满 100,000经验值</span></div>
+            <div class="lreward">188元红包</div>
+            <div class="lprog-wrap"><div class="lprog-fill" style="width:100%"></div></div>
+            <div class="lfoot"><span>已达标 ✓</span><span>100,000/100,000</span></div>
+            <button class="claim-btn can" data-key="tier3-ended" data-reward="188元红包" onclick="claimTierEnded(this)">立即领取</button>
+          </div>
+        </div>
+        <div class="lstep">
+          <div class="dot">✕</div>
+          <div class="lcard">
+            <div class="lhead"><span class="lname">精英奖励</span><span class="lthresh">满 300,000经验值</span></div>
+            <div class="lreward">VIP7资格7天 + 388元红包</div>
+            <div class="lprog-wrap"><div class="lprog-fill" style="width:42%"></div></div>
+            <div class="lfoot"><span>未达标</span><span>126,400/300,000</span></div>
+          </div>
+        </div>
+        <div class="lstep">
+          <div class="dot">✕</div>
+          <div class="lcard">
+            <div class="lhead"><span class="lname">王者奖励</span><span class="lthresh">满 500,000经验值</span></div>
+            <div class="lreward">专属礼品 + 688元红包</div>
+            <div class="lprog-wrap"><div class="lprog-fill" style="width:25%"></div></div>
+            <div class="lfoot"><span>未达标</span><span>126,400/500,000</span></div>
+          </div>
+        </div>
+        <div class="lstep">
+          <div class="dot">✕</div>
+          <div class="lcard">
+            <div class="lhead"><span class="lname">至尊奖励</span><span class="lthresh">满 1,000,000经验值</span></div>
+            <div class="lreward">神秘大奖 + 至尊VIP身份</div>
+            <div class="lprog-wrap"><div class="lprog-fill" style="width:13%"></div></div>
+            <div class="lfoot"><span>未达标</span><span>126,400/1,000,000</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= PANEL(已结束): 每日冲榜 ================= -->
+  <div class="panel" id="panel-daily-ended">
+    <div class="panel-grip" onclick="closePanel('panel-daily-ended')"></div>
+    <div class="panel-head">
+      <div><h2>每日冲榜</h2><div class="sub">活动已结束，感谢每一天的参与</div></div>
+      <div class="panel-close" onclick="closePanel('panel-daily-ended')">✕</div>
+    </div>
+    <div class="panel-body">
+      <div class="mini-list-title">我的中奖记录</div>
+      <div>
+        <div class="mini-row"><span class="mini-time">08-23</span><span class="mini-name">今日冲榜王 · +666元</span><span class="mini-status">已到账</span></div>
+        <div class="mini-row"><span class="mini-time">08-22</span><span class="mini-name">经验值突破奖 · +66元</span><span class="mini-status">已到账</span></div>
+        <div class="mini-row"><span class="mini-time">08-21</span><span class="mini-name">最强逆袭奖 · +366元</span><span class="mini-status">已到账</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= PANEL(已结束): 幸运抽奖 ================= -->
+  <div class="panel" id="panel-lucky-ended">
+    <div class="panel-grip" onclick="closePanel('panel-lucky-ended')"></div>
+    <div class="panel-head">
+      <div><h2>幸运抽奖</h2><div class="sub">活动已结束</div></div>
+      <div class="panel-close" onclick="closePanel('panel-lucky-ended')">✕</div>
+    </div>
+    <div class="panel-body">
+      <div class="mini-list-title">最终战绩</div>
+      <div>
+        <div class="mini-row"><span class="mini-time">08-23</span><span class="mini-name">58元红包</span><span class="mini-status">已到账</span></div>
+        <div class="mini-row"><span class="mini-time">08-22</span><span class="mini-name">优惠券</span><span class="mini-status">已到账</span></div>
+        <div class="mini-row"><span class="mini-time">08-20</span><span class="mini-name">8元红包</span><span class="mini-status">已到账</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= PANEL(已结束): 奖励中心 · 最终结算清单 ================= -->
+  <div class="panel" id="panel-claim-ended">
+    <div class="panel-grip" onclick="closePanel('panel-claim-ended')"></div>
+    <div class="panel-head">
+      <div><h2>奖励中心</h2></div>
+      <div class="panel-close" onclick="closePanel('panel-claim-ended')">✕</div>
+    </div>
+    <div class="panel-body">
+      <div class="claim-summary">
+        <div>
+          <span class="claim-summary-num" id="claimSummaryNumEnded">1</span>
+          <span class="claim-summary-lbl">项奖励待领取</span>
+        </div>
+        <button class="claim-all-btn" onclick="claimAllTiersEnded(this)">一键领取全部</button>
+      </div>
+      <div id="tierGroupEnded">
+        <div class="claim-list-title">阶梯达标奖励</div>
+        <div class="claim-row">
+          <div class="claim-row-icon">🧧</div>
+          <div class="claim-row-mid"><b>里程碑奖励</b><span>累计经验值满100,000</span></div>
+          <div class="claim-row-val">188元红包</div>
+          <button class="claim-btn can inline" data-key="tier3-ended" data-reward="188元红包" onclick="claimTierEnded(this)">领取</button>
+        </div>
+      </div>
+      <div class="claim-empty" id="claimEmptyEnded">暂无待领取奖励</div>
+      <div class="claim-list-title">已完成的结算与领取</div>
+      <div class="mini-row"><span class="mini-time">总榜</span><span class="mini-name">第18名排名奖励</span><span class="mini-status">¥1,888 已到账</span></div>
+      <div class="mini-row"><span class="mini-time">段位</span><span class="mini-name">精英段位奖励</span><span class="mini-status">¥88 已到账</span></div>
+      <div class="mini-row"><span class="mini-time">阶梯</span><span class="mini-name">入门+进阶 共2档</span><span class="mini-status">已领取</span></div>
+      <div class="mini-row"><span class="mini-time">每日</span><span class="mini-name">冲榜奖励 累计3笔</span><span class="mini-status">已到账</span></div>
+      <div class="mini-row"><span class="mini-time">抽奖</span><span class="mini-name">中奖记录 累计3笔</span><span class="mini-status">已到账</span></div>
+    </div>
+  </div>
+
+  <!-- ================= PANEL(已结束): 活动规则 ================= -->
+  <div class="panel" id="panel-rules-ended">
+    <div class="panel-grip" onclick="closePanel('panel-rules-ended')"></div>
+    <div class="panel-head">
+      <div><h2>活动规则</h2><div class="sub">巅峰争霸赛 · 完整说明（已结束）</div></div>
+      <div class="panel-close" onclick="closePanel('panel-rules-ended')">✕</div>
+    </div>
+    <div class="panel-body">
+      <div class="rule-sec">
+        <h3>🏁 活动已结束</h3>
+        <p>本届巅峰争霸赛已于活动周期结束后自动停止统计，总榜和段位奖励已按规则完成结算与发放；阶梯奖励如果还有没领的，在页面下架前仍然可以领取。感谢你的参与，规则条款保留在此仅供查阅。</p>
+      </div>
+      <div class="rule-sec">
+        <h3>🗓️ 活动周期</h3>
+        <p>活动一共14天，全平台自动开启，不用你手动报名。活动期间你产生的有效VIP经验值，系统会自动帮你记下来，活动结束后统一结算发奖。</p>
+      </div>
+      <div class="rule-sec">
+        <h3>💰 奖励什么时候到账</h3>
+        <ul>
+          <li><b>总榜排名奖励</b>：活动结束、最终排名公布后统一结算，3个工作日内发到账户</li>
+          <li><b>段位奖励</b>：活动结束后按最终段位统一结算，已发放完毕</li>
+          <li><b>阶梯奖励</b>：达标随时能领，页面下架前都可以补领</li>
+          <li><b>每日冲榜奖励</b>：每天0点结算后自动发放</li>
+          <li><b>幸运抽奖</b>：抽完当场知道结果，现金/优惠券即时到账</li>
+        </ul>
+      </div>
+      <div class="rule-foot">本活动最终解释权归平台所有</div>
+    </div>
+  </div>
+
+  <div class="mask" id="maskEnded" onclick="closeAllIn(this)"></div>
+  <div class="scroll-hint">⌄</div>
+</div>
+</div>
+<!-- /.device-col -->
 
 <!-- ================= 右侧：开发文档（活动规则描述，移动端隐藏） ================= -->
+<div class="device-col dev-col">
+<div class="state-tag state-tag-dev">📋 开发参考文档</div>
 <aside class="side-rules">
   <div class="side-rules-head">
     <h1>开发文档 · 规则描述</h1>
@@ -1081,7 +1430,7 @@
   </div>
   <div class="rule-sec">
     <h3>④ 经验值阶梯达标奖励</h3>
-    <p>累计经验值达到对应档位即可解锁奖励，判定与排名无关。达标后由客户主动领取，不设领取时限（活动结束前均可领取），未领取奖励在活动结束后统一清算方式另行约定。<b>领取入口有两个</b>——"经验值阶梯达标奖励"面板与"奖励中心"，二者共享同一状态（技术实现建议用同一奖励记录ID关联两处按钮），从任一入口领取后另一入口需同步更新为已领取，避免重复发放。"奖励中心"额外提供"一键领取全部"，仅批量处理这类可直接到账的奖励。</p>
+    <p>累计经验值达到对应档位即可解锁奖励，判定与排名无关。达标后由客户主动领取，不设领取时限——活动进行中可以领，<b>活动结束后到页面下架前这段保留期内依然可以领取</b>，页面下架后仍未领取的奖励视为过期作废，不再补发（下架前建议通过"距页面下架"倒计时和站内消息提醒客户尽快领取）。<b>领取入口有两个</b>——"经验值阶梯达标奖励"面板与"奖励中心"，二者共享同一状态（技术实现建议用同一奖励记录ID关联两处按钮），从任一入口领取后另一入口需同步更新为已领取，避免重复发放。"奖励中心"额外提供"一键领取全部"，仅批量处理这类可直接到账的奖励。</p>
   </div>
   <div class="rule-sec">
     <h3>⑤ 每日冲榜奖励</h3>
@@ -1098,13 +1447,14 @@
   </div>
   <div class="rule-sec">
     <h3>⑦ 争霸段位</h3>
-    <p>根据累计VIP经验值自动划分六个段位，与经验值阶梯档位一一对应，同步晋升，无需额外操作。段位页面展示的奖励（现金奖金/虚拟卡/实物礼品等）与④阶梯达标奖励中对应档位的奖励是<b>同一笔</b>，仅用于段位视角的展示，不产生二次发放；实际发放与领取逻辑均以④为准，避免同一档位被重复计发。</p>
+    <p>根据累计VIP经验值自动划分六个段位，与经验值阶梯档位使用同一套门槛数值判定晋升，但<b>段位奖励与④阶梯达标奖励是两套独立奖励</b>，各自单独配置金额、各自单独发放，互不冲突也不互相替代。段位奖励按活动结束时客户的最终段位结算发放，逻辑与③总榜排名奖励一致（活动进行中不可领取，仅展示预计可得档位）；阶梯奖励则按④的规则在活动进行中随时可领。示例：某客户最终段位为"精英"，活动结束后除能收到该段位对应的段位奖励外，此前已达标的阶梯奖励（若已领取）不受影响，两笔互不抵扣。</p>
   </div>
   <div class="rule-sec">
     <h3>⑧ 结算与发放说明</h3>
     <ul>
       <li>总榜排名奖励：活动结束后统一结算，公布最终排行榜，结算后3个工作日内发放至客户账户，逾期未到账走客诉补偿流程</li>
-      <li>阶梯达标奖励：活动进行中即可由客户主动领取，无需等待活动结束（详见④）</li>
+      <li>段位奖励：活动结束后按客户最终段位统一结算发放，结算周期与总榜排名奖励一致（详见⑦）</li>
+      <li>阶梯达标奖励：活动进行中即可由客户主动领取，无需等待活动结束；活动结束后到页面下架前仍可补领，下架后未领取的过期作废（详见④）</li>
       <li>每日冲榜奖励：每日00:00自动结算并发放至账户余额，无需客户操作（详见⑤）</li>
       <li>幸运抽奖：即时开奖、即时出结果，现金/优惠券类实时到账，实物礼品需登记收货信息后另走线下核销流程（详见⑥）</li>
     </ul>
@@ -1125,7 +1475,7 @@
   <div class="qref-title">经验值阶梯档位速查</div>
   <div class="qref-row"><span class="k">入门礼包</span><span class="v">10,000经验值</span></div>
   <div class="qref-row"><span class="k">进阶奖励</span><span class="v">50,000经验值</span></div>
-  <div class="qref-row"><span class="k">突破奖励</span><span class="v">100,000经验值</span></div>
+  <div class="qref-row"><span class="k">里程碑奖励</span><span class="v">100,000经验值</span></div>
   <div class="qref-row"><span class="k">精英奖励</span><span class="v">300,000经验值</span></div>
   <div class="qref-row"><span class="k">王者奖励</span><span class="v">500,000经验值</span></div>
   <div class="qref-row"><span class="k">至尊奖励</span><span class="v">1,000,000经验值</span></div>
@@ -1137,9 +1487,20 @@
   <div class="qref-row"><span class="k">第11-30名</span><span class="v">¥1,888</span></div>
   <div class="qref-row"><span class="k">第31-100名</span><span class="v">¥888/礼包</span></div>
 
+  <div class="qref-title">段位奖励速查（活动结束后按最终段位发放，与阶梯奖励独立）</div>
+  <div class="qref-row"><span class="k">新秀</span><span class="v">¥8</span></div>
+  <div class="qref-row"><span class="k">进阶者</span><span class="v">¥30</span></div>
+  <div class="qref-row"><span class="k">精英</span><span class="v">¥88</span></div>
+  <div class="qref-row"><span class="k">王者</span><span class="v">¥288+专属称号</span></div>
+  <div class="qref-row"><span class="k">至尊</span><span class="v">¥588+专属头像框</span></div>
+  <div class="qref-row"><span class="k">传奇</span><span class="v">¥1,888+称号+头像框</span></div>
+
   <div class="rule-foot">本活动最终解释权归平台所有</div>
 </aside>
 </div>
+<!-- /.device-col -->
+</div>
+<!-- /.stage -->
 
 
 <script>
@@ -1177,28 +1538,33 @@
     return true;
   }
   function checkEmptyClaimList(){
-    const groups = document.querySelectorAll('.claim-group');
+    const root = document.getElementById('device');
+    if(!root) return;
+    const groups = root.querySelectorAll('.claim-group');
     let anyLeft = false;
     groups.forEach(g=>{
       const left = g.querySelectorAll('.claim-row').length;
       g.style.display = left>0 ? '' : 'none';
       if(left>0) anyLeft = true;
     });
-    const empty = document.getElementById('claimEmpty');
+    const empty = root.querySelector('#claimEmpty');
     if(empty) empty.style.display = anyLeft ? 'none' : 'block';
   }
   function updateClaimUI(){
-    // 同一份奖励可能在两个地方各有一个按钮（data-key相同），按去重后的key数量计算，不能直接数按钮个数，否则会数出两倍
-    const canButtons = document.querySelectorAll('.claim-btn.can');
+    // 这几个统计和按钮都只属于"进行中"这台设备，查询范围必须限定在 #device 里面，
+    // 否则"已结束"设备里同名的 .claim-btn.can / .register-btn 也会被数进来，导致两台设备互相影响
+    const root = document.getElementById('device');
+    if(!root) return;
+    const canButtons = root.querySelectorAll('.claim-btn.can');
     const uniqueKeys = new Set();
     canButtons.forEach(b => uniqueKeys.add(b.dataset.key || ('_'+Math.random()+b.dataset.reward)));
     const claimableCount = uniqueKeys.size; // 一键领取全部只处理这部分——一键点不了需要手动填地址的实物登记
-    const registerCount = document.querySelectorAll('.register-btn').length; // 待登记的实物奖品，算在"待处理"总数里，但不算进一键领取
+    const registerCount = root.querySelectorAll('.register-btn').length; // 待登记的实物奖品，算在"待处理"总数里，但不算进一键领取
     const drawChances = getRemainChances(); // 剩余抽奖机会也是还没到手的奖励，一并算进待领取总数
     const remaining = claimableCount + registerCount + drawChances;
-    const drawSection = document.getElementById('drawSection');
+    const drawSection = root.querySelector('#drawSection');
     if(drawSection) drawSection.style.display = drawChances > 0 ? '' : 'none'; // 机会用完了，这一行就不用再占地方了
-    const qc = document.getElementById('quickClaim');
+    const qc = root.querySelector('#quickClaim');
     if(qc){
       qc.onclick = () => openPanel('panel-claim'); // 无论是否还有待领取，卡片始终可以点进奖励中心查看战况
       if(remaining > 0){
@@ -1213,9 +1579,9 @@
         qc.querySelector('.quick-claim-btn').textContent = '查看战况 ›';
       }
     }
-    const summaryNum = document.getElementById('claimSummaryNum');
+    const summaryNum = root.querySelector('#claimSummaryNum');
     if(summaryNum) summaryNum.textContent = remaining;
-    const allBtn = document.getElementById('claimAllBtn');
+    const allBtn = root.querySelector('#claimAllBtn');
     if(allBtn){
       allBtn.disabled = claimableCount === 0;
       allBtn.textContent = claimableCount === 0 ? '已全部领取' : '一键领取全部';
@@ -1228,13 +1594,90 @@
     }
   }
   function quickClaimAll(){
-    // 只批量处理"能一键领"的钱/积分类奖励；需要填收货信息的实物礼品不在其中，得用户自己去登记
-    const btns = document.querySelectorAll('.claim-btn.can');
+    // 只批量处理"进行中"这台设备里"能一键领"的钱/积分类奖励，限定在 #device 范围内，
+    // 不会误伤"已结束"设备里同样是 .claim-btn.can 的按钮；需要填收货信息的实物礼品也不在其中，得用户自己去登记
+    const root = document.getElementById('device');
+    if(!root) return;
+    const btns = root.querySelectorAll('.claim-btn.can');
     if(btns.length === 0) return;
     let count = 0;
     btns.forEach(btn => { if(applyClaim(btn)) count++; });
     if(count > 0) showToast('🎉','一键领取成功', '共处理 '+count+' 项奖励');
     updateClaimUI();
+  }
+
+  // ---- "已结束"演示设备专用：完全自包含的领取逻辑，不复用上面那套（避免跟"进行中"设备的数据互相污染）----
+  function claimTierEnded(btn){
+    if(btn.classList.contains('done')) return;
+    const device = btn.closest('.device');
+    if(!device) return;
+    const key = btn.dataset.key;
+    const targets = key ? Array.from(device.querySelectorAll('[data-key="'+key+'"]')) : [btn];
+    targets.forEach(t=>{
+      if(t.classList.contains('done')) return;
+      t.classList.remove('can');
+      t.classList.add('done');
+      t.textContent = '已领取';
+      t.disabled = true;
+      const row = t.closest('.claim-row');
+      if(row){
+        // 在"奖励中心"里：跟进行中页面一样，领完这一行直接收起消失
+        row.style.overflow = 'hidden';
+        row.style.transition = 'opacity .3s ease, transform .3s ease, max-height .3s ease, margin-bottom .3s ease, padding .3s ease, border-width .3s ease';
+        row.style.maxHeight = row.offsetHeight+'px';
+        requestAnimationFrame(()=>{
+          row.style.opacity = '0';
+          row.style.transform = 'translateX(14px)';
+          row.style.maxHeight = '0px';
+          row.style.marginBottom = '0px';
+          row.style.paddingTop = '0px';
+          row.style.paddingBottom = '0px';
+          row.style.borderWidth = '0px';
+        });
+        setTimeout(()=>{ row.remove(); syncEndedDeviceUI(device); }, 320);
+      } else {
+        // 在"阶梯达标奖励"面板的档位卡片里：不删卡片，只把状态文字更新成已领取，保留达标历史
+        const foot = t.closest('.lcard')?.querySelector('.lfoot span:first-child');
+        if(foot) foot.textContent = '已达标 ✓ 已领取';
+      }
+    });
+    showToast('🎁','领取成功', btn.dataset.reward);
+    syncEndedDeviceUI(device);
+  }
+  function claimAllTiersEnded(btn){
+    const device = btn.closest('.device');
+    if(!device) return;
+    const btns = Array.from(device.querySelectorAll('.claim-btn.can'));
+    if(btns.length === 0) return;
+    btns.forEach(b => claimTierEnded(b));
+    showToast('🎉','一键领取成功','已全部处理完成');
+  }
+  function syncEndedDeviceUI(device){
+    const remaining = device.querySelectorAll('.claim-btn.can').length;
+    device.querySelectorAll('.claim-summary-num').forEach(n => n.textContent = remaining);
+    device.querySelectorAll('.claim-all-btn').forEach(b => {
+      b.disabled = remaining === 0;
+      b.textContent = remaining === 0 ? '已全部领取' : '一键领取全部';
+    });
+    const tierGroup = device.querySelector('#tierGroupEnded');
+    const emptyMsg = device.querySelector('#claimEmptyEnded');
+    if(tierGroup){
+      const stillHasRow = tierGroup.querySelectorAll('.claim-row').length > 0;
+      tierGroup.style.display = stillHasRow ? '' : 'none';
+      if(emptyMsg) emptyMsg.style.display = stillHasRow ? 'none' : 'block';
+    }
+    if(remaining === 0){
+      const qc = device.querySelector('.quick-claim');
+      if(qc){
+        qc.classList.add('claimed');
+        const icon = qc.querySelector('.quick-claim-icon'); if(icon) icon.textContent = '🎉';
+        const title = qc.querySelector('.quick-claim-title'); if(title) title.textContent = '全部奖励已结算完成';
+        const sub = qc.querySelector('.quick-claim-sub'); if(sub) sub.textContent = '感谢参与，敬请期待下一赛季';
+        const btnEl = qc.querySelector('.quick-claim-btn'); if(btnEl) btnEl.textContent = '查看明细 ›';
+      }
+      const badge = device.querySelector('.op-row.op-2 .op-row-badge');
+      if(badge) badge.textContent = '已全部领取';
+    }
   }
   let currentPrizeId = null;
   function openRegModal(prizeId){
@@ -1301,30 +1744,42 @@
     checkEmptyClaimList();
     updateClaimUI();
   }
+  function findMask(el){
+    const device = el.closest('.device');
+    return device ? device.querySelector('.mask') : document.getElementById('mask');
+  }
   function openPanel(id){
-    document.getElementById('mask').classList.add('show');
-    document.getElementById(id).classList.add('show');
+    const panel = document.getElementById(id);
+    if(!panel) return;
+    const mask = findMask(panel);
+    if(mask) mask.classList.add('show');
+    panel.classList.add('show');
     setTimeout(updateScrollHint, 380); // 等抽屉滑动动画(340ms)彻底结束再读取滚动高度，动画进行中读取会强制页面重新计算布局，导致画面闪烁
   }
   function closePanel(id){
-    document.getElementById(id).classList.remove('show');
-    document.getElementById('mask').classList.remove('show');
+    const panel = document.getElementById(id);
+    if(!panel) return;
+    panel.classList.remove('show');
+    const mask = findMask(panel);
+    if(mask) mask.classList.remove('show');
     hideScrollHint();
   }
-  function closeAll(){
-    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('show'));
-    document.getElementById('mask').classList.remove('show');
+  function closeAllIn(maskEl){
+    const device = maskEl.closest('.device');
+    if(device) device.querySelectorAll('.panel').forEach(p=>p.classList.remove('show'));
+    maskEl.classList.remove('show');
     hideScrollHint();
   }
   function hideScrollHint(){
-    const hint = document.getElementById('scrollHint');
-    if(hint) hint.style.display = 'none';
+    document.querySelectorAll('.scroll-hint').forEach(h => h.style.display = 'none');
   }
   function updateScrollHint(){
     const activePanel = document.querySelector('.panel.show');
-    const hint = document.getElementById('scrollHint');
+    if(!activePanel){ hideScrollHint(); return; }
+    const device = activePanel.closest('.device');
+    const hint = device ? device.querySelector('.scroll-hint') : null;
+    document.querySelectorAll('.scroll-hint').forEach(h => { if(h !== hint) h.style.display = 'none'; });
     if(!hint) return;
-    if(!activePanel){ hint.style.display = 'none'; return; }
     const body = activePanel.querySelector('.panel-body');
     if(!body){ hint.style.display = 'none'; return; }
     const canScroll = body.scrollHeight - body.clientHeight > 24;
@@ -1394,6 +1849,22 @@
     if(el1) el1.textContent = text+'后重新统计';
     if(el2) el2.textContent = text;
     if(el3) el3.textContent = text;
+  }, 1000);
+
+  // "已结束"演示设备专用：距页面下架的倒计时（3天示例值），独立计时，不影响进行中设备的任何数字
+  let takedownRemain = 3*86400 + 8*3600 + 42*60 + 15;
+  setInterval(()=>{
+    takedownRemain--;
+    if(takedownRemain < 0) takedownRemain = 0;
+    const d = Math.floor(takedownRemain/86400);
+    const h = Math.floor((takedownRemain%86400)/3600);
+    const m = Math.floor((takedownRemain%3600)/60);
+    const s = takedownRemain%60;
+    const setText = (id, val) => { const el = document.getElementById(id); if(el) el.textContent = String(val).padStart(2,'0'); };
+    setText('cdEndedD', d);
+    setText('cdEndedH', h);
+    setText('cdEndedM', m);
+    setText('cdEndedS', s);
   }, 1000);
 
   const prizes = [
