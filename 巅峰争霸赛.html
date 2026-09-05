@@ -265,22 +265,31 @@
   .mask{
     position:absolute; inset:0; background:rgba(0,0,0,.55); backdrop-filter:blur(3px); z-index:20;
     opacity:0; pointer-events:none; transition:opacity .25s;
+    will-change:opacity; transform:translateZ(0);
   }
   .mask.show{opacity:1; pointer-events:auto;}
   .panel{
-    position:absolute; left:0; right:0; bottom:0; transform:translateY(100%); z-index:21;
+    position:absolute; left:0; right:0; bottom:0; transform:translateY(100%) translateZ(0); z-index:21;
     width:100%; height:88%; max-height:88%;
     background:var(--bg-deep); border-radius:22px 22px 0 0; border:1px solid var(--line); border-bottom:none;
     transition:transform .34s cubic-bezier(.22,.9,.32,1);
     display:flex; flex-direction:column; overflow:hidden;
     box-shadow:0 -12px 40px rgba(0,0,0,.5);
+    will-change:transform;
   }
-  .panel.show{transform:translateY(0);}
+  .panel.show{transform:translateY(0) translateZ(0);}
   .panel::after{
     content:''; position:absolute; left:0; right:0; bottom:0; height:26px;
     background:linear-gradient(180deg, transparent, var(--bg-deep) 85%);
     pointer-events:none; z-index:2;
   }
+  .scroll-hint{
+    position:absolute; left:50%; bottom:10px; transform:translateX(-50%);
+    width:30px; height:30px; border-radius:50%; background:rgba(232,182,74,.16); border:1px solid rgba(232,182,74,.45);
+    display:none; align-items:center; justify-content:center; font-size:17px; color:var(--gold); font-weight:900;
+    z-index:22; pointer-events:none; animation:hintBounce 1.3s ease-in-out infinite;
+  }
+  @keyframes hintBounce{ 0%,100%{transform:translateX(-50%) translateY(0);} 50%{transform:translateX(-50%) translateY(5px);} }
   .panel-grip{width:36px; height:4px; background:var(--line); border-radius:3px; margin:10px auto 0; cursor:pointer;}
   .panel-head{padding:10px 20px 14px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid var(--line);}
   .panel-head h2{font-size:17px; font-weight:700;}
@@ -355,6 +364,72 @@
   .claim-btn{margin-top:10px; width:100%; padding:8px; border-radius:9px; border:none; font-size:12px; font-weight:700; cursor:pointer;}
   .claim-btn.can{background:var(--grad-jade); color:#06231a;}
   .claim-btn.done{background:var(--bg-panel-3); color:var(--ink-faint); cursor:default;}
+  .claim-btn.inline{width:auto; margin-top:0; padding:7px 14px; font-size:11.5px; flex-shrink:0; white-space:nowrap;}
+  .quick-draw-btn{
+    width:auto; padding:7px 14px; border-radius:9px; border:none; font-size:11.5px; font-weight:700; cursor:pointer;
+    background:var(--grad-jade); color:#06231a; flex-shrink:0; white-space:nowrap; transition:transform .15s;
+  }
+  .quick-draw-btn:active{transform:scale(.96);}
+  .quick-draw-btn:disabled{background:var(--bg-panel-3); color:var(--ink-faint); cursor:default;}
+
+  /* 实物礼品登记：跟一键领取的红包/积分不一样，需要额外收集信息，点击后弹出登记弹窗 */
+  .register-btn{
+    width:auto; padding:7px 14px; border-radius:9px; font-size:11.5px; font-weight:700; cursor:pointer;
+    background:transparent; border:1px solid var(--gold); color:var(--gold); flex-shrink:0; white-space:nowrap;
+    transition:transform .15s;
+  }
+  .register-btn:active{transform:scale(.96);}
+  .reg-input{
+    background:var(--bg-panel-3); border:1px solid var(--line); border-radius:8px; padding:9px 10px;
+    font-size:12px; color:var(--ink); font-family:inherit;
+  }
+  .reg-input::placeholder{color:var(--ink-faint);}
+  .reg-submit-btn{
+    padding:9px; border-radius:9px; border:none; background:var(--grad-jade); color:#06231a;
+    font-size:12px; font-weight:900; cursor:pointer; transition:transform .15s;
+  }
+  .reg-submit-btn:active{transform:scale(.97);}
+
+  /* ---- 奖励中心 ---- */
+  .mystat-grid{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:18px;}
+  .mystat{
+    display:flex; align-items:center; gap:9px; padding:11px 12px;
+    background:var(--bg-panel); border-radius:14px; border:1px solid var(--line);
+  }
+  .mystat-icon{font-size:18px; flex-shrink:0;}
+  .mystat-mid{min-width:0;}
+  .mystat-mid b{font-size:12.5px; display:block; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .mystat-mid span{font-size:9.5px; color:var(--ink-faint); display:block; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .claim-summary{
+    display:flex; align-items:center; justify-content:space-between; padding:16px;
+    border-radius:16px; background:var(--bg-panel-2); border:1px solid var(--line); margin-bottom:18px;
+  }
+  .claim-summary-num{font-size:26px; font-weight:900; color:var(--gold); font-family:'Rajdhani',sans-serif;}
+  .claim-summary-lbl{font-size:12px; color:var(--ink-dim); margin-left:4px;}
+  .claim-all-btn{
+    padding:10px 16px; border-radius:20px; border:none; background:var(--grad-jade); color:#06231a;
+    font-size:12px; font-weight:900; cursor:pointer; flex-shrink:0; transition:transform .15s;
+  }
+  .claim-all-btn:active{transform:scale(.96);}
+  .claim-all-btn:disabled{background:var(--bg-panel-3); color:var(--ink-faint); cursor:default;}
+  .claim-list-title{font-size:11.5px; color:var(--ink-faint); margin:0 2px 8px;}
+  .claim-row{
+    display:flex; align-items:center; gap:10px; padding:11px 12px; margin-bottom:8px;
+    background:var(--bg-panel); border-radius:14px; border:1px solid var(--line);
+  }
+  .claim-row-icon{
+    width:34px; height:34px; border-radius:10px; background:var(--bg-panel-3); flex-shrink:0; font-size:16px;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .claim-row-mid{flex:1; min-width:0;}
+  .claim-row-mid b{font-size:13px; display:block;}
+  .claim-row-mid span{font-size:10px; color:var(--ink-faint);}
+  .claim-row-val{font-size:11.5px; color:var(--gold); font-weight:700; flex-shrink:0; white-space:nowrap;}
+  .claim-group{margin-bottom:6px;}
+  .claim-empty{
+    display:none; text-align:center; font-size:12px; color:var(--ink-faint); padding:16px;
+    background:var(--bg-panel); border:1px solid var(--line); border-radius:14px; margin-bottom:14px;
+  }
 
   /* ---- daily ---- */
   .daily-cd{display:flex; justify-content:space-between; align-items:center; padding:12px 14px; background:var(--bg-panel); border:1px solid var(--line); border-radius:14px; margin:14px 0;}
@@ -384,6 +459,35 @@
   .mini-time{color:var(--ink-faint); flex-shrink:0;}
   .mini-name{flex:1; min-width:0;}
   .mini-status{color:var(--jade); font-size:10.5px; flex-shrink:0;}
+  .mini-register-btn{
+    font-size:10px; font-weight:700; color:var(--gold); background:transparent;
+    border:1px solid var(--gold); border-radius:14px; padding:3px 10px; cursor:pointer; flex-shrink:0;
+    transition:transform .15s;
+  }
+  .mini-register-btn:active{transform:scale(.94);}
+
+  /* ---- 实物礼品登记弹窗 ---- */
+  .reg-modal-mask{
+    position:absolute; inset:0; background:rgba(0,0,0,.6); z-index:50;
+    opacity:0; pointer-events:none; transition:opacity .25s;
+  }
+  .reg-modal-mask.show{opacity:1; pointer-events:auto;}
+  .reg-modal{
+    position:absolute; left:50%; top:50%; transform:translate(-50%,-50%) scale(.9);
+    width:82%; max-width:300px; background:var(--bg-panel-2); border:1px solid var(--gold);
+    border-radius:18px; padding:22px 18px; z-index:51;
+    opacity:0; pointer-events:none; transition:all .25s cubic-bezier(.34,1.56,.64,1);
+    display:flex; flex-direction:column; gap:9px;
+  }
+  .reg-modal.show{opacity:1; pointer-events:auto; transform:translate(-50%,-50%) scale(1);}
+  .reg-modal-title{font-size:15px; font-weight:900; text-align:center;}
+  .reg-modal-sub{font-size:11px; color:var(--ink-faint); text-align:center; margin-bottom:5px;}
+  .reg-modal-actions{display:flex; gap:8px; margin-top:4px;}
+  .reg-modal-cancel{
+    flex:1; padding:10px; border-radius:9px; border:1px solid var(--line); background:transparent;
+    color:var(--ink-dim); font-size:12px; font-weight:700; cursor:pointer;
+  }
+  .reg-modal .reg-submit-btn{flex:1; margin-top:0;}
 
   /* ---- segment ---- */
   .seg-hero{text-align:center; padding:10px 0 6px;}
@@ -511,13 +615,13 @@
       <div class="status-arrow">›</div>
     </div>
 
-    <div class="quick-claim" id="quickClaim" onclick="quickClaimAll()">
+    <div class="quick-claim" id="quickClaim" onclick="openPanel('panel-claim')">
       <div class="quick-claim-icon">🎁</div>
       <div class="quick-claim-mid">
-        <div class="quick-claim-title">2项奖励待领取</div>
-        <div class="quick-claim-sub">进阶奖励、突破奖励已达标</div>
+        <div class="quick-claim-title">5项奖励待领取</div>
+        <div class="quick-claim-sub">来自阶梯奖励、幸运抽奖</div>
       </div>
-      <div class="quick-claim-btn">一键领取</div>
+      <div class="quick-claim-btn">去领取 ›</div>
     </div>
 
     <div class="section-title">
@@ -612,7 +716,7 @@
   <div class="panel" id="panel-tiers">
     <div class="panel-grip" onclick="closePanel('panel-tiers')"></div>
     <div class="panel-head">
-      <div><h2>经验值阶梯达标奖励</h2><div class="sub">经验值达到对应档位即可领取</div></div>
+      <div><h2>经验值阶梯达标奖励</h2><div class="sub">查看每个档位的达成进度</div></div>
       <div class="panel-close" onclick="closePanel('panel-tiers')">✕</div>
     </div>
     <div class="panel-body">
@@ -623,8 +727,7 @@
             <div class="lhead"><span class="lname">入门礼包</span><span class="lthresh">满 10,000经验值</span></div>
             <div class="lreward">8元红包 + 专属优惠券</div>
             <div class="lprog-wrap"><div class="lprog-fill" style="width:100%"></div></div>
-            <div class="lfoot"><span>已达成</span><span>10,000/10,000</span></div>
-            <button class="claim-btn done">已领取</button>
+            <div class="lfoot"><span>已达标 ✓</span><span>10,000/10,000</span></div>
           </div>
         </div>
         <div class="lstep done">
@@ -633,8 +736,8 @@
             <div class="lhead"><span class="lname">进阶奖励</span><span class="lthresh">满 50,000经验值</span></div>
             <div class="lreward">88积分 + 服务体验券</div>
             <div class="lprog-wrap"><div class="lprog-fill" style="width:100%"></div></div>
-            <div class="lfoot"><span>已达成</span><span>50,000/50,000</span></div>
-            <button class="claim-btn can" data-reward="88积分 + 服务体验券" data-tier="进阶奖励" data-sub="累计经验值满50,000" onclick="claimReward(this)">立即领取</button>
+            <div class="lfoot"><span>已达标 ✓</span><span>50,000/50,000</span></div>
+            <button class="claim-btn can" data-key="tier2" data-reward="88积分 + 服务体验券" data-tier="进阶奖励" data-sub="累计经验值满50,000" onclick="claimReward(this)">立即领取</button>
           </div>
         </div>
         <div class="lstep done">
@@ -643,8 +746,8 @@
             <div class="lhead"><span class="lname">突破奖励</span><span class="lthresh">满 100,000经验值</span></div>
             <div class="lreward">188元红包</div>
             <div class="lprog-wrap"><div class="lprog-fill" style="width:100%"></div></div>
-            <div class="lfoot"><span>已达成</span><span>100,000/100,000</span></div>
-            <button class="claim-btn can" data-reward="188元红包" data-tier="突破奖励" data-sub="累计经验值满100,000" onclick="claimReward(this)">立即领取</button>
+            <div class="lfoot"><span>已达标 ✓</span><span>100,000/100,000</span></div>
+            <button class="claim-btn can" data-key="tier3" data-reward="188元红包" data-tier="突破奖励" data-sub="累计经验值满100,000" onclick="claimReward(this)">立即领取</button>
           </div>
         </div>
         <div class="lstep current">
@@ -675,6 +778,73 @@
           </div>
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- ================= PANEL: 奖励中心 ================= -->
+  <div class="panel" id="panel-claim">
+    <div class="panel-grip" onclick="closePanel('panel-claim')"></div>
+    <div class="panel-head">
+      <div><h2>奖励中心</h2></div>
+      <div class="panel-close" onclick="closePanel('panel-claim')">✕</div>
+    </div>
+    <div class="panel-body">
+      <div class="claim-summary">
+        <div>
+          <span class="claim-summary-num" id="claimSummaryNum">5</span>
+          <span class="claim-summary-lbl">项奖励待领取</span>
+        </div>
+        <button class="claim-all-btn" id="claimAllBtn" onclick="quickClaimAll()">一键领取全部</button>
+      </div>
+
+      <div class="claim-list-title">我的战况</div>
+      <div class="mystat-grid">
+        <div class="mystat">
+          <div class="mystat-icon">🏆</div>
+          <div class="mystat-mid"><b>第18名</b><span>距前十还差16.3万</span></div>
+        </div>
+        <div class="mystat">
+          <div class="mystat-icon">🎯</div>
+          <div class="mystat-mid"><b>精英段位</b><span>距下一档还差17.36万</span></div>
+        </div>
+        <div class="mystat">
+          <div class="mystat-icon">🔥</div>
+          <div class="mystat-mid"><b>今日冲榜中</b><span id="claimDailyCd">05:12:33后重新统计</span></div>
+        </div>
+        <div class="mystat">
+          <div class="mystat-icon">🎁</div>
+          <div class="mystat-mid"><b id="mystatDrawChances">剩余3次</b><span>幸运抽奖机会</span></div>
+        </div>
+      </div>
+
+      <div class="claim-group" id="claimGroupTier">
+        <div class="claim-list-title">经验值阶梯奖励</div>
+        <div class="claim-row">
+          <div class="claim-row-icon">🎫</div>
+          <div class="claim-row-mid"><b>进阶奖励</b><span>累计经验值满50,000</span></div>
+          <div class="claim-row-val">88积分+体验券</div>
+          <button class="claim-btn can inline" data-key="tier2" data-reward="88积分 + 服务体验券" data-tier="进阶奖励" data-sub="累计经验值满50,000" onclick="claimReward(this)">领取</button>
+        </div>
+        <div class="claim-row">
+          <div class="claim-row-icon">🧧</div>
+          <div class="claim-row-mid"><b>突破奖励</b><span>累计经验值满100,000</span></div>
+          <div class="claim-row-val">188元红包</div>
+          <button class="claim-btn can inline" data-key="tier3" data-reward="188元红包" data-tier="突破奖励" data-sub="累计经验值满100,000" onclick="claimReward(this)">领取</button>
+        </div>
+      </div>
+
+      <div id="drawSection">
+        <div class="claim-list-title">幸运抽奖</div>
+        <div class="claim-row" style="margin-bottom:8px;">
+          <div class="claim-row-icon">🎰</div>
+          <div class="claim-row-mid"><b>幸运抽奖</b><span id="claimDrawChances">剩余3次机会</span></div>
+          <button class="quick-draw-btn" id="quickDrawBtn" onclick="quickDraw()">抽一次</button>
+        </div>
+      </div>
+      <div class="claim-group" id="claimGroupLucky">
+      </div>
+
+      <div class="claim-empty" id="claimEmpty">暂无待领取奖励</div>
     </div>
   </div>
 
@@ -845,7 +1015,7 @@
       </div>
       <div class="rule-sec">
         <h3>🛡️ 段位怎么升</h3>
-        <p>经验值越高，段位越高：新秀 → 进阶者 → 精英 → 王者 → 至尊 → 传奇，一共6级，跟"阶梯达标奖励"的档位是对应的。每升一级能看到一份对应奖励（奖金/虚拟卡/实物都有可能），去"阶梯达标奖励"里领取。</p>
+        <p>经验值越高，段位越高：新秀 → 进阶者 → 精英 → 王者 → 至尊 → 传奇，一共6级，跟"阶梯达标奖励"的档位是对应的。每升一级能看到一份对应奖励（奖金/虚拟卡/实物都有可能）。</p>
       </div>
       <div class="rule-sec">
         <h3>💰 奖励什么时候到账</h3>
@@ -865,6 +1035,21 @@
     <div class="em" id="toastEm">🎉</div>
     <div class="t1" id="toastT1">恭喜获得</div>
     <div class="t2" id="toastT2">现金红包 58 元</div>
+  </div>
+  <div class="scroll-hint" id="scrollHint">⌄</div>
+
+  <!-- 实物礼品登记弹窗：不管从"幸运抽奖-最近战绩"还是"奖励中心"点进来，都是同一个弹窗 -->
+  <div class="reg-modal-mask" id="regModalMask" onclick="closeRegModal()"></div>
+  <div class="reg-modal" id="regModal">
+    <div class="reg-modal-title">📦 登记收货信息</div>
+    <div class="reg-modal-sub">实物礼品需要登记信息才能邮寄给你</div>
+    <input type="text" class="reg-input" placeholder="收货人姓名">
+    <input type="tel" class="reg-input" placeholder="手机号码">
+    <input type="text" class="reg-input" placeholder="收货地址">
+    <div class="reg-modal-actions">
+      <button class="reg-modal-cancel" onclick="closeRegModal()">取消</button>
+      <button class="reg-submit-btn" onclick="submitRegModal()">提交登记</button>
+    </div>
   </div>
 </div>
 
@@ -896,7 +1081,7 @@
   </div>
   <div class="rule-sec">
     <h3>④ 经验值阶梯达标奖励</h3>
-    <p>累计经验值达到对应档位即可解锁奖励，判定与排名无关。达标后由客户主动领取，不设领取时限（活动结束前均可领取），未领取奖励在活动结束后统一清算方式另行约定。</p>
+    <p>累计经验值达到对应档位即可解锁奖励，判定与排名无关。达标后由客户主动领取，不设领取时限（活动结束前均可领取），未领取奖励在活动结束后统一清算方式另行约定。<b>领取入口有两个</b>——"经验值阶梯达标奖励"面板与"奖励中心"，二者共享同一状态（技术实现建议用同一奖励记录ID关联两处按钮），从任一入口领取后另一入口需同步更新为已领取，避免重复发放。"奖励中心"额外提供"一键领取全部"，仅批量处理这类可直接到账的奖励。</p>
   </div>
   <div class="rule-sec">
     <h3>⑤ 每日冲榜奖励</h3>
@@ -909,7 +1094,7 @@
   </div>
   <div class="rule-sec">
     <h3>⑥ 幸运抽奖</h3>
-    <p>累计VIP经验值达到最低门槛即可参与抽奖，抽奖机会数随经验值档位累加（详见首页"抽奖机会来源"说明）。奖品含现金红包、优惠券、VIP权益、实物礼品及神秘大奖，中奖结果实时到账，实物礼品另走线下核销流程。</p>
+    <p>累计VIP经验值达到最低门槛即可参与抽奖，抽奖机会数随经验值档位累加（详见首页"抽奖机会来源"说明）。奖品含现金红包、优惠券、VIP权益、实物礼品及神秘大奖。<b>抽奖入口有两个</b>——"幸运抽奖"面板（完整版，含开奖动画）与"奖励中心"（简化版，无动画、直接出结果），两处共享同一份剩余机会数与奖池，任一处抽奖后另一处的机会数需同步刷新；机会数为0时，"奖励中心"的抽奖入口自动隐藏。现金/优惠券/VIP权益类中奖结果实时到账；抽中实物礼品时，系统自动生成一条"待登记收货信息"记录，同时展示在"幸运抽奖-最近战绩"和"奖励中心"两处，客户点击任一处的"去登记"均弹出同一个收货信息表单，提交后两处记录同步移除，转入线下核销流程。剩余抽奖机会数计入"奖励中心"待处理总数，但不参与"一键领取全部"（抽奖需要客户主动触发，无法批量代抽）。</p>
   </div>
   <div class="rule-sec">
     <h3>⑦ 争霸段位</h3>
@@ -921,7 +1106,7 @@
       <li>总榜排名奖励：活动结束后统一结算，公布最终排行榜，结算后3个工作日内发放至客户账户，逾期未到账走客诉补偿流程</li>
       <li>阶梯达标奖励：活动进行中即可由客户主动领取，无需等待活动结束（详见④）</li>
       <li>每日冲榜奖励：每日00:00自动结算并发放至账户余额，无需客户操作（详见⑤）</li>
-      <li>幸运抽奖：即时开奖、即时出结果，现金/优惠券类实时到账，实物礼品另走线下核销流程（详见⑥）</li>
+      <li>幸运抽奖：即时开奖、即时出结果，现金/优惠券类实时到账，实物礼品需登记收货信息后另走线下核销流程（详见⑥）</li>
     </ul>
   </div>
   <div class="rule-sec">
@@ -931,6 +1116,10 @@
       <li>排行榜数据存在最长5分钟延迟，前端需展示"实时更新"字样而非精确到秒</li>
       <li>疑似异常经验值（如刷量/套利）由风控系统标记后暂停其奖励资格，人工复核</li>
     </ul>
+  </div>
+  <div class="rule-sec">
+    <h3>⑩ 奖励中心（聚合视图）</h3>
+    <p>"奖励中心"不是独立的奖励来源，而是把④阶梯奖励的领取入口、⑥幸运抽奖的简化抽奖入口、以及排名/段位/每日冲榜的关键状态摘要（"我的战况"），聚合展示在同一个页面，减少客户需要逐个功能面板查看的次数。页面顶部"X项奖励待领取"统计口径为：可一键领取的阶梯奖励数 + 待登记的实物礼品数 + 剩余抽奖机会数，三者相加；"一键领取全部"按钮只处理其中可一键到账的部分。</p>
   </div>
 
   <div class="qref-title">经验值阶梯档位速查</div>
@@ -959,41 +1148,188 @@
   }
   function applyClaim(btn){
     if(btn.classList.contains('done')) return false;
-    btn.classList.remove('can');
-    btn.classList.add('done');
-    btn.textContent = '已领取';
-    btn.disabled = true;
+    const key = btn.dataset.key;
+    // 有 data-key 说明这份奖励在两个地方都能领（比如阶梯奖励面板 + 奖励中心），点任意一个都要把另一份也同步标记掉
+    const targets = key ? Array.from(document.querySelectorAll('[data-key="'+key+'"]')) : [btn];
+    targets.forEach(t=>{
+      if(t.classList.contains('done')) return;
+      t.classList.remove('can');
+      t.classList.add('done');
+      t.textContent = t.dataset.doneText || '已领取';
+      t.disabled = true;
+      const row = t.closest('.claim-row');
+      if(row){
+        row.style.overflow = 'hidden';
+        row.style.transition = 'opacity .3s ease, transform .3s ease, max-height .3s ease, margin-bottom .3s ease, padding .3s ease, border-width .3s ease';
+        row.style.maxHeight = row.offsetHeight+'px';
+        requestAnimationFrame(()=>{
+          row.style.opacity = '0';
+          row.style.transform = 'translateX(14px)';
+          row.style.maxHeight = '0px';
+          row.style.marginBottom = '0px';
+          row.style.paddingTop = '0px';
+          row.style.paddingBottom = '0px';
+          row.style.borderWidth = '0px';
+        });
+        setTimeout(()=>{ row.remove(); checkEmptyClaimList(); }, 320);
+      }
+    });
     return true;
   }
+  function checkEmptyClaimList(){
+    const groups = document.querySelectorAll('.claim-group');
+    let anyLeft = false;
+    groups.forEach(g=>{
+      const left = g.querySelectorAll('.claim-row').length;
+      g.style.display = left>0 ? '' : 'none';
+      if(left>0) anyLeft = true;
+    });
+    const empty = document.getElementById('claimEmpty');
+    if(empty) empty.style.display = anyLeft ? 'none' : 'block';
+  }
+  function updateClaimUI(){
+    // 同一份奖励可能在两个地方各有一个按钮（data-key相同），按去重后的key数量计算，不能直接数按钮个数，否则会数出两倍
+    const canButtons = document.querySelectorAll('.claim-btn.can');
+    const uniqueKeys = new Set();
+    canButtons.forEach(b => uniqueKeys.add(b.dataset.key || ('_'+Math.random()+b.dataset.reward)));
+    const claimableCount = uniqueKeys.size; // 一键领取全部只处理这部分——一键点不了需要手动填地址的实物登记
+    const registerCount = document.querySelectorAll('.register-btn').length; // 待登记的实物奖品，算在"待处理"总数里，但不算进一键领取
+    const drawChances = getRemainChances(); // 剩余抽奖机会也是还没到手的奖励，一并算进待领取总数
+    const remaining = claimableCount + registerCount + drawChances;
+    const drawSection = document.getElementById('drawSection');
+    if(drawSection) drawSection.style.display = drawChances > 0 ? '' : 'none'; // 机会用完了，这一行就不用再占地方了
+    const qc = document.getElementById('quickClaim');
+    if(qc){
+      qc.onclick = () => openPanel('panel-claim'); // 无论是否还有待领取，卡片始终可以点进奖励中心查看战况
+      if(remaining > 0){
+        qc.classList.remove('claimed');
+        qc.querySelector('.quick-claim-title').textContent = remaining+'项奖励待领取';
+        qc.querySelector('.quick-claim-sub').textContent = '来自阶梯奖励、幸运抽奖';
+        qc.querySelector('.quick-claim-btn').textContent = '去领取 ›';
+      } else {
+        qc.classList.add('claimed');
+        qc.querySelector('.quick-claim-title').textContent = '暂无待领取奖励';
+        qc.querySelector('.quick-claim-sub').textContent = '继续冲经验值解锁更多奖励';
+        qc.querySelector('.quick-claim-btn').textContent = '查看战况 ›';
+      }
+    }
+    const summaryNum = document.getElementById('claimSummaryNum');
+    if(summaryNum) summaryNum.textContent = remaining;
+    const allBtn = document.getElementById('claimAllBtn');
+    if(allBtn){
+      allBtn.disabled = claimableCount === 0;
+      allBtn.textContent = claimableCount === 0 ? '已全部领取' : '一键领取全部';
+    }
+  }
   function claimReward(btn){
-    if(applyClaim(btn)) showToast('🎁','领取成功', btn.dataset.reward);
+    if(applyClaim(btn)){
+      showToast(btn.dataset.toastEm || '🎁', btn.dataset.toastTitle || '领取成功', btn.dataset.reward);
+      updateClaimUI();
+    }
   }
   function quickClaimAll(){
+    // 只批量处理"能一键领"的钱/积分类奖励；需要填收货信息的实物礼品不在其中，得用户自己去登记
     const btns = document.querySelectorAll('.claim-btn.can');
     if(btns.length === 0) return;
     let count = 0;
     btns.forEach(btn => { if(applyClaim(btn)) count++; });
-    if(count > 0) showToast('🎉','一键领取成功', '共领取 '+count+' 项奖励');
-    const qc = document.getElementById('quickClaim');
-    if(qc){
-      qc.classList.add('claimed');
-      qc.querySelector('.quick-claim-title').textContent = '暂无待领取奖励';
-      qc.querySelector('.quick-claim-sub').textContent = '继续冲经验值解锁更多奖励';
-      qc.querySelector('.quick-claim-btn').textContent = '已领取';
-      qc.onclick = null;
-    }
+    if(count > 0) showToast('🎉','一键领取成功', '共处理 '+count+' 项奖励');
+    updateClaimUI();
+  }
+  let currentPrizeId = null;
+  function openRegModal(prizeId){
+    currentPrizeId = prizeId;
+    document.getElementById('regModalMask').classList.add('show');
+    document.getElementById('regModal').classList.add('show');
+  }
+  function closeRegModal(){
+    document.getElementById('regModalMask').classList.remove('show');
+    document.getElementById('regModal').classList.remove('show');
+    currentPrizeId = null;
+  }
+  function submitRegModal(){
+    if(!currentPrizeId){ closeRegModal(); return; }
+    completeRegistration(currentPrizeId);
+    closeRegModal();
+  }
+  function collapseAndRemove(el){
+    el.style.overflow = 'hidden';
+    el.style.transition = 'opacity .3s ease, max-height .3s ease, margin-bottom .3s ease';
+    el.style.maxHeight = el.offsetHeight+'px';
+    requestAnimationFrame(()=>{
+      el.style.opacity = '0';
+      el.style.maxHeight = '0px';
+      el.style.marginBottom = '0px';
+    });
+    setTimeout(()=>{ el.remove(); checkEmptyClaimList(); updateClaimUI(); }, 320);
+  }
+  function completeRegistration(prizeId){
+    // 同一件实物奖品在"幸运抽奖-最近战绩"和"奖励中心"两处都可能有一份入口，不管从哪个地方登记，两边都要一起消掉
+    showToast('📦','登记成功','预计5个工作日内发货');
+    document.querySelectorAll('[data-prize-id="'+prizeId+'"]').forEach(el=>{
+      if(el.classList.contains('claim-row-wrap')){
+        collapseAndRemove(el);
+      } else if(el.classList.contains('mini-row')){
+        const btn = el.querySelector('.mini-register-btn');
+        if(btn) btn.remove();
+        if(!el.querySelector('.mini-status')){
+          const span = document.createElement('span');
+          span.className = 'mini-status';
+          span.textContent = '已登记';
+          el.appendChild(span);
+        }
+      }
+    });
+  }
+  function addPhysicalPrizeRow(prizeId){
+    // 真正抽到"实物礼品"才会动态生成一条待登记记录，不是页面写死的示例
+    const group = document.getElementById('claimGroupLucky');
+    if(!group) return;
+    const now = new Date();
+    const dateStr = String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0');
+    const wrap = document.createElement('div');
+    wrap.className = 'claim-row-wrap';
+    wrap.dataset.prizeId = prizeId;
+    wrap.innerHTML =
+      '<div class="claim-row">'+
+        '<div class="claim-row-icon">📦</div>'+
+        '<div class="claim-row-mid"><b>实物礼品</b><span>'+dateStr+'抽中，需登记收货信息</span></div>'+
+        '<div class="claim-row-val">礼品</div>'+
+        '<button class="register-btn" onclick="openRegModal(\''+prizeId+'\')">去登记</button>'+
+      '</div>';
+    group.appendChild(wrap);
+    checkEmptyClaimList();
+    updateClaimUI();
   }
   function openPanel(id){
     document.getElementById('mask').classList.add('show');
     document.getElementById(id).classList.add('show');
+    setTimeout(updateScrollHint, 380); // 等抽屉滑动动画(340ms)彻底结束再读取滚动高度，动画进行中读取会强制页面重新计算布局，导致画面闪烁
   }
   function closePanel(id){
     document.getElementById(id).classList.remove('show');
     document.getElementById('mask').classList.remove('show');
+    hideScrollHint();
   }
   function closeAll(){
     document.querySelectorAll('.panel').forEach(p=>p.classList.remove('show'));
     document.getElementById('mask').classList.remove('show');
+    hideScrollHint();
+  }
+  function hideScrollHint(){
+    const hint = document.getElementById('scrollHint');
+    if(hint) hint.style.display = 'none';
+  }
+  function updateScrollHint(){
+    const activePanel = document.querySelector('.panel.show');
+    const hint = document.getElementById('scrollHint');
+    if(!hint) return;
+    if(!activePanel){ hint.style.display = 'none'; return; }
+    const body = activePanel.querySelector('.panel-body');
+    if(!body){ hint.style.display = 'none'; return; }
+    const canScroll = body.scrollHeight - body.clientHeight > 24;
+    const nearBottom = body.scrollTop + body.clientHeight >= body.scrollHeight - 24;
+    hint.style.display = (canScroll && !nearBottom) ? 'flex' : 'none';
   }
   function switchTab(el, targetId){
     el.parentElement.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
@@ -1002,12 +1338,17 @@
       document.getElementById(id).style.display = (id===targetId)?'block':'none';
     });
   }
-  function addLuckyRecord(name){
+  function addLuckyRecord(name, prizeId){
     const list = document.getElementById('luckyRecentList');
     if(!list) return;
     const row = document.createElement('div');
     row.className = 'mini-row';
-    row.innerHTML = '<span class="mini-time">刚刚</span><span class="mini-name">'+name+'</span><span class="mini-status">已到账</span>';
+    if(name === '实物礼品' && prizeId){
+      row.dataset.prizeId = prizeId;
+      row.innerHTML = '<span class="mini-time">刚刚</span><span class="mini-name">实物礼品</span><button class="mini-register-btn" onclick="openRegModal(\''+prizeId+'\')">去登记</button>';
+    } else {
+      row.innerHTML = '<span class="mini-time">刚刚</span><span class="mini-name">'+name+'</span><span class="mini-status">已到账</span>';
+    }
     list.insertBefore(row, list.firstChild);
   }
 
@@ -1047,10 +1388,12 @@
     const m = Math.floor((dailyRemain%3600)/60);
     const s = dailyRemain%60;
     const text = String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
-    const el1 = document.getElementById('homeDailyCd');
+    const el1 = document.getElementById('claimDailyCd');
     const el2 = document.getElementById('dailyCdText');
-    if(el1) el1.textContent = text;
+    const el3 = document.getElementById('homeDailyCd');
+    if(el1) el1.textContent = text+'后重新统计';
     if(el2) el2.textContent = text;
+    if(el3) el3.textContent = text;
   }, 1000);
 
   const prizes = [
@@ -1059,14 +1402,31 @@
     {em:'🎁',t:'实物礼品'},{em:'🧧',t:'188元红包'},{em:'🧧',t:'888元红包'}
   ];
   let drawing=false;
+  function syncDrawChances(remain){
+    const chanceEl = document.querySelector('.draw-chance .num');
+    if(chanceEl) chanceEl.textContent = remain;
+    const badge = document.getElementById('claimDrawChances');
+    if(badge) badge.textContent = '剩余'+remain+'次机会';
+    const homeBadge = document.getElementById('homeDrawChances');
+    if(homeBadge) homeBadge.textContent = '剩'+remain+'次';
+    const statBadge = document.getElementById('mystatDrawChances');
+    if(statBadge) statBadge.textContent = '剩余'+remain+'次';
+    if(remain<=0){
+      const qBtn = document.getElementById('quickDrawBtn');
+      if(qBtn){ qBtn.disabled=true; qBtn.textContent='暂无机会'; }
+    }
+  }
+  function getRemainChances(){
+    const chanceEl = document.querySelector('.draw-chance .num');
+    return chanceEl ? parseInt(chanceEl.textContent) : 0;
+  }
   function doDraw(){
     if(drawing) return;
     const chanceBox = document.querySelector('.draw-chance');
-    const chanceEl = document.querySelector('.draw-chance .num');
-    let chances = parseInt(chanceEl.textContent);
+    let chances = getRemainChances();
     if(chances<=0){
       showToast('😅','暂无抽奖机会','完成经验值阶梯可获得更多机会');
-      chanceBox.classList.remove('shake'); void chanceBox.offsetWidth; chanceBox.classList.add('shake');
+      if(chanceBox){ chanceBox.classList.remove('shake'); void chanceBox.offsetWidth; chanceBox.classList.add('shake'); }
       return;
     }
     drawing = true;
@@ -1082,19 +1442,51 @@
         const finalIdx = Math.floor(Math.random()*prizes.length);
         cells.forEach(c=>c.classList.remove('hit'));
         cells[finalIdx].classList.add('hit');
-        const remainChances = chances-1;
-        chanceEl.textContent = remainChances;
-        const homeStat = document.getElementById('homeDrawChances');
-        if(homeStat) homeStat.textContent = '剩'+remainChances+'次';
+        syncDrawChances(chances-1);
         drawing=false;
         showToast(prizes[finalIdx].em,'恭喜获得', prizes[finalIdx].t);
-        addLuckyRecord(prizes[finalIdx].t);
+        if(prizes[finalIdx].t === '实物礼品'){
+          const prizeId = 'phy'+Date.now();
+          addLuckyRecord(prizes[finalIdx].t, prizeId);
+          addPhysicalPrizeRow(prizeId);
+        } else {
+          addLuckyRecord(prizes[finalIdx].t);
+        }
+        updateClaimUI();
         return;
       }
       speed += 8; // ease out — slows toward the end for a "landing" feel
       setTimeout(spin, speed);
     };
     spin();
+  }
+  function quickDraw(){
+    // 奖励中心里的简化抽奖：跟幸运抽奖面板共用同一份机会数和奖池，只是不跑宫格动画，抽完直接出结果
+    if(drawing) return;
+    let chances = getRemainChances();
+    if(chances<=0){
+      showToast('😅','暂无抽奖机会','完成经验值阶梯可获得更多机会');
+      return;
+    }
+    drawing = true;
+    const btn = document.getElementById('quickDrawBtn');
+    if(btn){ btn.disabled = true; btn.textContent = '抽奖中…'; }
+    setTimeout(()=>{
+      const finalIdx = Math.floor(Math.random()*prizes.length);
+      const remain = chances-1;
+      syncDrawChances(remain);
+      drawing = false;
+      if(btn && remain>0){ btn.disabled=false; btn.textContent='抽一次'; }
+      showToast(prizes[finalIdx].em,'恭喜获得', prizes[finalIdx].t);
+      if(prizes[finalIdx].t === '实物礼品'){
+        const prizeId = 'phy'+Date.now();
+        addLuckyRecord(prizes[finalIdx].t, prizeId);
+        addPhysicalPrizeRow(prizeId);
+      } else {
+        addLuckyRecord(prizes[finalIdx].t);
+      }
+      updateClaimUI();
+    }, 500);
   }
   function showToast(em,t1,t2){
     document.getElementById('toastEm').textContent=em;
@@ -1104,6 +1496,9 @@
     el.classList.add('show');
     setTimeout(()=>el.classList.remove('show'), 1800);
   }
+  checkEmptyClaimList(); // 页面加载时先按实际内容判断各分组是否要显示（比如幸运抽奖待登记这组现在默认是空的）
+  document.querySelectorAll('.panel-body').forEach(pb => pb.addEventListener('scroll', updateScrollHint)); // 每个弹窗滑动时都实时判断是否已经到底
+  updateClaimUI(); // 页面加载时先按实际按钮数量算一遍，避免和写死的初始文案对不上
 </script>
 </body>
 </html>
