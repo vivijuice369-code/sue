@@ -1229,12 +1229,7 @@
   .mini-time{color:var(--dp-ink-faint); flex-shrink:0;}
   .mini-name{flex:1; min-width:0;}
   .mini-status{color:var(--dp-jade); font-size:10.5px; flex-shrink:0;}
-  .mini-register-btn{
-    font-size:10px; font-weight:700; color:var(--dp-gold); background:transparent;
-    border:1px solid var(--dp-gold); border-radius:14px; padding:3px 10px; cursor:pointer; flex-shrink:0;
-    transition:transform .15s;
-  }
-  .mini-register-btn:active{transform:scale(.94);}
+  .mini-status.miss{color:var(--dp-ink-faint);}
 
   /* ---- rules ---- */
   .rule-sec{margin-bottom:18px;}
@@ -1304,6 +1299,30 @@
   }
   .admin-input::placeholder{color:#b9c0cd;}
   .admin-input:disabled, .admin-select:disabled{background:#f5f6f9; color:#b9c0cd;}
+  .admin-multiselect{position:relative;}
+  .admin-ms-box{
+    width:100%; min-height:36px; padding:5px 30px 5px 8px; border:1px solid #d7dde8; border-radius:6px;
+    background:#fff; display:flex; flex-wrap:wrap; gap:6px; align-items:center; cursor:pointer; position:relative;
+  }
+  .admin-ms-box.open{border-color:#2f7dfa;}
+  .admin-ms-tags{display:flex; flex-wrap:wrap; gap:6px; flex:1;}
+  .admin-ms-tag{
+    display:inline-flex; align-items:center; gap:5px; background:#f4f8ff; color:#2f7dfa; font-size:12px;
+    padding:3px 6px 3px 10px; border-radius:5px; white-space:nowrap;
+  }
+  .admin-ms-tag-x{cursor:pointer; font-size:13px; color:#8ab4f8; line-height:1;}
+  .admin-ms-tag-x:hover{color:#2f7dfa;}
+  .admin-ms-caret{position:absolute; right:10px; top:50%; transform:translateY(-50%); color:#b9c0cd; font-size:13px; pointer-events:none;}
+  .admin-ms-dropdown{
+    position:absolute; left:0; right:0; top:calc(100% + 4px); background:#fff; border:1px solid #e7ebf2; border-radius:8px;
+    box-shadow:0 8px 24px rgba(20,30,50,.12); z-index:20; max-height:260px; overflow-y:auto; padding:6px 0;
+  }
+  .admin-ms-option{
+    padding:9px 14px; font-size:12.5px; color:#1c2b3a; cursor:pointer; display:flex; align-items:center; justify-content:space-between;
+  }
+  .admin-ms-option:hover{background:#f7f9fc;}
+  .admin-ms-option.selected{color:#2f7dfa; font-weight:700;}
+  .admin-ms-check{color:#2f7dfa; font-weight:700;}
   .admin-textarea{
     width:100%; padding:9px 12px; border:1px solid #d7dde8; border-radius:6px; font-size:12.5px; color:#1c2b3a;
     min-height:64px; resize:vertical; font-family:inherit; line-height:1.6;
@@ -1321,7 +1340,6 @@
   .admin-table .admin-input{width:90px; display:inline-block; padding:5px 8px; text-align:center;}
   .admin-table .admin-input.wide{width:150px;}
   .admin-table .admin-input.name{width:100px; text-align:left;}
-  .admin-table .admin-select-cell{width:120px; padding:5px 6px; border:1px solid #d7dde8; border-radius:6px; font-size:12px; color:#1c2b3a; background:#fff;}
   .admin-table .unit-select{width:56px; padding:5px 4px; border:1px solid #d7dde8; border-radius:6px; font-size:11.5px; color:#5b6577; background:#fff; margin-left:4px;}
   .admin-table-del{width:26px; height:26px; border-radius:6px; border:1px solid #ffd3d3; background:#fff5f5; color:#ff5b5b; cursor:pointer; font-size:13px; line-height:1;}
   .admin-add-row-btn{
@@ -1329,15 +1347,6 @@
     border:1px dashed #2f7dfa; background:#f4f8ff; color:#2f7dfa; font-size:12px; font-weight:600; cursor:pointer;
   }
   .admin-table .rangesep{margin:0 6px; color:#b9c0cd;}
-  .reward-slot{display:flex; flex-direction:column; gap:5px; align-items:flex-start; text-align:left;}
-  .reward-slot .admin-select-cell{width:104px;}
-  .reward-slot .value-unit{display:flex; gap:4px;}
-  .reward-slot .admin-input{width:70px;}
-  .reward-slot .desc-input{width:104px;}
-  .vip-level-select{width:70px; padding:5px 4px; border:1px solid #d7dde8; border-radius:6px; font-size:11.5px; color:#1c2b3a; background:#fff;}
-  .vip-days-input{width:52px !important; margin-left:4px;}
-  .reward-slot .vip-level-select{width:64px;}
-  .reward-slot .vip-days-input{width:42px !important;}
   .admin-input.admin-input-error{border-color:#ff5b5b; background:#fff5f5;}
   .admin-err{display:none; color:#ff5b5b; font-size:10.5px; margin-top:4px; text-align:left; line-height:1.4;}
   .admin-icon-upload{
@@ -1345,16 +1354,14 @@
     justify-content:center; font-size:18px; color:#b9c0cd; background:#fafbfc; cursor:pointer; margin:0 auto;
   }
   .lucky-prob{font-weight:700; color:#2f7dfa;}
-  .admin-readonly-box{background:#f7f9fc; border:1px solid #eef0f4; border-radius:8px; padding:16px 20px; margin-bottom:20px;}
-  .admin-readonly-box .title{font-size:12.5px; font-weight:700; color:#5b6577; margin-bottom:12px;}
-  .admin-readonly-grid{display:flex; gap:60px; margin-bottom:8px;}
-  .admin-readonly-grid .item .k{font-size:11px; color:#8b96ab; margin-bottom:4px;}
-  .admin-readonly-grid .item .v{font-size:20px; font-weight:700; color:#1c2b3a;}
-  .admin-readonly-box .note{font-size:10.5px; color:#b9c0cd; line-height:1.7;}
   .admin-radio-row, .admin-checkbox-row{display:flex; align-items:center; gap:22px; flex-wrap:wrap;}
   .admin-radio-item, .admin-checkbox-item{display:flex; align-items:center; gap:6px; font-size:12.5px; color:#1c2b3a; cursor:pointer;}
   .admin-radio-item input, .admin-checkbox-item input{accent-color:#2f7dfa; width:14px; height:14px;}
-  .admin-divider{grid-column:1/-1; border-top:1px dashed #eef0f4; margin:22px 0;}
+  .admin-audit-toggle{
+    display:flex; align-items:center; gap:16px; margin:-4px 0 14px; padding:8px 12px; background:#f7f9fc;
+    border:1px solid #eef0f4; border-radius:8px;
+  }
+  .admin-audit-label{font-size:12px; color:#5b6577; font-weight:600;}
   .admin-editor-toolbar{display:flex; flex-wrap:wrap; gap:10px; align-items:center; padding:9px 12px; border:1px solid #d7dde8; border-bottom:none; border-radius:6px 6px 0 0; background:#fafbfc; font-size:14px; color:#8b96ab;}
   .admin-editor-body{border:1px solid #d7dde8; border-radius:0 0 6px 6px; min-height:180px; padding:14px; font-size:12.5px; color:#b9c0cd;}
   .admin-editor-foot{display:flex; justify-content:space-between; font-size:10.5px; color:#b9c0cd; padding:6px 12px; border:1px solid #d7dde8; border-top:none; border-radius:0 0 6px 6px; margin-top:-1px;}
@@ -1492,11 +1499,11 @@
         <div class="pod rank3"><div class="avatar">👤</div><div class="pname">186****47</div><div class="pval">311,500</div><div class="base">3</div></div>
       </div>
       <div class="reward-zone-list">
-        <div class="rz"><span class="rz-range">第1名</span><span class="rz-reward">¥88,888+奖杯+至尊VIP+专属称号</span></div>
-        <div class="rz"><span class="rz-range">第2-3名</span><span class="rz-reward">¥18,888-38,888+VIP礼遇</span></div>
+        <div class="rz"><span class="rz-range">第1名</span><span class="rz-reward">¥88,888</span></div>
+        <div class="rz"><span class="rz-range">第2-3名</span><span class="rz-reward">¥18,888-38,888</span></div>
         <div class="rz"><span class="rz-range">第4-10名</span><span class="rz-reward">¥5,888</span></div>
         <div class="rz"><span class="rz-range">第11-30名</span><span class="rz-reward">¥1,888</span></div>
-        <div class="rz"><span class="rz-range">第31-100名</span><span class="rz-reward">¥888/优惠券礼包</span></div>
+        <div class="rz"><span class="rz-range">第31-100名</span><span class="rz-reward">¥888</span></div>
       </div>
       <div class="source-note">⏳ 活动结束后系统自动结算最终排名，届时请到本面板手动领取奖励，请留意站内信通知。</div>
       <div style="margin-top:18px;">
@@ -1534,7 +1541,7 @@
           <div class="dot">✓</div>
           <div class="lcard">
             <div class="lhead"><span class="lname">入门礼包</span><span class="lthresh">满 10,000经验值</span></div>
-            <div class="lreward">8元红包 + 专属优惠券</div>
+            <div class="lreward">8元红包</div>
             <div class="lfoot"><span>已领取 ✓</span><span>10,000/10,000</span></div>
             <div class="lprog-wrap"><div class="lprog-fill" style="width:100%"></div></div>
           </div>
@@ -1543,10 +1550,10 @@
           <div class="dot">✓</div>
           <div class="lcard">
             <div class="lhead"><span class="lname">进阶奖励</span><span class="lthresh">满 50,000经验值</span></div>
-            <div class="lreward">7天VIP专属体验 + 服务体验券</div>
+            <div class="lreward">88元红包</div>
             <div class="lfoot"><span>已达标 ✓</span><span>50,000/50,000</span></div>
             <div class="lprog-wrap"><div class="lprog-fill" style="width:100%"></div></div>
-            <button class="dp-claim-btn can" data-key="tier2-b" data-reward="7天VIP专属体验 + 服务体验券" data-tier="进阶奖励" data-sub="累计经验值满50,000" onclick="peakClaimByKey(&#39;tier2-b&#39;, this)">立即领取</button>
+            <button class="dp-claim-btn can" data-key="tier2-b" data-reward="88元红包" data-tier="进阶奖励" data-sub="累计经验值满50,000" onclick="peakClaimByKey(&#39;tier2-b&#39;, this)">立即领取</button>
           </div>
         </div>
         <div class="lstep done">
@@ -1563,7 +1570,7 @@
           <div class="dot">●</div>
           <div class="lcard">
             <div class="lhead"><span class="lname">精英奖励</span><span class="lthresh">满 300,000经验值</span></div>
-            <div class="lreward">VIP7资格7天 + 388元红包</div>
+            <div class="lreward">388元红包</div>
             <div class="lfoot"><span>还差 173,600</span><span>126,400/300,000</span></div>
             <div class="lprog-wrap"><div class="lprog-fill" style="width:42%"></div></div>
           </div>
@@ -1572,7 +1579,7 @@
           <div class="dot">🔒</div>
           <div class="lcard">
             <div class="lhead"><span class="lname">王者奖励</span><span class="lthresh">满 500,000经验值</span></div>
-            <div class="lreward">专属礼品 + 688元红包</div>
+            <div class="lreward">688元红包</div>
             <div class="lfoot"><span>还差 373,600</span><span>126,400/500,000</span></div>
             <div class="lprog-wrap"><div class="lprog-fill" style="width:25%"></div></div>
           </div>
@@ -1581,7 +1588,7 @@
           <div class="dot">🔒</div>
           <div class="lcard">
             <div class="lhead"><span class="lname">至尊奖励</span><span class="lthresh">满 1,000,000经验值</span></div>
-            <div class="lreward">神秘大奖 + 至尊VIP身份</div>
+            <div class="lreward">1,888元红包</div>
             <div class="lfoot"><span>还差 873,600</span><span>126,400/1,000,000</span></div>
             <div class="lprog-wrap"><div class="lprog-fill" style="width:13%"></div></div>
           </div>
@@ -1618,7 +1625,7 @@
         <div class="mini-row"><span class="mini-time">08-23 14:20</span><span class="mini-name">58元红包</span><span class="mini-status">已到账</span></div>
         <div class="mini-row"><span class="mini-time">08-22 09:05</span><span class="mini-name">优惠券</span><span class="mini-status">已到账</span></div>
       </div>
-      <div class="source-note">💡 现金/优惠券自动到账；实物礼品需登记收货信息，请留意站内信通知完成兑换。</div>
+      <div class="source-note">💡 奖励为现金红包，审核通过后实时自动到账。</div>
     </div>
   </div>
 
@@ -1645,7 +1652,7 @@
       </div>
       <div class="rule-sec">
         <h3>🏆 总榜怎么排</h3>
-        <p>按活动期间累计有效VIP经验值从高到低排名。不止前3名有奖——共设5个获奖区间，第1名到第100名均有机会获奖。冠军除现金奖励外，另送专属奖杯、至尊VIP和专属称号。</p>
+        <p>按活动期间累计有效VIP经验值从高到低排名。不止前3名有奖——共设5个获奖区间，第1名到第100名均有机会获奖。</p>
       </div>
       <div class="rule-sec">
         <h3>🎯 阶梯奖励</h3>
@@ -1653,14 +1660,14 @@
       </div>
       <div class="rule-sec">
         <h3>🎁 幸运抽奖</h3>
-        <p>经验值达到门槛即可参与抽奖，经验值越高，抽奖机会越多。奖品含现金红包、VIP体验券、实物礼品及神秘大奖，人人都有机会获得大奖。</p>
+        <p>经验值达到门槛即可参与抽奖，经验值越高，抽奖机会越多。奖池含不同金额档位的现金红包，每次抽奖都有机会获得大奖。</p>
       </div>
       <div class="rule-sec">
         <h3>💰 奖励什么时候到账</h3>
         <ul>
           <li><b>总榜排名奖励</b>：活动结束、最终排名公布后方可领取，需进入总榜面板手动点击"立即领取"，系统不会自动发放</li>
           <li><b>阶梯奖励</b>：无需等待活动结束，达标后即可随时领取，领取后立即到账；活动结束后页面仍会保留一段时间，未领取的奖励可以补领，但页面下架后将无法找回，请及时领取</li>
-          <li><b>幸运抽奖</b>：开奖结果即时可见，现金红包/VIP体验券即时到账；抽中实物礼品或神秘大奖需联系客服领取</li>
+          <li><b>幸运抽奖</b>：开奖结果即时可见，现金红包实时到账</li>
         </ul>
       </div>
       <div class="rule-foot">本活动最终解释权归平台所有</div>
@@ -1705,13 +1712,13 @@
       </div>
 
       <div id="pendingList" class="records-list" hidden>
-        <div class="record-item pending-item" data-target="peak-detail" data-amount="0" data-category="巅峰赛" data-peak-key="tier2-b" data-reward-text="7天VIP专属体验 + 服务体验券">
+        <div class="record-item pending-item" data-target="peak-detail" data-amount="0" data-category="巅峰赛" data-peak-key="tier2-b" data-reward-text="88元红包">
           <div class="record-top">
             <span class="record-name">巅峰争霸赛 · 进阶奖励</span>
           </div>
           <div class="record-bottom pending-bottom">
             <div class="pending-info">
-              <span class="record-amount">7天VIP专属体验 + 服务体验券</span>
+              <span class="record-amount">88元红包</span>
               <span class="record-date">达标条件 累计经验值满50,000</span>
             </div>
             <button class="claim-btn" type="button">立即领取</button>
@@ -1839,7 +1846,7 @@
               <span class="record-status claimed">已领取</span>
             </div>
             <div class="record-bottom">
-              <span class="record-amount">8元红包 + 专属优惠券</span>
+              <span class="record-amount">8元红包</span>
               <span class="record-date">发放时间 09月05日 09:12</span>
             </div>
           </div>
@@ -1968,11 +1975,11 @@
         <button class="dp-claim-btn can" data-key="rank-ended" data-reward="¥1,888" onclick="peakClaimByKeyEnded('rank-ended', this)">立即领取</button>
       </div>
       <div class="reward-zone-list">
-        <div class="rz"><span class="rz-range">第1名</span><span class="rz-reward">¥88,888+奖杯+至尊VIP+专属称号</span></div>
-        <div class="rz"><span class="rz-range">第2-3名</span><span class="rz-reward">¥18,888-38,888+VIP礼遇</span></div>
+        <div class="rz"><span class="rz-range">第1名</span><span class="rz-reward">¥88,888</span></div>
+        <div class="rz"><span class="rz-range">第2-3名</span><span class="rz-reward">¥18,888-38,888</span></div>
         <div class="rz"><span class="rz-range">第4-10名</span><span class="rz-reward">¥5,888</span></div>
         <div class="rz"><span class="rz-range">第11-30名</span><span class="rz-reward">¥1,888</span></div>
-        <div class="rz"><span class="rz-range">第31-100名</span><span class="rz-reward">¥888/优惠券礼包</span></div>
+        <div class="rz"><span class="rz-range">第31-100名</span><span class="rz-reward">¥888</span></div>
       </div>
     </div>
   </div>
@@ -1990,7 +1997,7 @@
           <div class="dot">✓</div>
           <div class="lcard">
             <div class="lhead"><span class="lname">入门礼包</span><span class="lthresh">满 10,000经验值</span></div>
-            <div class="lreward">8元红包 + 专属优惠券</div>
+            <div class="lreward">8元红包</div>
             <div class="lfoot"><span>已领取 ✓</span><span>10,000/10,000</span></div>
           </div>
         </div>
@@ -1998,7 +2005,7 @@
           <div class="dot">✓</div>
           <div class="lcard">
             <div class="lhead"><span class="lname">进阶奖励</span><span class="lthresh">满 50,000经验值</span></div>
-            <div class="lreward">7天VIP专属体验 + 服务体验券</div>
+            <div class="lreward">88元红包</div>
             <div class="lfoot"><span>已领取 ✓</span><span>50,000/50,000</span></div>
           </div>
         </div>
@@ -2015,7 +2022,7 @@
           <div class="dot">✕</div>
           <div class="lcard">
             <div class="lhead"><span class="lname">精英奖励</span><span class="lthresh">满 300,000经验值</span></div>
-            <div class="lreward">VIP7资格7天 + 388元红包</div>
+            <div class="lreward">388元红包</div>
             <div class="lfoot"><span>未达标</span><span>126,400/300,000</span></div>
           </div>
         </div>
@@ -2023,7 +2030,7 @@
           <div class="dot">✕</div>
           <div class="lcard">
             <div class="lhead"><span class="lname">王者奖励</span><span class="lthresh">满 500,000经验值</span></div>
-            <div class="lreward">专属礼品 + 688元红包</div>
+            <div class="lreward">688元红包</div>
             <div class="lfoot"><span>未达标</span><span>126,400/500,000</span></div>
           </div>
         </div>
@@ -2031,7 +2038,7 @@
           <div class="dot">✕</div>
           <div class="lcard">
             <div class="lhead"><span class="lname">至尊奖励</span><span class="lthresh">满 1,000,000经验值</span></div>
-            <div class="lreward">神秘大奖 + 至尊VIP身份</div>
+            <div class="lreward">1,888元红包</div>
             <div class="lfoot"><span>未达标</span><span>126,400/1,000,000</span></div>
           </div>
         </div>
@@ -2083,7 +2090,7 @@
       </div>
       <div class="rule-sec">
         <h3>🏆 总榜怎么排</h3>
-        <p>按活动期间累计有效VIP经验值从高到低排名。不止前3名有奖——共设5个获奖区间，第1名到第100名均有机会获奖。冠军除现金奖励外，另送专属奖杯、至尊VIP和专属称号。</p>
+        <p>按活动期间累计有效VIP经验值从高到低排名。不止前3名有奖——共设5个获奖区间，第1名到第100名均有机会获奖。</p>
       </div>
       <div class="rule-sec">
         <h3>🎯 阶梯奖励</h3>
@@ -2091,14 +2098,14 @@
       </div>
       <div class="rule-sec">
         <h3>🎁 幸运抽奖</h3>
-        <p>经验值达到门槛即可参与抽奖，经验值越高，抽奖机会越多。奖品含现金红包、VIP体验券、实物礼品及神秘大奖，人人都有机会获得大奖。</p>
+        <p>经验值达到门槛即可参与抽奖，经验值越高，抽奖机会越多。奖池含不同金额档位的现金红包，每次抽奖都有机会获得大奖。</p>
       </div>
       <div class="rule-sec">
         <h3>💰 奖励什么时候到账</h3>
         <ul>
           <li><b>总榜排名奖励</b>：活动结束、最终排名公布后方可领取，需进入总榜面板手动点击"立即领取"，系统不会自动发放</li>
           <li><b>阶梯奖励</b>：无需等待活动结束，达标后即可随时领取，领取后立即到账；活动结束后页面仍会保留一段时间，未领取的奖励可以补领，但页面下架后将无法找回，请及时领取</li>
-          <li><b>幸运抽奖</b>：开奖结果即时可见，现金红包/VIP体验券即时到账；抽中实物礼品或神秘大奖需联系客服领取</li>
+          <li><b>幸运抽奖</b>：开奖结果即时可见，现金红包实时到账</li>
         </ul>
       </div>
       <div class="rule-foot">本活动最终解释权归平台所有</div>
@@ -2266,7 +2273,7 @@
               <span class="record-status claimed">已领取</span>
             </div>
             <div class="record-bottom">
-              <span class="record-amount">8元红包 + 专属优惠券</span>
+              <span class="record-amount">8元红包</span>
               <span class="record-date">发放时间 09月05日 09:12</span>
             </div>
           </div>
@@ -2276,7 +2283,7 @@
               <span class="record-status claimed">已领取</span>
             </div>
             <div class="record-bottom">
-              <span class="record-amount">7天VIP专属体验 + 服务体验券</span>
+              <span class="record-amount">88元红包</span>
               <span class="record-date">发放时间 09月12日 14:30</span>
             </div>
           </div>
@@ -2317,6 +2324,7 @@
       <li>活动共14天，全平台自动开放，<b>无需手动报名</b>，产生有效VIP经验值即自动计入累计成绩。</li>
       <li>累计有效VIP经验值达到10,000，自动解锁排行榜排名展示及各项奖励评选资格；未达标期间经验值仍正常累计，达标后自动解锁。</li>
       <li>有效经验值计算口径与平台现有规则一致，撤单/退款订单不计入。</li>
+      <li><b>活动正式开始前设有预热阶段</b>（对应后台"活动预热日期"配置）：预热期内活动卡片、详情页UI已按正式上线的展示效果提前对客户可见，方便预览页面内容，但<b>此时不可参与活动</b>（不计入经验值、不可领取任何奖励），需等到活动正式开始日期到达后才正式开放参与。</li>
     </ul>
   </div>
 
@@ -2339,7 +2347,7 @@
 
   <div class="dev-section">
     <h3><span class="num">4</span>幸运抽奖</h3>
-    <p>累计VIP经验值达到最低门槛即可参与抽奖，抽奖机会数随经验值档位累加。奖品含现金红包、VIP体验券、实物礼品及神秘大奖，机会数为0时面板内抽奖按钮置灰。现金/VIP体验券类中奖结果实时到账；抽中实物礼品或神秘大奖时不走自助登记，展示"联系客服领取"按钮，点击后跳转在线客服，由客服人工核实身份并安排发放。</p>
+    <p>累计VIP经验值达到最低门槛即可参与抽奖，抽奖机会数随经验值档位累加。奖池含不同金额档位的现金红包，同时设有"谢谢惠顾"（未中奖）选项，机会数为0时面板内抽奖按钮置灰。中奖结果实时到账，无需人工审核或线下登记。</p>
   </div>
 
   <div class="dev-section">
@@ -2350,7 +2358,7 @@
     <ul>
       <li>「阶梯达标奖励」里的"进阶奖励""里程碑奖励"，同时也是「待领取」页签里的两条真实记录。</li>
       <li>不管从「待领取」页签点"立即领取"，还是从详情页阶梯奖励面板里点，都会触发同一个领取函数：详情页卡片状态、列表待领取行、领取记录、所有红点数字都会同步刷新。</li>
-      <li>巅峰赛的奖励类型不统一（红包/VIP体验券/实物礼品），领取记录展示真实的奖励描述文字，不强制套用系统默认的"+X.XX U"纯数字格式。</li>
+      <li>巅峰赛的奖励统一为现金红包，领取记录直接展示到账金额，不需要额外的类型判断逻辑。</li>
       <li>点击活动列表里的巅峰赛卡片，直接进入完整详情子页面（总榜/阶梯奖励/幸运抽奖/规则），详情页顶部有独立的返回箭头，可退回活动列表。</li>
     </ul>
   </div>
@@ -2390,7 +2398,27 @@
 
         <div class="admin-row">
           <div class="admin-label"><span class="req">*</span>活动类型</div>
-          <div class="admin-field"><select class="admin-select"><option>巅峰争霸赛（排行榜+阶梯任务模版）</option></select></div>
+          <div class="admin-field">
+            <div class="admin-multiselect">
+              <div class="admin-ms-box" id="typeMsBox" onclick="toggleTypeDropdown(event)">
+                <div class="admin-ms-tags" id="typeMsTags">
+                  <span class="admin-ms-tag" data-value="巅峰赛">巅峰赛<span class="admin-ms-tag-x" onclick="removeTypeTag(event, this)">×</span></span>
+                </div>
+                <span class="admin-ms-caret">⌄</span>
+              </div>
+              <div class="admin-ms-dropdown" id="typeMsDropdown" style="display:none;">
+                <div class="admin-ms-option selected" data-value="巅峰赛" onclick="toggleTypeOption(event, this)">巅峰赛<span class="admin-ms-check">✓</span></div>
+                <div class="admin-ms-option" data-value="砸金蛋" onclick="toggleTypeOption(event, this)">砸金蛋</div>
+                <div class="admin-ms-option" data-value="多语言" onclick="toggleTypeOption(event, this)">多语言</div>
+                <div class="admin-ms-option" data-value="体育赛事" onclick="toggleTypeOption(event, this)">体育赛事</div>
+                <div class="admin-ms-option" data-value="亏损返现" onclick="toggleTypeOption(event, this)">亏损返现</div>
+                <div class="admin-ms-option" data-value="流水活动" onclick="toggleTypeOption(event, this)">流水活动</div>
+                <div class="admin-ms-option" data-value="彩票娱乐" onclick="toggleTypeOption(event, this)">彩票娱乐</div>
+                <div class="admin-ms-option" data-value="真人视讯" onclick="toggleTypeOption(event, this)">真人视讯</div>
+                <div class="admin-ms-option" data-value="电子游戏" onclick="toggleTypeOption(event, this)">电子游戏</div>
+              </div>
+            </div>
+          </div>
         </div>
         <div class="admin-row">
           <div class="admin-label"><span class="req">*</span>活动名称</div>
@@ -2407,13 +2435,6 @@
           </div>
         </div>
         <div class="admin-row">
-          <div class="admin-label"><span class="req">*</span>活动简介文案</div>
-          <div class="admin-field">
-            <input class="admin-input" value="累计有效VIP经验值，冲击巅峰排名，解锁全部奖励">
-            <span class="admin-count">24 / 100</span>
-          </div>
-        </div>
-        <div class="admin-row">
           <div class="admin-label"><span class="req">*</span>活动起止日期</div>
           <div class="admin-field admin-inline">
             <div class="admin-daterange">
@@ -2426,14 +2447,12 @@
         </div>
         <div class="admin-row">
           <div class="admin-label">活动预热日期</div>
-          <div class="admin-field"><select class="admin-select"><option>2026-09-03（提前2天预热展示）</option></select></div>
-        </div>
-        <div class="admin-row">
-          <div class="admin-label"><span class="req">*</span>本活动统计范围</div>
-          <div class="admin-field admin-inline">
-            <select class="admin-select"><option>全部游戏分类</option></select>
-            <select class="admin-select"><option>请选择游戏场馆，可多选</option></select>
-          </div>
+          <div class="admin-field"><select class="admin-select">
+            <option>不预热</option>
+            <option selected>提前一日预览</option>
+            <option>提前三日预览</option>
+            <option>提前七日预览</option>
+          </select></div>
         </div>
         <div class="admin-row">
           <div class="admin-label">距下架保留时长</div>
@@ -2445,24 +2464,22 @@
         </div>
 
         <div class="admin-section-title" style="margin-top:6px;">经验值阶梯达标奖励设置</div>
+        <div class="admin-audit-toggle">
+          <span class="admin-audit-label">发放审核形式：</span>
+          <label class="admin-radio-item"><input type="radio" name="audit-tier" checked>自动审核</label>
+          <label class="admin-radio-item"><input type="radio" name="audit-tier">人工审核</label>
+          <span class="admin-audit-label" style="margin-left:10px;">提取流水倍数要求：</span>
+          <input class="admin-input" type="number" min="0" step="0.1" style="width:70px;" value="1">
+        </div>
         <table class="admin-table">
-          <tr><th>档位名称</th><th>达标经验值门槛</th><th>主奖励类型</th><th>主奖励数值</th><th>主奖励说明</th><th>副奖励（可选）</th><th>操作</th></tr>
+          <tr><th>档位名称</th><th>达标经验值门槛</th><th>奖励金额（元）</th><th>操作</th></tr>
           <tr>
             <td><input class="admin-input name" value="入门礼包"></td>
             <td>
               <input class="admin-input" type="number" min="10000" value="10000" oninput="validateTierThresholds(this)">
               <div class="admin-err"></div>
             </td>
-            <td><select class="admin-select-cell" onchange="onRewardTypeChange(this)"><option selected>现金红包</option><option>实物礼品</option><option>VIP体验券</option></select></td>
-            <td><input class="admin-input" type="number" value="8"><select class="unit-select"><option selected>元</option></select></td>
-            <td><input class="admin-input wide" value=""></td>
-            <td>
-              <div class="reward-slot">
-                <select class="admin-select-cell" onchange="onSubRewardTypeChange(this)"><option selected>无</option><option>现金红包</option><option>实物礼品</option><option>VIP体验券</option></select>
-                <div class="value-unit"><input class="admin-input" type="number" value="0" disabled><select class="unit-select" disabled><option selected>—</option></select></div>
-                <input class="admin-input desc-input" placeholder="副奖励说明" value="专属优惠券">
-              </div>
-            </td>
+            <td><input class="admin-input" type="number" value="8" min="0.01" step="0.01" onchange="restrictMoneyInput(this)"></td>
             <td><button class="admin-table-del" onclick="adminDelRow(this)">✕</button></td>
           </tr>
           <tr>
@@ -2471,16 +2488,7 @@
               <input class="admin-input" type="number" min="10000" value="50000" oninput="validateTierThresholds(this)">
               <div class="admin-err"></div>
             </td>
-            <td><select class="admin-select-cell" onchange="onRewardTypeChange(this)"><option>现金红包</option><option>实物礼品</option><option selected>VIP体验券</option></select></td>
-            <td><select class="admin-select-cell vip-level-select"><option>VIP1</option><option>VIP2</option><option selected>VIP3</option><option>VIP4</option><option>VIP5</option><option>VIP6</option><option>VIP7</option><option>VIP8</option><option>VIP9</option><option>VIP10</option></select><input class="admin-input vip-days-input" type="number" placeholder="天数" value="7"></td>
-            <td><input class="admin-input wide" value="服务体验券"></td>
-            <td>
-              <div class="reward-slot">
-                <select class="admin-select-cell" onchange="onSubRewardTypeChange(this)"><option selected>无</option><option>现金红包</option><option>实物礼品</option><option>VIP体验券</option></select>
-                <div class="value-unit"><input class="admin-input" type="number" value="0" disabled><select class="unit-select" disabled><option selected>—</option></select></div>
-                <input class="admin-input desc-input" placeholder="副奖励说明" value="">
-              </div>
-            </td>
+            <td><input class="admin-input" type="number" value="88" min="0.01" step="0.01" onchange="restrictMoneyInput(this)"></td>
             <td><button class="admin-table-del" onclick="adminDelRow(this)">✕</button></td>
           </tr>
           <tr>
@@ -2489,16 +2497,7 @@
               <input class="admin-input" type="number" min="10000" value="100000" oninput="validateTierThresholds(this)">
               <div class="admin-err"></div>
             </td>
-            <td><select class="admin-select-cell" onchange="onRewardTypeChange(this)"><option selected>现金红包</option><option>实物礼品</option><option>VIP体验券</option></select></td>
-            <td><input class="admin-input" type="number" value="188"><select class="unit-select"><option selected>元</option></select></td>
-            <td><input class="admin-input wide" value=""></td>
-            <td>
-              <div class="reward-slot">
-                <select class="admin-select-cell" onchange="onSubRewardTypeChange(this)"><option selected>无</option><option>现金红包</option><option>实物礼品</option><option>VIP体验券</option></select>
-                <div class="value-unit"><input class="admin-input" type="number" value="0" disabled><select class="unit-select" disabled><option selected>—</option></select></div>
-                <input class="admin-input desc-input" placeholder="副奖励说明" value="">
-              </div>
-            </td>
+            <td><input class="admin-input" type="number" value="188" min="0.01" step="0.01" onchange="restrictMoneyInput(this)"></td>
             <td><button class="admin-table-del" onclick="adminDelRow(this)">✕</button></td>
           </tr>
           <tr>
@@ -2507,16 +2506,7 @@
               <input class="admin-input" type="number" min="10000" value="300000" oninput="validateTierThresholds(this)">
               <div class="admin-err"></div>
             </td>
-            <td><select class="admin-select-cell" onchange="onRewardTypeChange(this)"><option selected>现金红包</option><option>实物礼品</option><option>VIP体验券</option></select></td>
-            <td><input class="admin-input" type="number" value="388"><select class="unit-select"><option selected>元</option></select></td>
-            <td><input class="admin-input wide" value=""></td>
-            <td>
-              <div class="reward-slot">
-                <select class="admin-select-cell" onchange="onSubRewardTypeChange(this)"><option>无</option><option>现金红包</option><option>实物礼品</option><option selected>VIP体验券</option></select>
-                <div class="value-unit"><select class="admin-select-cell vip-level-select"><option>VIP1</option><option>VIP2</option><option>VIP3</option><option>VIP4</option><option>VIP5</option><option>VIP6</option><option selected>VIP7</option><option>VIP8</option><option>VIP9</option><option>VIP10</option></select><input class="admin-input vip-days-input" type="number" placeholder="天数" value="7"></div>
-                <input class="admin-input desc-input" placeholder="副奖励说明" value="VIP7资格7天">
-              </div>
-            </td>
+            <td><input class="admin-input" type="number" value="388" min="0.01" step="0.01" onchange="restrictMoneyInput(this)"></td>
             <td><button class="admin-table-del" onclick="adminDelRow(this)">✕</button></td>
           </tr>
           <tr>
@@ -2525,16 +2515,7 @@
               <input class="admin-input" type="number" min="10000" value="500000" oninput="validateTierThresholds(this)">
               <div class="admin-err"></div>
             </td>
-            <td><select class="admin-select-cell" onchange="onRewardTypeChange(this)"><option selected>现金红包</option><option>实物礼品</option><option>VIP体验券</option></select></td>
-            <td><input class="admin-input" type="number" value="688"><select class="unit-select"><option selected>元</option></select></td>
-            <td><input class="admin-input wide" value=""></td>
-            <td>
-              <div class="reward-slot">
-                <select class="admin-select-cell" onchange="onSubRewardTypeChange(this)"><option>无</option><option>现金红包</option><option selected>实物礼品</option><option>VIP体验券</option></select>
-                <div class="value-unit"><input class="admin-input" type="number" value="0" disabled><select class="unit-select" disabled><option selected>—</option></select></div>
-                <input class="admin-input desc-input" placeholder="副奖励说明" value="专属礼品实物">
-              </div>
-            </td>
+            <td><input class="admin-input" type="number" value="688" min="0.01" step="0.01" onchange="restrictMoneyInput(this)"></td>
             <td><button class="admin-table-del" onclick="adminDelRow(this)">✕</button></td>
           </tr>
           <tr>
@@ -2543,170 +2524,124 @@
               <input class="admin-input" type="number" min="10000" value="1000000" oninput="validateTierThresholds(this)">
               <div class="admin-err"></div>
             </td>
-            <td><select class="admin-select-cell" onchange="onRewardTypeChange(this)"><option>现金红包</option><option selected>实物礼品</option><option>VIP体验券</option></select></td>
-            <td><input class="admin-input" type="number" value="0" disabled><select class="unit-select" disabled><option selected>—</option></select></td>
-            <td><input class="admin-input wide" value="神秘大奖"></td>
-            <td>
-              <div class="reward-slot">
-                <select class="admin-select-cell" onchange="onSubRewardTypeChange(this)"><option>无</option><option>现金红包</option><option>实物礼品</option><option selected>VIP体验券</option></select>
-                <div class="value-unit"><select class="admin-select-cell vip-level-select"><option>VIP1</option><option>VIP2</option><option>VIP3</option><option>VIP4</option><option>VIP5</option><option>VIP6</option><option>VIP7</option><option>VIP8</option><option>VIP9</option><option selected>VIP10</option></select><input class="admin-input vip-days-input" type="number" placeholder="天数" value="30"></div>
-                <input class="admin-input desc-input" placeholder="副奖励说明" value="至尊VIP身份">
-              </div>
-            </td>
+            <td><input class="admin-input" type="number" value="1888" min="0.01" step="0.01" onchange="restrictMoneyInput(this)"></td>
             <td><button class="admin-table-del" onclick="adminDelRow(this)">✕</button></td>
           </tr>
         </table>
         <button class="admin-add-row-btn" type="button" onclick="adminAddRow(this)">＋ 新增档位</button>
 
         <div class="admin-section-title">总榜排名奖励区间设置</div>
-        <table class="admin-table">
-          <tr><th>起始名次</th><th>结束名次</th><th>主奖励类型</th><th>主奖励数值</th><th>主奖励说明</th><th>副奖励（可选）</th><th>操作</th></tr>
+        <div class="admin-audit-toggle">
+          <span class="admin-audit-label">发放审核形式：</span>
+          <label class="admin-radio-item"><input type="radio" name="audit-rank" checked>自动审核</label>
+          <label class="admin-radio-item"><input type="radio" name="audit-rank">人工审核</label>
+          <span class="admin-audit-label" style="margin-left:10px;">提取流水倍数要求：</span>
+          <input class="admin-input" type="number" min="0" step="0.1" style="width:70px;" value="1">
+        </div>
+        <table class="admin-table" id="rankRangeTable">
+          <tr><th>起始名次</th><th>结束名次</th><th>奖励金额（元）</th><th>操作</th></tr>
           <tr>
-            <td><input class="admin-input" type="number" value="1" style="width:60px;"></td>
-            <td><input class="admin-input" type="number" value="1" style="width:60px;"></td>
-            <td><select class="admin-select-cell" onchange="onRewardTypeChange(this)"><option selected>现金红包</option><option>实物礼品</option><option>VIP体验券</option></select></td>
-            <td><input class="admin-input" type="number" value="88888"><select class="unit-select"><option selected>元</option></select></td>
-            <td><input class="admin-input wide" value="专属奖杯 + 专属称号"></td>
             <td>
-              <div class="reward-slot">
-                <select class="admin-select-cell" onchange="onSubRewardTypeChange(this)"><option>无</option><option>现金红包</option><option>实物礼品</option><option selected>VIP体验券</option></select>
-                <div class="value-unit"><select class="admin-select-cell vip-level-select"><option>VIP1</option><option>VIP2</option><option>VIP3</option><option>VIP4</option><option>VIP5</option><option>VIP6</option><option>VIP7</option><option>VIP8</option><option>VIP9</option><option selected>VIP10</option></select><input class="admin-input vip-days-input" type="number" placeholder="天数" value="30"></div>
-                <input class="admin-input desc-input" placeholder="副奖励说明" value="至尊VIP礼遇">
-              </div>
+              <input class="admin-input" type="number" value="1" style="width:60px;" oninput="validateRankRanges()">
+              <div class="admin-err"></div>
             </td>
+            <td><input class="admin-input" type="number" value="1" style="width:60px;" oninput="validateRankRanges()"></td>
+            <td><input class="admin-input" type="number" value="88888" min="0.01" step="0.01" onchange="restrictMoneyInput(this)"></td>
             <td><button class="admin-table-del" onclick="adminDelRow(this)">✕</button></td>
           </tr>
           <tr>
-            <td><input class="admin-input" type="number" value="2" style="width:60px;"></td>
-            <td><input class="admin-input" type="number" value="3" style="width:60px;"></td>
-            <td><select class="admin-select-cell" onchange="onRewardTypeChange(this)"><option selected>现金红包</option><option>实物礼品</option><option>VIP体验券</option></select></td>
-            <td><input class="admin-input" type="number" value="18888"><select class="unit-select"><option selected>元</option></select></td>
-            <td><input class="admin-input wide" value="最高38,888"></td>
             <td>
-              <div class="reward-slot">
-                <select class="admin-select-cell" onchange="onSubRewardTypeChange(this)"><option>无</option><option>现金红包</option><option>实物礼品</option><option selected>VIP体验券</option></select>
-                <div class="value-unit"><select class="admin-select-cell vip-level-select"><option>VIP1</option><option>VIP2</option><option>VIP3</option><option>VIP4</option><option>VIP5</option><option>VIP6</option><option>VIP7</option><option selected>VIP8</option><option>VIP9</option><option>VIP10</option></select><input class="admin-input vip-days-input" type="number" placeholder="天数" value="15"></div>
-                <input class="admin-input desc-input" placeholder="副奖励说明" value="VIP礼遇">
-              </div>
+              <input class="admin-input" type="number" value="2" style="width:60px;" oninput="validateRankRanges()">
+              <div class="admin-err"></div>
             </td>
+            <td><input class="admin-input" type="number" value="3" style="width:60px;" oninput="validateRankRanges()"></td>
+            <td><input class="admin-input" type="number" value="18888" min="0.01" step="0.01" onchange="restrictMoneyInput(this)"></td>
             <td><button class="admin-table-del" onclick="adminDelRow(this)">✕</button></td>
           </tr>
           <tr>
-            <td><input class="admin-input" type="number" value="4" style="width:60px;"></td>
-            <td><input class="admin-input" type="number" value="10" style="width:60px;"></td>
-            <td><select class="admin-select-cell" onchange="onRewardTypeChange(this)"><option selected>现金红包</option><option>实物礼品</option><option>VIP体验券</option></select></td>
-            <td><input class="admin-input" type="number" value="5888"><select class="unit-select"><option selected>元</option></select></td>
-            <td><input class="admin-input wide" value=""></td>
             <td>
-              <div class="reward-slot">
-                <select class="admin-select-cell" onchange="onSubRewardTypeChange(this)"><option selected>无</option><option>现金红包</option><option>实物礼品</option><option>VIP体验券</option></select>
-                <div class="value-unit"><input class="admin-input" type="number" value="0" disabled><select class="unit-select" disabled><option selected>—</option></select></div>
-                <input class="admin-input desc-input" placeholder="副奖励说明" value="">
-              </div>
+              <input class="admin-input" type="number" value="4" style="width:60px;" oninput="validateRankRanges()">
+              <div class="admin-err"></div>
             </td>
+            <td><input class="admin-input" type="number" value="10" style="width:60px;" oninput="validateRankRanges()"></td>
+            <td><input class="admin-input" type="number" value="5888" min="0.01" step="0.01" onchange="restrictMoneyInput(this)"></td>
             <td><button class="admin-table-del" onclick="adminDelRow(this)">✕</button></td>
           </tr>
           <tr>
-            <td><input class="admin-input" type="number" value="11" style="width:60px;"></td>
-            <td><input class="admin-input" type="number" value="30" style="width:60px;"></td>
-            <td><select class="admin-select-cell" onchange="onRewardTypeChange(this)"><option selected>现金红包</option><option>实物礼品</option><option>VIP体验券</option></select></td>
-            <td><input class="admin-input" type="number" value="1888"><select class="unit-select"><option selected>元</option></select></td>
-            <td><input class="admin-input wide" value=""></td>
             <td>
-              <div class="reward-slot">
-                <select class="admin-select-cell" onchange="onSubRewardTypeChange(this)"><option selected>无</option><option>现金红包</option><option>实物礼品</option><option>VIP体验券</option></select>
-                <div class="value-unit"><input class="admin-input" type="number" value="0" disabled><select class="unit-select" disabled><option selected>—</option></select></div>
-                <input class="admin-input desc-input" placeholder="副奖励说明" value="">
-              </div>
+              <input class="admin-input" type="number" value="11" style="width:60px;" oninput="validateRankRanges()">
+              <div class="admin-err"></div>
             </td>
+            <td><input class="admin-input" type="number" value="30" style="width:60px;" oninput="validateRankRanges()"></td>
+            <td><input class="admin-input" type="number" value="1888" min="0.01" step="0.01" onchange="restrictMoneyInput(this)"></td>
             <td><button class="admin-table-del" onclick="adminDelRow(this)">✕</button></td>
           </tr>
           <tr>
-            <td><input class="admin-input" type="number" value="31" style="width:60px;"></td>
-            <td><input class="admin-input" type="number" value="100" style="width:60px;"></td>
-            <td><select class="admin-select-cell" onchange="onRewardTypeChange(this)"><option selected>现金红包</option><option>实物礼品</option><option>VIP体验券</option></select></td>
-            <td><input class="admin-input" type="number" value="888"><select class="unit-select"><option selected>元</option></select></td>
-            <td><input class="admin-input wide" value="或等值优惠券礼包"></td>
             <td>
-              <div class="reward-slot">
-                <select class="admin-select-cell" onchange="onSubRewardTypeChange(this)"><option selected>无</option><option>现金红包</option><option>实物礼品</option><option>VIP体验券</option></select>
-                <div class="value-unit"><input class="admin-input" type="number" value="0" disabled><select class="unit-select" disabled><option selected>—</option></select></div>
-                <input class="admin-input desc-input" placeholder="副奖励说明" value="">
-              </div>
+              <input class="admin-input" type="number" value="31" style="width:60px;" oninput="validateRankRanges()">
+              <div class="admin-err"></div>
             </td>
+            <td><input class="admin-input" type="number" value="100" style="width:60px;" oninput="validateRankRanges()"></td>
+            <td><input class="admin-input" type="number" value="888" min="0.01" step="0.01" onchange="restrictMoneyInput(this)"></td>
             <td><button class="admin-table-del" onclick="adminDelRow(this)">✕</button></td>
           </tr>
         </table>
         <button class="admin-add-row-btn" type="button" onclick="adminAddRow(this)">＋ 新增区间</button>
 
-        <div class="admin-section-title">幸运抽奖奖池设置</div>
+        <div class="admin-section-title">幸运抽奖奖池设置<span class="admin-devdoc-tag">红包奖励</span></div>
+        <div class="admin-audit-toggle">
+          <span class="admin-audit-label">发放审核形式：</span>
+          <label class="admin-radio-item"><input type="radio" name="audit-lucky" checked>自动审核</label>
+          <label class="admin-radio-item"><input type="radio" name="audit-lucky">人工审核</label>
+          <span class="admin-audit-label" style="margin-left:10px;">提取流水倍数要求：</span>
+          <input class="admin-input" type="number" min="0" step="0.1" style="width:70px;" value="1">
+        </div>
         <table class="admin-table" id="luckyPoolTable">
-          <tr><th>奖品图标</th><th>奖品类型</th><th>奖励数值</th><th>权重</th><th>预计概率（只读）</th><th>操作</th></tr>
+          <tr><th>奖品图标</th><th>奖励金额（元）</th><th>权重</th><th>预计概率（只读）</th><th>操作</th></tr>
           <tr>
-            <td><div class="admin-icon-upload">🧧</div></td>
-            <td><select class="admin-select-cell" onchange="onRewardTypeChange(this)"><option selected>现金红包</option><option>VIP体验券</option><option>实物礼品</option><option>神秘大奖</option></select></td>
-            <td><input class="admin-input" type="number" value="8" style="width:70px;"><select class="unit-select"><option selected>元</option></select></td>
+            <td><div class="admin-icon-upload">🙏</div></td>
+            <td><input class="admin-input" type="number" value="0" style="width:80px;" disabled title="谢谢惠顾不发放奖励"></td>
             <td><input class="admin-input lucky-weight" type="number" min="0" value="30" style="width:70px;" oninput="updateLuckyProbabilities()"></td>
             <td class="lucky-prob">—</td>
             <td><button class="admin-table-del" onclick="adminDelRow(this); updateLuckyProbabilities();">✕</button></td>
           </tr>
           <tr>
             <td><div class="admin-icon-upload">🧧</div></td>
-            <td><select class="admin-select-cell" onchange="onRewardTypeChange(this)"><option selected>现金红包</option><option>VIP体验券</option><option>实物礼品</option><option>神秘大奖</option></select></td>
-            <td><input class="admin-input" type="number" value="18" style="width:70px;"><select class="unit-select"><option selected>元</option></select></td>
-            <td><input class="admin-input lucky-weight" type="number" min="0" value="22" style="width:70px;" oninput="updateLuckyProbabilities()"></td>
+            <td><input class="admin-input" type="number" value="8" min="0.01" step="0.01" onchange="restrictMoneyInput(this)" style="width:80px;"></td>
+            <td><input class="admin-input lucky-weight" type="number" min="0" value="25" style="width:70px;" oninput="updateLuckyProbabilities()"></td>
             <td class="lucky-prob">—</td>
             <td><button class="admin-table-del" onclick="adminDelRow(this); updateLuckyProbabilities();">✕</button></td>
           </tr>
           <tr>
-            <td><div class="admin-icon-upload">💎</div></td>
-            <td><select class="admin-select-cell" onchange="onRewardTypeChange(this)"><option>现金红包</option><option selected>VIP体验券</option><option>实物礼品</option><option>神秘大奖</option></select></td>
-            <td><select class="admin-select-cell vip-level-select"><option>VIP1</option><option selected>VIP2</option><option>VIP3</option><option>VIP4</option><option>VIP5</option><option>VIP6</option><option>VIP7</option><option>VIP8</option><option>VIP9</option><option>VIP10</option></select><input class="admin-input vip-days-input" type="number" placeholder="天数" value="3"></td>
+            <td><div class="admin-icon-upload">🧧</div></td>
+            <td><input class="admin-input" type="number" value="18" min="0.01" step="0.01" onchange="restrictMoneyInput(this)" style="width:80px;"></td>
+            <td><input class="admin-input lucky-weight" type="number" min="0" value="20" style="width:70px;" oninput="updateLuckyProbabilities()"></td>
+            <td class="lucky-prob">—</td>
+            <td><button class="admin-table-del" onclick="adminDelRow(this); updateLuckyProbabilities();">✕</button></td>
+          </tr>
+          <tr>
+            <td><div class="admin-icon-upload">🧧</div></td>
+            <td><input class="admin-input" type="number" value="58" min="0.01" step="0.01" onchange="restrictMoneyInput(this)" style="width:80px;"></td>
             <td><input class="admin-input lucky-weight" type="number" min="0" value="15" style="width:70px;" oninput="updateLuckyProbabilities()"></td>
             <td class="lucky-prob">—</td>
             <td><button class="admin-table-del" onclick="adminDelRow(this); updateLuckyProbabilities();">✕</button></td>
           </tr>
           <tr>
-            <td><div class="admin-icon-upload">✨</div></td>
-            <td><select class="admin-select-cell" onchange="onRewardTypeChange(this)"><option>现金红包</option><option>VIP体验券</option><option>实物礼品</option><option selected>神秘大奖</option></select></td>
-            <td><input class="admin-input" type="number" value="0" style="width:70px;" disabled><select class="unit-select" disabled><option selected>—</option></select></td>
-            <td><input class="admin-input lucky-weight" type="number" min="0" value="1" style="width:70px;" oninput="updateLuckyProbabilities()"></td>
+            <td><div class="admin-icon-upload">🧧</div></td>
+            <td><input class="admin-input" type="number" value="188" min="0.01" step="0.01" onchange="restrictMoneyInput(this)" style="width:80px;"></td>
+            <td><input class="admin-input lucky-weight" type="number" min="0" value="8" style="width:70px;" oninput="updateLuckyProbabilities()"></td>
             <td class="lucky-prob">—</td>
             <td><button class="admin-table-del" onclick="adminDelRow(this); updateLuckyProbabilities();">✕</button></td>
           </tr>
           <tr>
             <td><div class="admin-icon-upload">🧧</div></td>
-            <td><select class="admin-select-cell" onchange="onRewardTypeChange(this)"><option selected>现金红包</option><option>VIP体验券</option><option>实物礼品</option><option>神秘大奖</option></select></td>
-            <td><input class="admin-input" type="number" value="58" style="width:70px;"><select class="unit-select"><option selected>元</option></select></td>
-            <td><input class="admin-input lucky-weight" type="number" min="0" value="12" style="width:70px;" oninput="updateLuckyProbabilities()"></td>
-            <td class="lucky-prob">—</td>
-            <td><button class="admin-table-del" onclick="adminDelRow(this); updateLuckyProbabilities();">✕</button></td>
-          </tr>
-          <tr>
-            <td><div class="admin-icon-upload">🎁</div></td>
-            <td><select class="admin-select-cell" onchange="onRewardTypeChange(this)"><option>现金红包</option><option>VIP体验券</option><option selected>实物礼品</option><option>神秘大奖</option></select></td>
-            <td><input class="admin-input" type="number" value="0" style="width:70px;" disabled><select class="unit-select" disabled><option selected>—</option></select></td>
-            <td><input class="admin-input lucky-weight" type="number" min="0" value="3" style="width:70px;" oninput="updateLuckyProbabilities()"></td>
-            <td class="lucky-prob">—</td>
-            <td><button class="admin-table-del" onclick="adminDelRow(this); updateLuckyProbabilities();">✕</button></td>
-          </tr>
-          <tr>
-            <td><div class="admin-icon-upload">🧧</div></td>
-            <td><select class="admin-select-cell" onchange="onRewardTypeChange(this)"><option selected>现金红包</option><option>VIP体验券</option><option>实物礼品</option><option>神秘大奖</option></select></td>
-            <td><input class="admin-input" type="number" value="188" style="width:70px;"><select class="unit-select"><option selected>元</option></select></td>
-            <td><input class="admin-input lucky-weight" type="number" min="0" value="5" style="width:70px;" oninput="updateLuckyProbabilities()"></td>
-            <td class="lucky-prob">—</td>
-            <td><button class="admin-table-del" onclick="adminDelRow(this); updateLuckyProbabilities();">✕</button></td>
-          </tr>
-          <tr>
-            <td><div class="admin-icon-upload">🧧</div></td>
-            <td><select class="admin-select-cell" onchange="onRewardTypeChange(this)"><option selected>现金红包</option><option>VIP体验券</option><option>实物礼品</option><option>神秘大奖</option></select></td>
-            <td><input class="admin-input" type="number" value="888" style="width:70px;"><select class="unit-select"><option selected>元</option></select></td>
+            <td><input class="admin-input" type="number" value="888" min="0.01" step="0.01" onchange="restrictMoneyInput(this)" style="width:80px;"></td>
             <td><input class="admin-input lucky-weight" type="number" min="0" value="2" style="width:70px;" oninput="updateLuckyProbabilities()"></td>
             <td class="lucky-prob">—</td>
             <td><button class="admin-table-del" onclick="adminDelRow(this); updateLuckyProbabilities();">✕</button></td>
           </tr>
         </table>
+        <div class="admin-hint" style="display:block; margin:-10px 0 12px;">＋新增奖品固定新增彩金档位，"谢谢惠顾"为系统保留项，不通过新增按钮生成</div>
         <button class="admin-add-row-btn" type="button" onclick="adminAddRow(this)">＋ 新增奖品</button>
 
         <div class="admin-section-title">抽奖机会规则</div>
@@ -2755,13 +2690,6 @@
           </div>
         </div>
         <div class="admin-row textarea-row">
-          <div class="admin-label"><span class="req">*</span>抽奖机会用尽页面提示</div>
-          <div class="admin-field">
-            <textarea class="admin-textarea">暂无抽奖机会！完成经验值阶梯可获得更多机会。</textarea>
-            <span class="admin-count below">22 / 150</span>
-          </div>
-        </div>
-        <div class="admin-row textarea-row">
           <div class="admin-label"><span class="req">*</span>成功提交申请页面提示</div>
           <div class="admin-field">
             <textarea class="admin-textarea">恭喜您！奖励申领已成功提交！我们将尽快审核，结果会在第一时间通知您，静候佳音！</textarea>
@@ -2769,17 +2697,24 @@
           </div>
         </div>
         <div class="admin-row textarea-row">
-          <div class="admin-label"><span class="req">*</span>奖励已提交审核提示</div>
+          <div class="admin-label"><span class="req">*</span>预热期提示文案</div>
           <div class="admin-field">
-            <textarea class="admin-textarea">当前有#{N}笔奖励发放审核中！请耐心等待！</textarea>
-            <span class="admin-count below">22 / 150</span>
+            <textarea class="admin-textarea">活动即将开启，敬请期待！当前为预览阶段，暂不可参与，正式开始后自动生效。</textarea>
+            <span class="admin-count below">36 / 150</span>
           </div>
         </div>
         <div class="admin-row textarea-row">
-          <div class="admin-label"><span class="req">*</span>奖励申领限时提示</div>
+          <div class="admin-label"><span class="req">*</span>活动结束提示文案</div>
           <div class="admin-field">
-            <textarea class="admin-textarea">抱歉呀！活动已结束且已超过补领时限，更多福利敬请期待下一赛季！</textarea>
-            <span class="admin-count below">31 / 150</span>
+            <textarea class="admin-textarea">活动已结束，感谢您的参与！未领取的奖励可在页面下架前到对应面板补领。</textarea>
+            <span class="admin-count below">34 / 150</span>
+          </div>
+        </div>
+        <div class="admin-row textarea-row">
+          <div class="admin-label"><span class="req">*</span>活动下架提示文案</div>
+          <div class="admin-field">
+            <textarea class="admin-textarea">抱歉呀！活动页面已下架，更多福利敬请期待下一赛季！</textarea>
+            <span class="admin-count below">25 / 150</span>
           </div>
         </div>
 
@@ -2816,21 +2751,9 @@
           <div class="admin-field"><input class="admin-input" type="number" style="width:120px;" value="1"></div>
         </div>
 
-        <div class="admin-section-title">预算与风控</div>
-        <div class="admin-row">
-          <div class="admin-label">奖励提取流水倍数要求</div>
-          <div class="admin-field"><input class="admin-input" type="number" style="width:140px;" value="1"></div>
-        </div>
-        <div class="admin-row">
-          <div class="admin-label">总榜奖励发放审核形式</div>
-          <div class="admin-field admin-radio-row">
-            <label class="admin-radio-item"><input type="radio" name="audit">人工审核</label>
-            <label class="admin-radio-item"><input type="radio" name="audit" checked>自动审核</label>
-          </div>
-        </div>
-
+        <div class="admin-section-title">活动规则</div>
         <div class="admin-row textarea-row">
-          <div class="admin-label"><span class="req">*</span>活动规则</div>
+          <div class="admin-label"><span class="req">*</span>规则正文</div>
           <div class="admin-field">
             <div class="admin-editor-toolbar">
               <span>↩</span><span>↪</span><span>🕐</span><span>📋</span><span>⛶</span><span>👁</span>
@@ -2900,49 +2823,65 @@
       <h4>1. 文档范围说明</h4>
       <p>活动列表页的整体框架（页签切换、分类侧边栏、活动卡片展示、待领取/领取记录页的交互与红点数字联动机制）沿用平台现有活动模版，本文档不再重复说明。</p>
       <p>本文档仅描述<b>巅峰争霸赛</b>这一活动类型，在"新增活动"配置表单里，相较于其他已有活动模版（如砸金蛋类），新增或调整了哪些配置项，以及这些配置项如何驱动C端页面的展示与交互。</p>
+      <p>配置表单里的<b>活动参与对象、其它设置、活动图片设定</b>这几块，字段与交互均沿用现有活动模版功能，本文档不再展开描述。</p>
     </div>
 
     <div class="admin-devdoc-section">
       <h4>2. 新增活动类型<span class="admin-devdoc-tag">巅峰争霸赛模版</span></h4>
-      <p>在"活动类型"下拉里新增一个模版选项。与砸金蛋等模版的核心差异：奖励结构从"随机比例区间抽成"改为"确定性阶梯达标 + 总榜排名区间 + 权重抽奖"三段式，C端对应总榜、阶梯奖励、幸运抽奖三大功能入口。</p>
+      <p>在"活动类型"下拉里新增一个模版选项。与砸金蛋等模版的核心差异：奖励结构从"随机比例区间抽成"改为"确定性阶梯达标 + 总榜排名区间 + 权重抽奖"三段式，C端对应总榜、阶梯奖励、幸运抽奖三大功能入口。<b>本活动所有奖励统一为现金红包（彩金），不涉及积分、实物礼品、VIP权益等其他奖励形态</b>，配置表单也按此做了简化，不含奖励类型选择。</p>
     </div>
 
     <div class="admin-devdoc-section">
-      <h4>3. 经验值阶梯达标奖励设置</h4>
+      <h4>3. 活动基本配置调整</h4>
       <ul>
-        <li>每档配置：<b>档位名称、达标经验值门槛、主奖励（类型+数值/说明）、副奖励（可选，同主奖励结构）</b>，支持"＋新增档位"/删除，行数不固定。</li>
+        <li><b>活动类型</b>改为多选标签形式，可同时勾选多个分类（如"巅峰赛"+"流水活动"），当前配置默认勾选"巅峰赛"，支持后续追加其他分类标签。</li>
+        <li><b>活动预热日期</b>改为预设时长下拉：不预热 / 提前一日预览 / 提前三日预览 / 提前七日预览，不再是具体日期选择器。</li>
+        <li><b>活动简介文案、本活动统计范围</b>两个字段已移除，巅峰赛模版不需要单独配置这两项。</li>
+        <li><b>消息通知与页面提示</b>做了针对性调整：移除了"抽奖机会用尽页面提示""奖励申领限时提示""奖励已提交审核提示"这三个字段，新增"预热期提示文案""活动结束提示文案""活动下架提示文案"，分别对应C端预热期、活动自然结束、页面下架前三个阶段的提示语配置，其余字段沿用原有内容与规则。</li>
+      </ul>
+    </div>
+
+    <div class="admin-devdoc-section">
+      <h4>4. 经验值阶梯达标奖励设置</h4>
+      <ul>
+        <li>每档配置：<b>档位名称、达标经验值门槛、奖励金额（元）</b>，支持"＋新增档位"/删除，行数不固定。</li>
         <li><b>门槛校验</b>：每档门槛不能低于10,000，且必须严格大于上一档，否则该输入框标红并提示具体错误原因，编辑/新增/删除行都会重新校验一遍顺序。</li>
-        <li><b>奖励类型联动</b>：选"现金红包"时数值区域是金额输入（单位固定"元"）；选"VIP体验券"时数值区域切换成"VIP等级（VIP1~VIP10）+ 使用天数"；选"实物礼品"时数值区域禁用，仅靠说明字段描述具体礼品内容。副奖励默认"无"，选中具体类型后才显示对应的数值/说明区域，用于承载"主奖励之外"的补充内容（如称号、头像框等非结构化权益）。</li>
+        <li><b>金额输入限制</b>：奖励金额只能填正数，最多保留2位小数，失焦时自动校正（负数清空、超过2位小数自动四舍五入）。</li>
+        <li>区域顶部新增<b>发放审核形式</b>（自动审核/人工审核）+<b>提取流水倍数要求</b>，独立于总榜、幸运抽奖各自的配置，互不影响。原先集中在"预算与风控"里的单一审核开关和流水倍数字段已移除，"预算与风控"这个分组标题也已取消。</li>
       </ul>
     </div>
 
     <div class="admin-devdoc-section">
-      <h4>4. 总榜排名奖励区间设置</h4>
+      <h4>5. 总榜排名奖励区间设置</h4>
       <ul>
-        <li>区间用<b>起始名次、结束名次</b>两个数字字段定义（替代砸金蛋模版里没有的"名次"概念），其余奖励类型/数值/副奖励字段与阶梯奖励设置逻辑完全一致，共用同一套类型联动与"＋新增区间"交互。</li>
+        <li>区间用<b>起始名次、结束名次</b>两个数字字段定义（替代砸金蛋模版里没有的"名次"概念），加上<b>奖励金额（元）</b>，共用同一套"＋新增区间"交互。</li>
         <li>该区间奖励为客户手动领取（活动结束、最终排名公布后在C端"总经验值争霸榜"面板内点击领取），不同于阶梯奖励可在活动进行中随时领取。</li>
+        <li><b>区间校验</b>：起始名次不能大于结束名次，且任意两行的区间不能相同或互相穿插重叠，否则该行标红并提示具体冲突的行号，编辑/新增/删除行都会重新校验一遍。</li>
+        <li>金额输入同样只能填正数、最多2位小数；区域顶部同样带有独立的<b>发放审核形式</b>+<b>提取流水倍数要求</b>。</li>
       </ul>
     </div>
 
     <div class="admin-devdoc-section">
-      <h4>5. 幸运抽奖奖池设置</h4>
+      <h4>6. 幸运抽奖奖池设置<span class="admin-devdoc-tag">红包奖励</span></h4>
       <ul>
         <li><b>概率改为权重配置</b>：后台每个奖品填一个相对权重数字（非概率百分比），系统按"该奖品权重 ÷ 全部奖品权重之和"自动实时计算并展示"预计概率（只读）"，运营不需要自己心算所有奖品概率总和是否等于100%，改任意一个权重，所有奖品的预计概率都会联动刷新。</li>
         <li>每个奖品新增<b>奖品图标</b>上传位，用于C端抽奖滚动条里展示该奖品的图标。</li>
-        <li>奖品类型可选：现金红包 / VIP体验券 / 实物礼品 / 神秘大奖（已不含优惠券）。选"现金红包"显示金额输入；选"VIP体验券"显示VIP等级+使用天数；其余类型不需要具体数值。</li>
+        <li>奖池内每个彩金奖品的配置字段只有<b>金额（元，限正数且最多2位小数）+ 权重</b>，不再需要选择奖品类型。</li>
+        <li>奖池固定包含<b>"谢谢惠顾"</b>一项，<b>始终排在列表第一位</b>：金额固定为0（输入框禁用），只需配置权重，代表本次抽奖未中奖。C端抽中该项时提示语与"到账"类中奖区分开（显示"未中奖"而非"已到账"），文案上也不会出现"恭喜获得"字样。"＋新增奖品"按钮固定新增彩金档位行，不会复制到"谢谢惠顾"这一保留行。</li>
+        <li>区域顶部同样带有独立的<b>发放审核形式</b>+<b>提取流水倍数要求</b>。</li>
       </ul>
     </div>
 
     <div class="admin-devdoc-section">
-      <h4>6. C端联动与到账方式说明</h4>
+      <h4>7. C端联动与到账方式说明</h4>
       <ul>
         <li>阶梯奖励、总榜奖励区间的配置数据，直接驱动C端"活动列表－待领取"页签里对应的条目，以及活动详情页内各自面板的展示与领取按钮，两处共享同一份领取状态，任一入口领取后另一处同步更新，不是分开维护的两套数据。</li>
-        <li>幸运抽奖中，现金红包与VIP体验券类奖励实时到账；<b>抽中实物礼品或神秘大奖时，C端不再走自助登记收货信息的表单流程，改为展示"联系客服领取"按钮，点击跳转在线客服，由客服人工核实身份并安排发放</b>，本次改版已将原自助登记表单相关的前端交互移除。</li>
+        <li>幸运抽奖中奖后，红包金额<b>实时自动到账</b>，无需人工审核或线下登记，C端不含自助登记表单一类的额外交互；抽中"谢谢惠顾"时不发放任何奖励。</li>
       </ul>
     </div>
 
     <div class="admin-devdoc-section">
-      <h4>7. 与现有报表系统的关系</h4>
+      <h4>8. 与现有报表系统的关系</h4>
       <p>本活动所有已发放的现金类奖励（阶梯奖励、总榜排名奖励、幸运抽奖现金红包），均计入平台现有的<b>彩金审核</b>与<b>彩金记录</b>报表体系，走原有的审核与流水记录流程，本活动不新增独立的审核报表页面。运营在原有报表入口即可查询、审核本活动产生的彩金数据，无需额外培训或切换系统。</p>
     </div>
 
@@ -3520,8 +3459,8 @@
       showToast('🎁','领取成功', rewardText);
     }
     function addClaimedRecordCustom(name, rewardText, category){
-      // 跟参考文件自带的addClaimedRecord逻辑一致，只是巅峰赛的奖励类型不统一（红包/VIP体验券/礼品），
-      // 不能强行套用"+X.XX U"这种纯数字货币格式，改成展示真实的奖励描述文字
+      // 跟参考文件自带的addClaimedRecord逻辑一致，只是巅峰赛的奖励统一是"XX元红包"这种描述文字，
+      // 不强行套用系统默认的"+X.XX U"纯数字货币格式，直接展示真实的奖励描述
       var now = new Date();
       var dateStr = now.getFullYear() + '-' + pad2(now.getMonth() + 1) + '-' + pad2(now.getDate());
       var el = document.createElement('div');
@@ -3607,24 +3546,17 @@
       if(!list) return;
       var row = document.createElement('div');
       row.className = 'mini-row';
-      if(name === '实物礼品' || name === '神秘大奖'){
-        row.innerHTML = '<span class="mini-time">刚刚</span><span class="mini-name">'+name+'</span><button class="mini-register-btn" onclick="contactCustomerService()">联系客服领取</button>';
-      } else {
-        row.innerHTML = '<span class="mini-time">刚刚</span><span class="mini-name">'+name+'</span><span class="mini-status">已到账</span>';
-      }
+      var statusText = (name === '谢谢惠顾') ? '未中奖' : '已到账';
+      var statusClass = (name === '谢谢惠顾') ? 'mini-status miss' : 'mini-status';
+      row.innerHTML = '<span class="mini-time">刚刚</span><span class="mini-name">'+name+'</span><span class="'+statusClass+'">'+statusText+'</span>';
       list.insertBefore(row, list.firstChild);
-    }
-    // 实物礼品/神秘大奖不走自助登记表单，改为跳转在线客服，由客服人工核实身份并安排发放（原型里用提示模拟跳转，跟"去下注"按钮的处理方式一致）
-    function contactCustomerService(){
-      showToast('💬','即将为您跳转','正在连接在线客服，请稍候…');
     }
 
     // ---- 幸运抽奖 ----
     var drawing = false;
     var prizes = [
-      {em:'🧧',t:'8元红包'},{em:'🧧',t:'18元红包'},
-      {em:'💎',t:'VIP体验券'},{em:'✨',t:'神秘大奖'},{em:'🧧',t:'58元红包'},
-      {em:'🎁',t:'实物礼品'},{em:'🧧',t:'188元红包'},{em:'🧧',t:'888元红包'}
+      {em:'🧧',t:'8元红包'},{em:'🧧',t:'18元红包'},{em:'🧧',t:'58元红包'},
+      {em:'🧧',t:'188元红包'},{em:'🧧',t:'888元红包'},{em:'🙏',t:'谢谢惠顾'}
     ];
     function getRemainChances(){
       var chanceEl = document.querySelector('.draw-chance .num');
@@ -3702,7 +3634,11 @@
         if(items[targetCardIndex]) items[targetCardIndex].classList.add('hit');
         syncDrawChances(chances-1);
         drawing = false;
-        showToast(prizes[finalIdx].em,'恭喜获得', prizes[finalIdx].t);
+        if(prizes[finalIdx].t === '谢谢惠顾'){
+          showToast('🙏','谢谢惠顾','再接再厉，下次好运');
+        } else {
+          showToast(prizes[finalIdx].em,'恭喜获得', prizes[finalIdx].t);
+        }
         addLuckyRecord(prizes[finalIdx].t);
         setTimeout(buildLuckyReel, 2000); // 让中奖结果多停留2秒钟看清楚，之后恢复成平时的缓慢自动滚动
       }, 3300);
@@ -4155,6 +4091,58 @@
       document.getElementById('adminTabParams').style.display = (tab==='params') ? '' : 'none';
       document.getElementById('adminTabImages').style.display = (tab==='images') ? '' : 'none';
     }
+    // 活动类型多选标签下拉：点击打开/关闭下拉，点选项加/去勾选并同步生成或移除对应标签
+    function toggleTypeDropdown(e){
+      e.stopPropagation();
+      var dd = document.getElementById('typeMsDropdown');
+      var box = document.getElementById('typeMsBox');
+      var open = dd.style.display !== 'none';
+      dd.style.display = open ? 'none' : 'block';
+      box.classList.toggle('open', !open);
+    }
+    function toggleTypeOption(e, el){
+      e.stopPropagation();
+      var value = el.dataset.value;
+      var tagsWrap = document.getElementById('typeMsTags');
+      var existingTag = tagsWrap.querySelector('[data-value="'+value+'"]');
+      if(existingTag){
+        existingTag.remove();
+        el.classList.remove('selected');
+        var check = el.querySelector('.admin-ms-check');
+        if(check) check.remove();
+      } else {
+        el.classList.add('selected');
+        var newCheck = document.createElement('span');
+        newCheck.className = 'admin-ms-check';
+        newCheck.textContent = '✓';
+        el.appendChild(newCheck);
+        var tag = document.createElement('span');
+        tag.className = 'admin-ms-tag';
+        tag.dataset.value = value;
+        tag.innerHTML = value+'<span class="admin-ms-tag-x" onclick="removeTypeTag(event, this)">×</span>';
+        tagsWrap.appendChild(tag);
+      }
+    }
+    function removeTypeTag(e, xEl){
+      e.stopPropagation();
+      var tag = xEl.closest('.admin-ms-tag');
+      var value = tag.dataset.value;
+      tag.remove();
+      var option = document.querySelector('#typeMsDropdown [data-value="'+value+'"]');
+      if(option){
+        option.classList.remove('selected');
+        var check = option.querySelector('.admin-ms-check');
+        if(check) check.remove();
+      }
+    }
+    document.addEventListener('click', function(e){
+      var dd = document.getElementById('typeMsDropdown');
+      var box = document.getElementById('typeMsBox');
+      if(dd && dd.style.display !== 'none' && !e.target.closest('.admin-multiselect')){
+        dd.style.display = 'none';
+        box.classList.remove('open');
+      }
+    });
     // 管理后台开发文档：右侧滑出抽屉
     function openAdminDevDoc(){
       document.getElementById('adminDevDocMask').classList.add('show');
@@ -4168,19 +4156,25 @@
     function adminAddRow(btn){
       var table = btn.previousElementSibling;
       if(!table || table.tagName !== 'TABLE') return;
-      var lastRow = table.rows[table.rows.length-1];
+      var candidateRows = Array.prototype.slice.call(table.rows).slice(1); // 跳过表头
+      var lastRow = candidateRows[candidateRows.length-1];
+      if(table.id === 'luckyPoolTable'){
+        // 幸运抽奖表：新增奖品固定复制"最后一个金额可编辑的彩金行"，绝不会复制到"谢谢惠顾"这个金额禁用的系统保留行
+        var cashRows = candidateRows.filter(function(row){
+          var amountInput = row.cells[1].querySelector('input[type="number"]');
+          return amountInput && !amountInput.disabled;
+        });
+        if(cashRows.length > 0) lastRow = cashRows[cashRows.length-1];
+      }
       var newRow = lastRow.cloneNode(true);
-      newRow.querySelectorAll('input[type="number"]').forEach(function(inp){ inp.value = 0; inp.classList.remove('admin-input-error'); });
+      newRow.querySelectorAll('input[type="number"]').forEach(function(inp){ if(!inp.disabled){ inp.value = 0; } inp.classList.remove('admin-input-error'); });
       newRow.querySelectorAll('input:not([type="number"])').forEach(function(inp){ inp.value = ''; });
       newRow.querySelectorAll('select').forEach(function(sel){ sel.selectedIndex = 0; });
       newRow.querySelectorAll('.admin-err').forEach(function(e){ e.style.display = 'none'; });
       table.appendChild(newRow);
-      var typeSelect = newRow.querySelector('.admin-select-cell');
-      if(typeSelect) onRewardTypeChange(typeSelect); // 新行的类型重置成第一个选项后，数值/单位跟着联动一次
-      var subTypeSelect = newRow.querySelector('.reward-slot .admin-select-cell');
-      if(subTypeSelect) onSubRewardTypeChange(subTypeSelect); // 副奖励同样联动一次（默认是"无"，数值单位保持禁用）
       var thresholdInput = newRow.cells[1] ? newRow.cells[1].querySelector('input[type="number"]') : null;
       if(thresholdInput) validateTierThresholds(thresholdInput); // 如果新增的是阶梯奖励表，顺带触发一次门槛校验
+      if(table.id === 'rankRangeTable') validateRankRanges(); // 如果新增的是总榜奖励表，顺带触发一次名次区间校验
       if(table.id === 'luckyPoolTable') updateLuckyProbabilities(); // 幸运抽奖新增奖品后，权重变化了，重新算一遍预计概率
     }
     // 删除当前行，但至少保留表头+1行数据，不能删空
@@ -4191,39 +4185,8 @@
         row.remove();
         var firstThresholdInput = table.rows[1] ? table.rows[1].cells[1].querySelector('input[type="number"]') : null;
         if(firstThresholdInput) validateTierThresholds(firstThresholdInput); // 删除一行后顺序变了，重新校验一遍阶梯门槛
+        if(table.id === 'rankRangeTable') validateRankRanges(); // 总榜表删除一行后，重叠关系可能变了，重新校验一遍
       }
-    }
-    // 奖励类型切换时，数值区域整体重建：现金红包=数值+元；VIP体验券=VIP等级+使用天数；其余类型（实物礼品/神秘大奖）不需要具体数值，显示为—
-    function buildVipLevelOptions(selected){
-      var html = '';
-      for(var i=1;i<=10;i++){
-        html += '<option'+(('VIP'+i)===selected?' selected':'')+'>VIP'+i+'</option>';
-      }
-      return html;
-    }
-    function buildRewardValueHtml(type){
-      if(type === '现金红包'){
-        return '<input class="admin-input" type="number" value=""><select class="unit-select"><option selected>元</option></select>';
-      }
-      if(type === 'VIP体验券'){
-        return '<select class="admin-select-cell vip-level-select">'+buildVipLevelOptions('VIP1')+'</select>'+
-               '<input class="admin-input vip-days-input" type="number" placeholder="天数" value="7">';
-      }
-      return '<input class="admin-input" type="number" value="0" disabled><select class="unit-select" disabled><option selected>—</option></select>';
-    }
-    function onRewardTypeChange(selectEl){
-      var valueCell = selectEl.closest('td').nextElementSibling;
-      if(!valueCell) return;
-      valueCell.innerHTML = buildRewardValueHtml(selectEl.value);
-    }
-    // 副奖励跟主奖励逻辑一样，只是数值区域是堆叠在同一个格子里的.value-unit，不是下一个单元格；"无"表示没有副奖励，清空说明文字
-    function onSubRewardTypeChange(selectEl){
-      var slot = selectEl.closest('.reward-slot');
-      if(!slot) return;
-      var valueUnit = slot.querySelector('.value-unit');
-      var descInput = slot.querySelector('.desc-input');
-      if(valueUnit) valueUnit.innerHTML = buildRewardValueHtml(selectEl.value === '无' ? '' : selectEl.value);
-      if(selectEl.value === '无' && descInput) descInput.value = '';
     }
     // 幸运抽奖改成权重配置：后台填的是相对权重（不是概率），系统按权重占总权重的比例自动算出预计概率展示，不用后台自己心算总和是不是100%
     function updateLuckyProbabilities(){
@@ -4265,6 +4228,53 @@
           errEl.style.display = 'none';
         }
         prevVal = val;
+      });
+    }
+    // 所有金额类输入框统一限制：不允许负数，最多保留2位小数
+    function restrictMoneyInput(inp){
+      var val = parseFloat(inp.value);
+      if(isNaN(val) || val < 0){
+        inp.value = '';
+        return;
+      }
+      inp.value = Math.round(val*100)/100;
+    }
+    // 总榜名次区间校验：每行本身起始不能大于结束，且任意两行的区间不能相同或互相穿插重叠，否则该行的起始名次输入框标红提示
+    function validateRankRanges(){
+      var table = document.getElementById('rankRangeTable');
+      if(!table) return;
+      var rows = Array.prototype.slice.call(table.rows).slice(1); // 跳过表头
+      var ranges = rows.map(function(row){
+        var startInp = row.cells[0].querySelector('input[type="number"]');
+        var endInp = row.cells[1].querySelector('input[type="number"]');
+        var start = parseInt(startInp.value, 10);
+        var end = parseInt(endInp.value, 10);
+        return { row: row, startInp: startInp, errEl: row.cells[0].querySelector('.admin-err'), start: isNaN(start)?0:start, end: isNaN(end)?0:end };
+      });
+      ranges.forEach(function(r, i){
+        var msg = '';
+        if(r.start <= 0 || r.end <= 0){
+          msg = '名次需为正整数';
+        } else if(r.start > r.end){
+          msg = '起始名次不能大于结束名次';
+        } else {
+          for(var j=0; j<ranges.length; j++){
+            if(j === i) continue;
+            var other = ranges[j];
+            if(other.start <= 0 || other.end <= 0 || other.start > other.end) continue; // 对方本身就不合法，跳过，避免连带报错
+            if(r.start <= other.end && other.start <= r.end){
+              msg = '与第'+(j+1)+'行区间重叠或相同';
+              break;
+            }
+          }
+        }
+        if(msg){
+          r.startInp.classList.add('admin-input-error');
+          if(r.errEl){ r.errEl.textContent = msg; r.errEl.style.display = 'block'; }
+        } else {
+          r.startInp.classList.remove('admin-input-error');
+          if(r.errEl) r.errEl.style.display = 'none';
+        }
       });
     }
 </script>
