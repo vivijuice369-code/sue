@@ -1,0 +1,547 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>会员详情 - 登录状态</title>
+<style>
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    font-family: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+    background: #f2f3f5;
+  }
+  a { color: #2f88ff; text-decoration: none; }
+  a:hover { color: #1f6fe0; }
+
+  .page {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 24px;
+    padding: 28px 16px;
+    max-width: 1440px;
+    margin: 0 auto;
+  }
+  .proto-col {
+    flex: 1 1 620px;
+    max-width: 740px;
+    min-width: 460px;
+  }
+  .card {
+    width: 100%;
+    background: #ffffff;
+    border: 1px solid #e4e7ed;
+    border-radius: 6px;
+    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+  }
+  .doc-col {
+    flex: 1 1 400px;
+    max-width: 520px;
+    min-width: 340px;
+    background: #ffffff;
+    border: 1px solid #e4e7ed;
+    border-radius: 6px;
+    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.08);
+    padding: 26px 28px 30px;
+    align-self: stretch;
+  }
+  .doc-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: #303133;
+    margin: 0 0 4px;
+  }
+  .doc-meta {
+    font-size: 12px;
+    color: #909399;
+    margin: 0 0 20px;
+  }
+  .doc-h2 {
+    font-size: 14px;
+    font-weight: 700;
+    color: #303133;
+    margin: 22px 0 10px;
+    padding-left: 10px;
+    border-left: 3px solid #2f88ff;
+    line-height: 1.3;
+  }
+  .doc-h2:first-of-type { margin-top: 0; }
+  .doc-p {
+    font-size: 13px;
+    line-height: 1.7;
+    color: #606266;
+    margin: 0 0 10px;
+  }
+  .doc-ul {
+    margin: 0 0 10px;
+    padding-left: 18px;
+  }
+  .doc-ul li {
+    font-size: 13px;
+    line-height: 1.7;
+    color: #606266;
+    margin-bottom: 6px;
+  }
+  .doc-field {
+    border: 1px solid #ebeef5;
+    border-radius: 6px;
+    padding: 10px 12px;
+    margin-bottom: 10px;
+    background: #fafbfc;
+  }
+  .doc-field .fname {
+    font-size: 13px;
+    font-weight: 600;
+    color: #303133;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .doc-field .fval {
+    display: inline-flex;
+    align-items: center;
+    padding: 1px 8px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #f56c6c;
+    background: #fef0f0;
+    border-radius: 10px;
+  }
+  .doc-field .fdesc {
+    font-size: 12.5px;
+    color: #909399;
+    margin-top: 4px;
+    line-height: 1.6;
+  }
+  .doc-field.highlight {
+    border-color: #f56c6c;
+    background: #fff7f7;
+  }
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 24px;
+    border-bottom: 1px solid #ebeef5;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 36px;
+    flex-wrap: wrap;
+  }
+  .header-field {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 14px;
+    color: #303133;
+  }
+  .header-field .field-value { font-weight: 500; }
+  .icon-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #2f88ff;
+    cursor: pointer;
+  }
+  .close-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 4px;
+    color: #909399;
+    cursor: pointer;
+  }
+  .close-btn:hover { background: #f5f6f7; color: #606266; }
+
+  .tabs {
+    display: flex;
+    align-items: center;
+    gap: 36px;
+    padding: 0 24px;
+    border-bottom: 1px solid #ebeef5;
+    overflow-x: auto;
+  }
+  .tab {
+    padding: 13px 2px;
+    font-size: 14px;
+    color: #606266;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .tab.active {
+    color: #2f88ff;
+    font-weight: 600;
+    box-shadow: inset 0 -2px 0 0 #2f88ff;
+  }
+
+  .table { display: flex; flex-direction: column; }
+  .row { display: flex; align-items: stretch; border-bottom: 1px solid #ebeef5; flex-wrap: wrap; }
+  .row:last-child { border-bottom: none; }
+  .row.zebra { background: #f8f9fb; }
+
+  .cell-label {
+    width: 190px;
+    flex: none;
+    padding: 17px 24px;
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    color: #606266;
+    border-right: 1px solid #ebeef5;
+  }
+  .cell-value {
+    flex: 1;
+    min-width: 240px;
+    padding: 17px 24px;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    column-gap: 10px;
+    row-gap: 6px;
+    font-size: 14px;
+    color: #303133;
+    border-right: 1px solid #ebeef5;
+  }
+  .cell-action {
+    width: 220px;
+    flex: none;
+    padding: 17px 24px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-size: 14px;
+    color: #606266;
+  }
+
+  .status-normal { color: #19be6b; }
+  .status-danger { color: #f56c6c; }
+
+  .toggle-group { display: flex; align-items: center; }
+  .toggle-item {
+    cursor: pointer;
+    color: #909399;
+    padding: 0 10px;
+    border-right: 1px solid #dcdfe6;
+  }
+  .toggle-item:last-child { border-right: none; }
+  .toggle-item.current { color: #2f88ff; font-weight: 600; }
+
+  .btn-link { cursor: pointer; color: #2f88ff; }
+  .btn-link:hover { color: #1f6fe0; }
+
+  .btn-outline {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 6px 14px;
+    font-size: 13px;
+    color: #f56c6c;
+    border: 1px solid #f56c6c;
+    border-radius: 4px;
+    background: #fff;
+    cursor: pointer;
+  }
+  .btn-outline:hover { background: #fef0f0; }
+
+  .badge-count {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 10px;
+    font-size: 12px;
+    color: #f56c6c;
+    background: #fef0f0;
+    border-radius: 10px;
+    line-height: 18px;
+  }
+  .badge-count.ok {
+    color: #909399;
+    background: #f2f3f5;
+  }
+  .countdown {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 13px;
+    color: #909399;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .row.featured {
+    border-top: 2px solid #f56c6c;
+    border-bottom: 2px solid #f56c6c;
+    background: #fff7f7;
+  }
+  .row.featured .cell-label,
+  .row.featured .cell-value {
+    border-right-color: rgba(245, 108, 108, 0.25);
+  }
+  .row.featured .cell-label {
+    color: #f56c6c;
+    font-weight: 600;
+  }
+  .new-tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 1px 6px;
+    margin-left: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    color: #fff;
+    background: #f56c6c;
+    border-radius: 4px;
+    vertical-align: middle;
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+  <div class="proto-col">
+  <div class="card">
+
+    <div class="header">
+      <div class="header-left">
+        <div class="header-field">
+          <span>会员账号：</span>
+          <span class="field-value">dipsy01</span>
+          <span class="icon-btn" title="复制">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="9" y="9" width="12" height="12" rx="2"></rect>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+            </svg>
+          </span>
+        </div>
+        <div class="header-field">
+          <span>会员ID：</span>
+          <span class="field-value">10005983</span>
+          <span class="icon-btn" title="复制">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="9" y="9" width="12" height="12" rx="2"></rect>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+            </svg>
+          </span>
+        </div>
+      </div>
+      <div class="close-btn" title="关闭">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 6 6 18"></path>
+          <path d="m6 6 12 12"></path>
+        </svg>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <div class="tab active">会员基础信息</div>
+      <div class="tab">联系方式</div>
+      <div class="tab">会员登录日志</div>
+    </div>
+
+    <div class="table">
+
+      <div class="row">
+        <div class="cell-label">账号类型</div>
+        <div class="cell-value">普通账号</div>
+        <div class="cell-action"></div>
+      </div>
+
+      <div class="row zebra">
+        <div class="cell-label">会员状态</div>
+        <div class="cell-value"><span class="status-normal">正常</span></div>
+        <div class="cell-action">
+          <div class="toggle-group">
+            <span class="toggle-item current">正常</span>
+            <span class="toggle-item">停用</span>
+            <span class="toggle-item">锁定</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="cell-label">提现状态</div>
+        <div class="cell-value"><span class="status-normal">正常</span></div>
+        <div class="cell-action">
+          <div class="toggle-group">
+            <span class="toggle-item current">正常</span>
+            <span class="toggle-item">锁定</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="row zebra featured">
+        <div class="cell-label">登录状态<span class="new-tag">NEW</span></div>
+        <div class="cell-value">
+          <div id="login-restricted-view" style="display:none; align-items:center; column-gap:10px; row-gap:6px; flex-wrap:wrap;">
+            <span class="status-danger">受限</span>
+            <span id="login-badge" class="badge-count">登录密码错误 3/3 次</span>
+            <span class="countdown">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="9"></circle>
+                <path d="M12 7v5l3 3"></path>
+              </svg>
+              剩余解封时间 <span id="countdown-value">30:00</span>
+            </span>
+          </div>
+          <div id="login-normal-view" style="display:none; align-items:center; column-gap:10px;">
+            <span class="status-normal">正常</span>
+            <span id="login-badge-ok" class="badge-count ok">登录密码错误 0/3 次</span>
+          </div>
+        </div>
+        <div class="cell-action" id="login-action-cell">
+          <span id="unlock-btn" class="btn-outline">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="11" width="18" height="11" rx="2"></rect>
+              <path d="M7 11V7a5 5 0 0 1 9.9-1"></path>
+            </svg>
+            解除限制
+          </span>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="cell-label">活跃状态</div>
+        <div class="cell-value">不活跃</div>
+        <div class="cell-action"></div>
+      </div>
+
+      <div class="row zebra">
+        <div class="cell-label">上级代理</div>
+        <div class="cell-value"><a href="#" class="btn-link" onclick="return false;">uulaitest</a></div>
+        <div class="cell-action"></div>
+      </div>
+
+      <div class="row">
+        <div class="cell-label">账户余额</div>
+        <div class="cell-value">113949.8350（可用113849.8350 + 冻结100.0000）</div>
+        <div class="cell-action"><span class="btn-link">刷新</span></div>
+      </div>
+
+      <div class="row zebra">
+        <div class="cell-label">稽核流水</div>
+        <div class="cell-value">1.0000</div>
+        <div class="cell-action"><span class="btn-link">查看</span></div>
+      </div>
+
+      <div class="row">
+        <div class="cell-label">累计佣金（全民代理）</div>
+        <div class="cell-value">0.00</div>
+        <div class="cell-action"><span class="btn-link">刷新</span></div>
+      </div>
+
+      <div class="row zebra">
+        <div class="cell-label">累计充值</div>
+        <div class="cell-value">232.00（5次）近24小时充值 0.00</div>
+        <div class="cell-action"><span class="btn-link">充值记录</span></div>
+      </div>
+
+      <div class="row">
+        <div class="cell-label">累计提款</div>
+        <div class="cell-value">1000.00（1次）近24小时提款 0.00</div>
+        <div class="cell-action"><span class="btn-link">提款记录</span></div>
+      </div>
+
+    </div>
+  </div>
+  </div>
+
+  <div class="doc-col">
+    <div class="doc-title">登录状态限制功能 · 需求说明</div>
+
+    <div class="doc-h2">需求背景</div>
+    <p class="doc-p">会员连续输错登录密码会被系统限制登录，此前客服只能通过重置密码来处理，效率低也浪费人力。现在「会员详情」新增「登录状态」展示与「解除限制」按钮，客服可直接一键解除，无需再重置密码。</p>
+
+    <div class="doc-h2">功能与规则</div>
+    <ul class="doc-ul">
+      <li>位置：「提现状态」与「活跃状态」两行之间新增「登录状态」行</li>
+      <li>触发条件：连续密码错误次数达到 loginErrors 上限才「受限」，未达上限仍为「正常」</li>
+      <li>受限后自动倒计时（固定 30 分钟），结束自动恢复正常、错误次数清零</li>
+      <li>倒计时未结束前，客服可点击「解除限制」随时手动解封</li>
+    </ul>
+
+    <div class="doc-h2">关键参数（供开发参考）</div>
+    <ul class="doc-ul">
+      <li><b>loginErrors <span class="fval">= 3</span></b>：站点配置项，连续密码错误上限，超过即触发受限</li>
+      <li><b>当前错误次数</b>：0 ~ loginErrors，达到上限（如 3/3）触发受限</li>
+      <li><b>受限倒计时</b>：固定 30 分钟</li>
+      <li><b>解除限制</b>：手动点击触发，立即恢复正常并清零错误次数、停止倒计时</li>
+    </ul>
+  </div>
+</div>
+
+<script>
+  // 只有登录密码错误次数达到上限（3/3）才会触发“受限”；未达到上限则始终为“正常”。
+  var maxCount = 3;
+  var failCount = 3;           // 演示数据：已达到上限，因此当前为受限状态
+  var remainingSeconds = 30 * 60; // 受限倒计时：30 分钟
+  var restricted = failCount >= maxCount;
+  var timer = null;
+
+  var restrictedView = document.getElementById('login-restricted-view');
+  var normalView = document.getElementById('login-normal-view');
+  var actionCell = document.getElementById('login-action-cell');
+  var badgeEl = document.getElementById('login-badge');
+  var badgeOkEl = document.getElementById('login-badge-ok');
+  var countdownEl = document.getElementById('countdown-value');
+  var unlockBtn = document.getElementById('unlock-btn');
+
+  function formatTime(totalSeconds) {
+    var m = Math.floor(totalSeconds / 60);
+    var s = totalSeconds % 60;
+    var mm = m < 10 ? '0' + m : '' + m;
+    var ss = s < 10 ? '0' + s : '' + s;
+    return mm + ':' + ss;
+  }
+
+  function render() {
+    badgeEl.textContent = '登录密码错误 ' + failCount + '/' + maxCount + ' 次';
+    badgeOkEl.textContent = '登录密码错误 0/' + maxCount + ' 次';
+    countdownEl.textContent = formatTime(remainingSeconds);
+    if (restricted) {
+      restrictedView.style.display = 'flex';
+      normalView.style.display = 'none';
+      actionCell.style.display = 'flex';
+    } else {
+      restrictedView.style.display = 'none';
+      normalView.style.display = 'flex';
+      actionCell.style.display = 'none';
+    }
+  }
+
+  function startTimer() {
+    if (timer) clearInterval(timer);
+    timer = setInterval(function () {
+      remainingSeconds--;
+      if (remainingSeconds <= 0) {
+        remainingSeconds = 0;
+        clearInterval(timer);
+        timer = null;
+        restricted = false;
+        failCount = 0;
+        render();
+      } else {
+        countdownEl.textContent = formatTime(remainingSeconds);
+      }
+    }, 1000);
+  }
+
+  unlockBtn.addEventListener('click', function () {
+    if (timer) { clearInterval(timer); timer = null; }
+    restricted = false;
+    failCount = 0;
+    render();
+  });
+
+  render();
+  if (restricted) startTimer();
+</script>
+
+</body>
+</html>
