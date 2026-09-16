@@ -1172,7 +1172,6 @@
   .lprog-wrap{height:6px; background:rgba(27,43,72,.08); border-radius:4px; margin-top:9px; overflow:hidden;}
   .lprog-fill{height:100%; background:var(--dp-grad-gold); border-radius:4px;}
   .lstep.done .lprog-fill{background:var(--dp-grad-jade);}
-  .llock-note{margin-top:8px; font-size:10.5px; color:var(--dp-ink-faint); line-height:1.5;}
   .lfoot{display:flex; justify-content:space-between; font-size:10.5px; color:var(--dp-ink-faint); margin-top:5px;}
   .lstep.done .lfoot{color:var(--dp-jade);}
   .dp-claim-btn{margin-top:10px; width:100%; padding:8px; border-radius:9px; border:none; font-size:12px; font-weight:700; cursor:pointer;}
@@ -1255,6 +1254,7 @@
   .wheel-seg .wheel-em{font-size:19px; filter:drop-shadow(0 1px 2px rgba(0,0,0,.2));}
   .wheel-seg.seg-double, .wheel-seg.seg-vip{color:#ffe89a;}
   .wheel-seg.seg-double .wheel-text, .wheel-seg.seg-vip .wheel-text{color:#ffe89a; font-weight:900;}
+  .wheel-text2{font-size:8px; font-weight:600; opacity:.9;}
   .wheel-seg.seg-disabled{opacity:.32; filter:grayscale(1); transition:opacity .3s, filter .3s;}
   /* ---- 双倍状态：转盘外圈火焰特效 ---- */
   .wheel-flame{
@@ -1282,6 +1282,11 @@
   }
   .lucky-wheel-center:active{transform:translate(-50%,-50%) scale(.95);}
   .source-note{margin-top:16px; padding:12px 14px; background:var(--dp-bg-panel); border-radius:12px; border:1px solid var(--dp-line); font-size:11.5px; color:var(--dp-ink-dim); line-height:1.7;}
+  .vip-quicklink-btn{
+    display:block; width:100%; margin-top:14px; padding:10px; border-radius:10px; border:1px solid var(--dp-line);
+    background:var(--dp-bg-panel-3); color:var(--dp-ink); font-size:12.5px; font-weight:700; cursor:pointer; transition:transform .15s;
+  }
+  .vip-quicklink-btn:active{transform:scale(.97);}
   .mini-list-title{font-size:11.5px; color:var(--dp-ink-faint); margin:16px 2px 8px;}
   .mini-row{display:flex; align-items:center; gap:10px; padding:9px 12px; background:var(--dp-bg-panel); border-radius:10px; border:1px solid var(--dp-line); margin-bottom:6px; font-size:11.5px;}
   .mini-time{color:var(--dp-ink-faint); flex-shrink:0;}
@@ -1646,9 +1651,8 @@
           <div class="lcard">
             <div class="lhead"><span class="lname">精英奖励</span><span class="lthresh">满 300,000经验值</span></div>
             <div class="lreward">388 USDT<span class="lreward-lucky">+2次抽奖机会</span></div>
-            <div class="lfoot"><span>还差 173,600</span><span>本档 26,400/200,000</span></div>
-            <div class="lprog-wrap"><div class="lprog-fill" style="width:13%"></div></div>
-            <div class="llock-note">当前档位，解锁"里程碑奖励"后开始累计</div>
+            <div class="lfoot"><span>还差 173,600</span><span>126,400/300,000</span></div>
+            <div class="lprog-wrap"><div class="lprog-fill" style="width:42%"></div></div>
           </div>
         </div>
         <div class="lstep">
@@ -1656,9 +1660,8 @@
           <div class="lcard">
             <div class="lhead"><span class="lname">王者奖励</span><span class="lthresh">满 500,000经验值</span></div>
             <div class="lreward">688 USDT<span class="lreward-lucky">+3次抽奖机会</span></div>
-            <div class="lfoot"><span>还差 373,600</span><span>本档 0/200,000</span></div>
-            <div class="lprog-wrap"><div class="lprog-fill" style="width:0%"></div></div>
-            <div class="llock-note">解锁"精英奖励"后开始计算本档经验值</div>
+            <div class="lfoot"><span>还差 373,600</span><span>126,400/500,000</span></div>
+            <div class="lprog-wrap"><div class="lprog-fill" style="width:25%"></div></div>
           </div>
         </div>
         <div class="lstep">
@@ -1666,9 +1669,8 @@
           <div class="lcard">
             <div class="lhead"><span class="lname">至尊奖励</span><span class="lthresh">满 1,000,000经验值</span></div>
             <div class="lreward">1,888 USDT<span class="lreward-lucky">+5次抽奖机会</span></div>
-            <div class="lfoot"><span>还差 873,600</span><span>本档 0/500,000</span></div>
-            <div class="lprog-wrap"><div class="lprog-fill" style="width:0%"></div></div>
-            <div class="llock-note">解锁"王者奖励"后开始计算本档经验值</div>
+            <div class="lfoot"><span>还差 873,600</span><span>126,400/1,000,000</span></div>
+            <div class="lprog-wrap"><div class="lprog-fill" style="width:13%"></div></div>
           </div>
         </div>
       </div>
@@ -1684,7 +1686,7 @@
     </div>
     <div class="panel-body">
       <div class="draw-chance"><div class="num">3</div><div class="lbl">剩余抽奖机会</div></div>
-      <div class="double-mode-badge" id="doubleModeBadge" style="display:none;">🔥 双倍生效中：下一次抽奖必中现金红包且金额翻倍</div>
+      <div class="double-mode-badge" id="doubleModeBadge" style="display:none;">🔥 双倍生效中：下一次抽奖必中现金红包/VIP加速/再抽一次且效果翻倍</div>
       <div class="lucky-wheel-outer">
         <div class="wheel-glow"></div>
         <div class="lucky-wheel-pointer">💎</div>
@@ -1730,12 +1732,13 @@
           <div class="wheel-seg" style="transform:rotate(162deg) translateY(-98px);"><span class="wheel-text">38</span><span class="wheel-em">🧧</span></div>
           <div class="wheel-seg" style="transform:rotate(198deg) translateY(-98px);"><span class="wheel-text">谢谢惠顾</span><span class="wheel-em">🙏</span></div>
           <div class="wheel-seg" style="transform:rotate(234deg) translateY(-98px);"><span class="wheel-text">58</span><span class="wheel-em">🧧</span></div>
-          <div class="wheel-seg seg-vip" style="transform:rotate(270deg) translateY(-98px);"><span class="wheel-text">VIP加速</span><span class="wheel-em">🚀</span></div>
+          <div class="wheel-seg seg-vip" style="transform:rotate(270deg) translateY(-98px);"><span class="wheel-text" id="wheelVipRateLine">VIP加速30%</span><span class="wheel-text2" id="wheelVipHoursLine">持续24小时</span><span class="wheel-em">🚀</span></div>
           <div class="wheel-seg" style="transform:rotate(306deg) translateY(-98px);"><span class="wheel-text">188</span><span class="wheel-em">🧧</span></div>
           <div class="wheel-seg" style="transform:rotate(342deg) translateY(-98px);"><span class="wheel-text">888</span><span class="wheel-em">🧧</span></div>
         </div>
         <button class="lucky-wheel-center" onclick="doDraw(this)">立即<br>抽奖</button>
       </div>
+      <button class="vip-quicklink-btn" onclick="goToVipPage()">🚀 查看VIP</button>
       <div class="source-note">
         📌 抽奖机会获取方式：<br>
         · 每日充值达标 → 当日累计充值满100 USDT，获得1次机会（每日限1次，次日重置）<br>
@@ -2146,7 +2149,7 @@
           <div class="lcard">
             <div class="lhead"><span class="lname">精英奖励</span><span class="lthresh">满 300,000经验值</span></div>
             <div class="lreward">388 USDT<span class="lreward-lucky">+2次抽奖机会</span></div>
-            <div class="lfoot"><span>未达标</span><span>本档 26,400/200,000</span></div>
+            <div class="lfoot"><span>未达标</span><span>126,400/300,000</span></div>
           </div>
         </div>
         <div class="lstep">
@@ -2154,8 +2157,7 @@
           <div class="lcard">
             <div class="lhead"><span class="lname">王者奖励</span><span class="lthresh">满 500,000经验值</span></div>
             <div class="lreward">688 USDT<span class="lreward-lucky">+3次抽奖机会</span></div>
-            <div class="lfoot"><span>未达标</span><span>本档 0/200,000</span></div>
-            <div class="llock-note">未解锁"精英奖励"，未开始计算本档经验值</div>
+            <div class="lfoot"><span>未达标</span><span>126,400/500,000</span></div>
           </div>
         </div>
         <div class="lstep">
@@ -2163,8 +2165,7 @@
           <div class="lcard">
             <div class="lhead"><span class="lname">至尊奖励</span><span class="lthresh">满 1,000,000经验值</span></div>
             <div class="lreward">1,888 USDT<span class="lreward-lucky">+5次抽奖机会</span></div>
-            <div class="lfoot"><span>未达标</span><span>本档 0/500,000</span></div>
-            <div class="llock-note">未解锁"王者奖励"，未开始计算本档经验值</div>
+            <div class="lfoot"><span>未达标</span><span>126,400/1,000,000</span></div>
           </div>
         </div>
       </div>
@@ -2179,10 +2180,11 @@
       <div class="panel-close" onclick="closePanel('panel-lucky-ended')">✕</div>
     </div>
     <div class="panel-body">
+      <button class="vip-quicklink-btn" onclick="goToVipPage()">🚀 查看VIP</button>
       <div class="mini-list-title">最终战绩</div>
       <div>
         <div class="mini-row"><span class="mini-time">08-23</span><span class="mini-name">58 USDT</span><span class="mini-status">已到账</span></div>
-        <div class="mini-row"><span class="mini-time">08-22</span><span class="mini-name">优惠券</span><span class="mini-status">已到账</span></div>
+        <div class="mini-row"><span class="mini-time">08-22</span><span class="mini-name">谢谢惠顾</span><span class="mini-status miss">未中奖</span></div>
         <div class="mini-row"><span class="mini-time">08-20</span><span class="mini-name">8 USDT</span><span class="mini-status">已到账</span></div>
       </div>
     </div>
@@ -2464,8 +2466,8 @@
   <div class="dev-section">
     <h3><span class="num">3</span>经验值阶梯达标奖励 <span class="rule-tag">重点规则</span></h3>
     <ul>
-      <li>累计经验值达到对应档位即可解锁奖励，与排名无关，从10,000到1,000,000经验值共6个档位；<b>门槛本身是"累计总量"，即每一档的"满XX经验值"都是指从活动开始算起的总经验值，不是相对上一档的增量</b>。</li>
-      <li><b>各档位的进度展示是"接力式"，不是并行式</b>：卡片上"本档 A/B"这个分数，A、B都是<b>相对上一档门槛的增量</b>——B=本档门槛-上一档门槛（这一档总共需要多赚多少经验值），A=当前累计经验值-上一档门槛（这一档目前已经多赚了多少），而不是直接拿"累计总经验值"去除以"本档总门槛"。举例：精英奖励门槛30万、上一档（里程碑奖励）门槛10万，当前累计12.64万，则精英奖励卡片显示"本档 26,400/200,000"（12.64万-10万=2.64万，30万-10万=20万），而不是"126,400/300,000"。<b>还没解锁的档位（还在排在当前档位之后、上一档尚未达标的档位）本档进度固定显示0</b>（因为这一档的经验值计数要等上一档解锁后才开始算），进度条也是0%，并附一行小字说明"解锁XX后开始计算本档经验值"，避免客户误以为所有档位在同时并行累积。"还差 X"这个数字不受接力逻辑影响，始终是"本档总门槛-当前累计总经验值"，跟哪种展示方式无关。</li>
+      <li>累计经验值达到对应档位即可解锁奖励，与排名无关，从10,000到1,000,000经验值共6个档位；<b>每档的"满XX经验值"都是后台各自独立配置的累计总门槛（从活动开始算起的总经验值），门槛本身不是相对上一档的增量</b>——比如精英奖励配置的门槛就是30万，跟里程碑奖励的10万、王者奖励的50万都是各自独立设定的总量。</li>
+      <li>卡片上"A/B"这个进度分数，展示的就是<b>当前累计总经验值 / 该档配置的总门槛</b>，跟其他档位互不干扰；档位的完成（✓）/进行中（●）/未解锁（🔒）状态，看的是同一个累计总经验值有没有达到各自的门槛，逐档判断。</li>
       <li>达标后由客户主动领取，不设领取时限——活动进行中可以领，活动结束后到页面下架前仍可补领，下架后未领取的过期作废。</li>
       <li>领取入口有两个：详情页"经验值阶梯达标奖励"面板内的单项领取，以及首页列表行上的"全部领取"快捷按钮，二者共享同一状态，任一处领取后另一处同步更新。</li>
     </ul>
@@ -2480,7 +2482,8 @@
       <li><b>VIP升级达标</b>：活动期间VIP等级每提升1级即赠送次数，不限触发上限。</li>
       <li><b>阶梯奖励达标</b>：解锁指定经验值阶梯即一次性赠送对应次数（配置在"经验值阶梯达标奖励设置"表内，与该档位是否领取奖励无关，只看是否达标解锁），每个阶梯在本期活动内限触发1次。</li>
     </ul>
-    <p>转盘固定10个扇形分区，含6档现金红包（8/18/38/58/188/888 USDT），另设4种特殊结果：<b>「谢谢惠顾」</b>本次未中奖；<b>「再抽一次」</b>本次不发放奖励，系统立即返还1次抽奖机会（总次数不变）；<b>「双倍奖励」</b>本次不发放奖励，下一次抽奖自动进入"必中现金红包/VIP加速/再抽一次且效果翻倍"的状态，若当前无剩余次数则保留至下次抽奖时生效；<b>「VIP加速」</b>限时提升VIP获取速度（速率与持续时间后台配置），<b>效果在VIP界面展示</b>，抽奖面板内仅弹出到账提示，不展示实时倒计时，若搭配双倍奖励，速率不翻倍、仅持续时间翻倍。转盘10个格子仿真实大转盘外观，金色宝石+灯泡装饰环绕，点击中心"立即抽奖"按钮转盘旋转后精准停在中奖分区，「双倍奖励」「VIP加速」分区用深色底+金色文字突出显示；<b>每个分区内文字排在外圈、图标排在内圈</b>，跟随转盘整体刚性旋转，转动时不会出现文字和转盘不同步的别扭感。<b>4个特殊分区在转盘上打散穿插排列</b>（不是集中挨在一起）：「双倍奖励」作为转盘最大奖，左右各2格都是现金档位；其余3个特殊分区左右各1格是现金档位；转盘上的现金分区只显示裸数字，不带"USDT"字样，其余位置仍完整显示金额单位。</p>
+    <p>转盘固定10个扇形分区，含6档现金红包（8/18/38/58/188/888 USDT），另设4种特殊结果：<b>「谢谢惠顾」</b>本次未中奖；<b>「再抽一次」</b>本次不发放奖励，系统立即返还1次抽奖机会（总次数不变）；<b>「双倍奖励」</b>本次不发放奖励，下一次抽奖自动进入"必中现金红包/VIP加速/再抽一次且效果翻倍"的状态，若当前无剩余次数则保留至下次抽奖时生效；<b>「VIP加速」</b>限时提升VIP获取速度（速率与持续时间后台配置），<b>效果在VIP界面展示</b>，抽奖面板内仅弹出到账提示，不展示实时倒计时，若搭配双倍奖励，速率不翻倍、仅持续时间翻倍。转盘10个格子仿真实大转盘外观，金色宝石+灯泡装饰环绕，点击中心"立即抽奖"按钮转盘旋转后精准停在中奖分区，「双倍奖励」「VIP加速」分区用深色底+金色文字突出显示；<b>每个分区内文字排在外圈、图标排在内圈</b>，跟随转盘整体刚性旋转，转动时不会出现文字和转盘不同步的别扭感。<b>4个特殊分区在转盘上打散穿插排列</b>（不是集中挨在一起）：「双倍奖励」作为转盘最大奖，左右各2格都是现金档位；其余3个特殊分区左右各1格是现金档位；转盘上的现金分区只显示裸数字，不带"USDT"字样，<b>"VIP加速"分区为两行文字："VIP加速XX%"+"持续XX小时"，均直接读取后台配置的速率与持续时间</b>，让客户抽奖前就能看到具体加速幅度和时长，不是只显示笼统的"VIP加速"文字；若当前处于双倍状态，第二行会临时展示翻倍后的小时数（如"持续48小时(双倍)"），跟实际抽中后的结算效果保持一致；其余位置仍完整显示金额单位。<b>这是本活动里为数不多真正做到"后台一改、转盘立刻同步"的配置项</b>（另一处是幸运抽奖权重），点击后台"确定提交"后即时生效。</p>
+    <p>幸运抽奖面板转盘/最终战绩下方新增<b>"🚀 查看VIP"快捷按钮</b>（进行中/已结束两台设备均有），点击弹出"即将为您跳转，前往我的VIP页面"提示，<b>本原型仅做按钮+提示，不做真实跳转</b>。承接这个入口的VIP页面本身不在本次原型范围内，但落地时需要包含：<b>跳转游戏的快捷按钮</b>（方便客户看完加速效果直接回游戏）、以及<b>展示当前VIP加速倍率与剩余持续时间的元素</b>（如"当前VIP获取速度 +30%，剩余23小时41分"），这部分只在此处记录需求，不包含具体页面设计。</p>
     <p><b>抽中"双倍奖励"后转盘的完整变化</b>：顶部出现"双倍生效中"提示条的同时，转盘外圈亮起<b>火焰特效</b>（四角火焰+发光呼吸动画）；<b>"谢谢惠顾"分区变灰</b>（双倍状态下不会再被抽中）；<b>6个现金分区文字变为"数字 X2"</b>（如"8"变"8 X2"），预告到账金额翻倍；<b>"再抽一次"分区文字变为"再抽2次"</b>——双倍效果同样能作用在"再抽一次"上，命中后净返还的抽奖机会从1次变成2次。这套视觉会在下一次真正结算（现金到账/VIP加速生效/再抽一次触发翻倍返还）后自动恢复原样。机会数为0时面板内抽奖按钮置灰。</p>
     <p><b>幸运抽奖同样支持人工审核</b>：若后台把幸运抽奖设为"人工审核"，抽中"现金红包"或"VIP加速"（含双倍加持）不会立即到账/生效，中奖弹窗改为"申请已提交，待人工审核"，"最近战绩"列表对应条目展示"申请中"，等后台审核通过后才变成"已到账"（VIP加速为"已生效"）。「谢谢惠顾」「再抽一次」「双倍奖励」这3项本身不发放实际奖励，不受此流程影响，抽中后照常即时显示结果；抽奖机会的扣减/返还同样不受影响，审核只影响"奖励是否已到账"这一步。若为自动审核，则维持原有的即时到账体验。</p>
   </div>
@@ -2669,7 +2672,7 @@
           <button class="admin-simulate-btn" type="button" onclick="approveManualClaimPeak('tier2-b'); approveManualClaimPeak('tier3-b'); approveManualClaimPeakEnded('tier3-ended');">模拟审核通过</button>
         </div>
         <table class="admin-table">
-          <tr><th>档位名称</th><th>达标经验值门槛</th><th>奖励金额</th><th>赠送抽奖次数</th><th>操作</th></tr>
+          <tr><th>档位名称</th><th>累计经验值门槛</th><th>奖励金额</th><th>赠送抽奖次数</th><th>操作</th></tr>
           <tr>
             <td><input class="admin-input name" value="入门礼包"></td>
             <td>
@@ -2769,9 +2772,9 @@
             <td class="admin-prize-name">VIP加速</td>
             <td>
               <div class="admin-inline" style="gap:4px;">
-                <input class="admin-input" type="number" min="1" value="30" style="width:52px;" title="加速速率(%)">
+                <input class="admin-input" id="vipRateInput" type="number" min="1" value="30" style="width:52px;" title="加速速率(%)">
                 <span class="admin-hint" style="margin:0;">%，持续</span>
-                <input class="admin-input" type="number" min="1" value="24" style="width:48px;" title="持续时间(小时)">
+                <input class="admin-input" id="vipHoursInput" type="number" min="1" value="24" style="width:48px;" title="持续时间(小时)">
                 <span class="admin-hint" style="margin:0;">小时</span>
               </div>
             </td>
@@ -3049,9 +3052,9 @@
     <div class="admin-devdoc-section">
       <h4>5. 经验值阶梯达标奖励设置</h4>
       <ul>
-        <li>每档配置：<b>档位名称、达标经验值门槛、奖励金额、赠送抽奖次数</b>，支持"＋新增档位"/删除，行数不固定。</li>
+        <li>每档配置：<b>档位名称、累计经验值门槛、奖励金额、赠送抽奖次数</b>，支持"＋新增档位"/删除，行数不固定。</li>
         <li><b>门槛校验</b>：每档门槛不能低于10,000，且必须严格大于上一档，否则该输入框标红并提示具体错误原因，编辑/新增/删除行都会重新校验一遍顺序。</li>
-        <li><b>各档门槛均为累计总量，C端进度展示按"接力式"计算，不是并行式</b>：每档卡片上的"本档 A/B"，A、B都是相对<b>上一档门槛的增量</b>——B=本档门槛-上一档门槛，A=当前累计经验值-上一档门槛，不是直接拿总经验值除以本档总门槛去展示。当前正在进行的档位（上一档已达标、本档尚未达标）正常显示增量进度和百分比进度条；<b>排在更后面、还没轮到开始计算的档位，本档进度固定为0、进度条为0%</b>，并显示一行提示文案"解锁XX后开始计算本档经验值"，避免客户误以为所有未解锁档位在用同一个总数并行累积（比如误以为"里程碑奖励""王者奖励""至尊奖励"同时都在按同一个总经验值走进度条）。卡片上"还差 X"这个数字始终是"本档总门槛-当前累计总经验值"，不受接力展示方式影响，任何档位都是这个算法。</li>
+        <li><b>各档门槛均为累计总量</b>：<b>"累计经验值门槛"</b>这个字段名本身已经点明了口径——每档填的都是从活动开始算起的累计总量，不是相对上一档的增量，比如精英奖励填30万，就是要求累计总经验值达到30万，跟里程碑奖励的10万、王者奖励的50万各自独立，互不叠加折算。C端每档卡片上的"A/B"进度分数，展示的就是"当前累计总经验值 / 该档配置门槛"，与其他档位互不干扰；达标解锁的判断也是逐档拿同一个累计总经验值去比对各自门槛。</li>
         <li><b>金额输入限制</b>：奖励金额只能填正数，最多保留2位小数，失焦时自动校正（负数清空、超过2位小数自动四舍五入）。</li>
         <li><b>赠送抽奖次数</b>：客户解锁该档位时一次性赠送对应次数的幸运抽奖机会，<b>填0则该档位不赠送抽奖机会，C端也不会为该档位展示任何抽奖次数相关的提示</b>；每个阶梯在本期活动内仅可触发1次，与该档位奖励是否已领取无关（只看是否达标解锁）。</li>
         <li>区域顶部新增<b>发放审核形式</b>（自动审核/人工审核）+<b>提取流水倍数要求</b>，独立于总榜、幸运抽奖各自的配置，互不影响。原先集中在"预算与风控"里的单一审核开关和流水倍数字段已移除，"预算与风控"这个分组标题也已取消。</li>
@@ -3070,7 +3073,9 @@
             <li>「谢谢惠顾」：本次未中奖，C端展示"未中奖"状态。</li>
             <li>「再抽一次」：本次不发放奖励，<b>系统立即返还1次抽奖机会</b>（该次抽奖净不消耗剩余次数）。</li>
             <li>「双倍奖励」：本次不发放奖励，<b>下一次抽奖自动进入"必中现金红包/VIP加速且效果翻倍"的双倍状态</b>，奖池临时收窄为仅含6档现金红包与VIP加速共7项，<b>「谢谢惠顾」「再抽一次」「双倍奖励」这3项在双倍状态下不会再被抽中</b>；若命中双倍状态时会员暂无剩余抽奖次数，该状态会持续保留，直到会员获得新次数并使用后才结算，期间C端详情页顶部会展示"双倍生效中"的持久提示条。</li>
-            <li>「VIP加速」：命中后限时提升会员VIP获取速度，速率与持续时间均为后台配置；<b>效果不在幸运抽奖面板内展示，客户需前往VIP界面查看当前加速状态与剩余时长</b>，抽奖面板内仅通过弹窗提示到账，不做实时倒计时。<b>若命中时正处于双倍状态，速率不翻倍，仅持续时间翻倍</b>（因VIP加速没有可翻倍的金额，双倍效果改为体现在时长上），双倍状态在这次结算后同样正常结束。</li>
+            <li>「VIP加速」：命中后限时提升会员VIP获取速度，速率与持续时间均为后台配置；<b>转盘该分区为两行文字（"VIP加速XX%"+"持续XX小时"），且是真正联动的</b>——后台"加速速率""持续时间"这两个输入框改动后，点击"确定提交"会同时把新值写回<code>prizes</code>数组并重新渲染转盘文字，抽奖结算时也会读取这份最新数据，不是写死的静态文案，也不需要人工同步。<b>效果不在幸运抽奖面板内展示，客户需前往VIP界面查看当前加速状态与剩余时长</b>，抽奖面板内仅通过弹窗提示到账，不做实时倒计时。<b>若命中时正处于双倍状态，速率不翻倍，仅持续时间翻倍</b>（因VIP加速没有可翻倍的金额，双倍效果改为体现在时长上），转盘该分区的"持续XX小时"这一行在双倍状态激活期间会临时展示翻倍后的数值并标注"(双倍)"，双倍状态在这次结算后同样正常结束、转盘展示也会同步复原。</li>
+            <li><b>"查看VIP"快捷入口</b>：幸运抽奖面板（进行中/已结束两台设备均有）在转盘/最终战绩下方新增一个"🚀 查看VIP"按钮，点击后弹出"即将为您跳转，前往我的VIP页面"的提示，<b>本原型仅做按钮+提示，不做真实跳转</b>，方便客户在了解VIP加速效果或双倍状态后快速联想到"该去VIP页面确认"这个动作。</li>
+            <li><b>VIP页面配套需求（超出本原型范围，仅记录需求）</b>：承接幸运抽奖"VIP加速"效果的VIP页面本身不在本次原型内，但落地时需要包含——① <b>跳转游戏的快捷按钮</b>，方便客户查看完加速效果后直接回到游戏继续消费/冲经验值，形成"抽奖→看VIP效果→回游戏"的闭环；② <b>展示当前VIP加速倍率与剩余持续时间的元素</b>（比如"当前VIP获取速度 +30%，剩余23小时41分"这类实时倒计时展示），这部分内容本次仅在文档里提出需求，不包含具体UI设计与实现。</li>
           </ul>
         </li>
         <li>C端抽奖界面改为<b>大转盘样式</b>：固定10个扇形分区环绕排列，转盘外圈带金色宝石装饰+环形灯泡点缀，中心是渐变蓝色宝石质感的"立即抽奖"按钮，正上方是宝石造型指针，点击后转盘旋转数圈并精准停在中奖分区；「双倍奖励」「VIP加速」两个分区用深色底+金色文字突出显示，与其余分区区分开，不需要额外的发光动画即可一眼识别。<b>每个分区内图标+文字沿半径方向排列（从外圈到内核），跟随转盘整体刚性旋转</b>，而非保持水平正读后再叠加反向旋转——避免了转动时文字与转盘不同步造成的视觉别扭感。</li>
@@ -3605,6 +3610,9 @@
     function goToLobby(){
       showToast('🎮','即将为您跳转','前往游戏大厅，继续冲刺经验值');
     }
+    function goToVipPage(){
+      showToast('🚀','即将为您跳转','前往我的VIP页面，查看当前加速效果');
+    }
     // 判断某个奖励区块当前是"自动审核"还是"人工审核"：读取对应审核开关分组里被选中的那个radio，看文字是不是"人工审核"
     function isManualAudit(groupName){
       var radios = document.querySelectorAll('input[name="'+groupName+'"]');
@@ -3917,6 +3925,7 @@
           textEl.textContent = doubleModeActive ? (p.cash + ' X2') : String(p.cash);
         }
       });
+      updateVipWheelDisplay(); // VIP加速那一格是两行文字（速率+时长），双倍状态下持续时间要跟着翻倍展示，单独处理不走上面的循环逻辑
     }
     // 统一的"切换双倍状态"入口：状态本身、顶部提示条、转盘视觉三处一起联动，避免某处漏更新
     function setDoubleMode(active){
@@ -4656,6 +4665,28 @@
         savedLuckyWeights[inp.dataset.prizeKey] = parseFloat(inp.value) || 0;
       });
     }
+    // 把后台"VIP加速"这一行的速率/持续时间输入框，同步进prizes数组，之后抽奖结算和转盘展示都按这份数据来，不再是写死的数字
+    function captureVipConfig(){
+      var vipPrize = prizes.filter(function(p){ return p.key === 'vip'; })[0];
+      if(!vipPrize) return;
+      var rateInput = document.getElementById('vipRateInput');
+      var hoursInput = document.getElementById('vipHoursInput');
+      if(rateInput) vipPrize.rate = parseFloat(rateInput.value) || vipPrize.rate;
+      if(hoursInput) vipPrize.hours = parseFloat(hoursInput.value) || vipPrize.hours;
+      updateVipWheelDisplay();
+    }
+    // 转盘上"VIP加速"格子的两行文字，按prizes里当前的rate/hours重新渲染；处于双倍状态时持续时间翻倍展示，跟实际抽中后的结算效果保持一致
+    function updateVipWheelDisplay(){
+      var vipPrize = prizes.filter(function(p){ return p.key === 'vip'; })[0];
+      if(!vipPrize) return;
+      var rateLine = document.getElementById('wheelVipRateLine');
+      var hoursLine = document.getElementById('wheelVipHoursLine');
+      if(rateLine) rateLine.textContent = 'VIP加速'+vipPrize.rate+'%';
+      if(hoursLine){
+        var displayHours = doubleModeActive ? vipPrize.hours*2 : vipPrize.hours;
+        hoursLine.textContent = '持续'+displayHours+'小时'+(doubleModeActive ? '(双倍)' : '');
+      }
+    }
     // 按权重做真正的加权随机抽取，而不是等概率瞎选；用不到已保存快照里权重的项（比如快照还没覆盖到的新奖品）兜底给1，避免除零或永远抽不到
     function weightedRandomPick(indices){
       var weights = indices.map(function(idx){
@@ -4684,9 +4715,11 @@
     }
     function saveAdminConfig(){
       captureLuckyWeights();
-      showAdminToast('✅','保存成功，幸运抽奖权重已生效');
+      captureVipConfig();
+      showAdminToast('✅','保存成功，幸运抽奖权重与VIP加速配置已生效');
     }
     captureLuckyWeights(); // 页面加载时先按表单里的默认权重值生成一份初始快照，避免管理员还没点过"确定提交"之前转盘完全没有权重数据可用（此处必须放在savedLuckyWeights声明和captureLuckyWeights函数定义之后，否则会因为var提升只提升声明、不提升赋值而报错，导致整个脚本后续初始化代码全部中断执行）
+    captureVipConfig(); // 同上，页面加载时先按表单默认值同步一次VIP加速的速率/时长到转盘展示
     // 阶梯达标经验值校验：不能低于10,000，且必须严格大于上一档，否则该输入框标红并显示错误提示
     function validateTierThresholds(input){
       var table = input ? input.closest('table') : document.querySelectorAll('.admin-table')[0];
@@ -4696,7 +4729,7 @@
         var cell = row.cells[1];
         var inp = cell.querySelector('input[type="number"]');
         var errEl = cell.querySelector('.admin-err');
-        if(!inp || !errEl) return; // 这一列不是"达标经验值门槛"（比如别的表格结构不同），不做校验
+        if(!inp || !errEl) return; // 这一列不是"累计经验值门槛"（比如别的表格结构不同），不做校验
         var val = parseInt(inp.value, 10);
         if(isNaN(val)) val = 0;
         var msg = '';
