@@ -1,0 +1,1608 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>任务系统页面</title>
+<style>
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: #E9ECF3;
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: #2F6BFF; }
+  a:hover { color: #1F52D8; }
+
+  .frame-wrap {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 32px;
+    min-height: 100vh;
+    padding: 40px 16px;
+    position: relative;
+  }
+  .frame-wrap::before {
+    content: "";
+    position: absolute;
+    width: 1000px;
+    height: 760px;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(circle, rgba(47,107,255,0.10) 0%, rgba(47,107,255,0) 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .phone-shell {
+    position: relative;
+    z-index: 1;
+    width: 422px;
+    padding: 14px 14px 20px;
+    background: linear-gradient(155deg, #34363D, #0B0C10 55%);
+    border-radius: 54px;
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.10) inset,
+      0 -2px 0 rgba(0,0,0,0.5) inset,
+      0 34px 74px rgba(10,12,20,0.38),
+      0 8px 20px rgba(10,12,20,0.22);
+  }
+  .phone-notch {
+    position: absolute;
+    top: 14px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 88px;
+    height: 24px;
+    background: #0B0C10;
+    border-radius: 14px;
+    z-index: 3;
+    box-shadow: 0 1px 0 rgba(255,255,255,0.06) inset;
+  }
+
+  .frame {
+    width: 390px;
+    height: 844px;
+    background: #F3F6FA;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+    border-radius: 38px;
+    box-shadow: 0 1px 0 rgba(255,255,255,0.6) inset;
+    border: 1px solid rgba(255,255,255,0.5);
+  }
+  .frame ::-webkit-scrollbar { display: none; }
+
+  .chip {
+    position: relative;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 7px 16px;
+    border-radius: 999px;
+    flex-shrink: 0;
+    cursor: pointer;
+    background: #FFFFFF;
+    border: 1px solid #E4E8F1;
+    color: #6D7693;
+    white-space: nowrap;
+    user-select: none;
+    transition: transform .15s ease, box-shadow .15s ease;
+  }
+  .chip:active { transform: scale(0.96); }
+  .chip.active {
+    background: #2F6BFF;
+    border-color: #2F6BFF;
+    color: #FFFFFF;
+    box-shadow: 0 6px 14px rgba(47,107,255,0.30);
+  }
+
+  .sec-tab-row {
+    flex-shrink: 0;
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    align-items: stretch;
+    height: 46px;
+    padding: 0 6px;
+    background: #FFFFFF;
+    box-shadow: 0 1px 0 #EEF0F5, 0 3px 10px rgba(20,30,60,0.035);
+    position: relative;
+    z-index: 1;
+  }
+  .sec-tab {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: center;
+    font-size: 13.5px;
+    color: #8A93AC;
+    font-weight: 400;
+    cursor: pointer;
+    text-align: center;
+    transition: color .15s ease;
+  }
+  .sec-tab:hover { color: #5B7BD6; }
+  .sec-tab-active {
+    color: #2F6BFF;
+    font-weight: 700;
+  }
+  .sec-tab-active:hover { color: #2F6BFF; }
+  .sec-tab-underline {
+    height: 3px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #6693FF, #2F6BFF);
+    box-shadow: 0 2px 6px rgba(47,107,255,0.45);
+    margin: 6px auto 0;
+    width: 22px;
+  }
+
+  .badge-anchor { position: relative; display: inline-block; }
+  .pending-badge {
+    position: absolute;
+    top: -7px;
+    right: -13px;
+    min-width: 15px;
+    height: 15px;
+    padding: 0 4px;
+    border-radius: 999px;
+    background: linear-gradient(180deg, #FF6B6B, #E63535);
+    color: #FFFFFF;
+    font-size: 9.5px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 5px rgba(230,53,53,0.40), 0 0 0 1.5px #FFFFFF;
+    line-height: 1;
+    pointer-events: none;
+    font-variant-numeric: tabular-nums;
+  }
+  .pending-badge.hidden { display: none; }
+  .chip .pending-badge { top: -6px; right: -8px; }
+
+  .panel.hidden { display: none !important; }
+  .hidden { display: none; }
+
+  .task-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #FFFFFF;
+    border-radius: 16px;
+    padding: 14px;
+    box-shadow: 0 1px 2px rgba(20,30,60,0.04), 0 6px 16px rgba(20,30,60,0.045);
+    transition: opacity .25s ease, transform .15s ease;
+  }
+
+  .task-title-text { font-size: 14px; font-weight: 600; color: #2B2E3D; letter-spacing: 0.1px; }
+
+  .task-help {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 1.3px solid #C4CAD9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 700;
+    color: #9199B0;
+    cursor: pointer;
+    flex-shrink: 0;
+    user-select: none;
+    transition: background .15s ease, color .15s ease, border-color .15s ease;
+  }
+  .task-help:hover { background: #EAF0FF; color: #2F6BFF; border-color: #2F6BFF; }
+
+  .progress-track {
+    flex-grow: 1;
+    height: 6px;
+    border-radius: 999px;
+    background: #EDF0F6;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #6693FF, #2F6BFF);
+  }
+  .progress-pct {
+    font-size: 11px;
+    font-weight: 600;
+    color: #9199B0;
+    flex-shrink: 0;
+    width: 30px;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .task-btn {
+    flex-shrink: 0;
+    width: 68px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    box-sizing: border-box;
+    transition: transform .12s ease, box-shadow .12s ease;
+  }
+  .btn-todo { background: #FFFFFF; border: 1px solid #2F6BFF; color: #2F6BFF; }
+  .btn-todo:active { transform: scale(0.94); }
+  .btn-claim { background: linear-gradient(180deg, #4B84FF, #2F6BFF); border: 1px solid #2F6BFF; color: #FFFFFF; cursor: pointer; box-shadow: 0 4px 10px rgba(47,107,255,0.30); }
+  .btn-claim:active { transform: scale(0.94); }
+  .btn-done { background: #F0F2F7; border: 1px solid #F0F2F7; color: #B7BDCE; }
+
+  .btn-pulse { animation: btn-pulse .3s ease; }
+  @keyframes btn-pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.14); }
+    100% { transform: scale(1); }
+  }
+
+  .reward-float {
+    position: fixed;
+    transform: translate(-50%, -10px);
+    color: #2F6BFF;
+    font-size: 14px;
+    font-weight: 700;
+    pointer-events: none;
+    animation: reward-rise .9s ease-out forwards;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+  }
+  @keyframes reward-rise {
+    0%   { opacity: 0; transform: translate(-50%, 0) scale(0.8); }
+    18%  { opacity: 1; transform: translate(-50%, -14px) scale(1.08); }
+    100% { opacity: 0; transform: translate(-50%, -52px) scale(1); }
+  }
+
+  .reward-ring {
+    position: fixed;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: 2px solid #2F6BFF;
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+    animation: ring-burst .5s ease-out forwards;
+    z-index: 9998;
+  }
+  @keyframes ring-burst {
+    0%   { opacity: 0.8; transform: translate(-50%, -50%) scale(0.4); }
+    100% { opacity: 0; transform: translate(-50%, -50%) scale(2.3); }
+  }
+
+  .modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(18, 24, 40, 0.46);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+  }
+  .modal-backdrop.hidden { display: none; }
+  .modal-card {
+    width: 272px;
+    max-width: 82%;
+    background: #FFFFFF;
+    border-radius: 18px;
+    padding: 22px 20px 18px;
+    box-shadow: 0 20px 44px rgba(20,30,60,0.28);
+    animation: modal-pop .18s cubic-bezier(.34,1.56,.64,1);
+  }
+  @keyframes modal-pop {
+    from { transform: scale(0.9); opacity: 0; }
+    to   { transform: scale(1); opacity: 1; }
+  }
+  .modal-title { font-size: 15px; font-weight: 700; color: #2B2E3D; margin-bottom: 8px; text-align: center; }
+  .modal-text { font-size: 13px; color: #6D7693; line-height: 1.6; margin-bottom: 18px; text-align: center; }
+  .modal-close-btn {
+    height: 38px;
+    border-radius: 999px;
+    background: linear-gradient(180deg, #4B84FF, #2F6BFF);
+    color: #FFFFFF;
+    font-size: 13px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 6px 14px rgba(47,107,255,0.28);
+  }
+  .modal-close-btn:active { transform: scale(0.97); }
+
+  .activity-card {
+    background: linear-gradient(165deg, #EEF3FF, #FFFFFF 55%);
+    border-radius: 16px;
+    padding: 14px 14px 12px;
+    box-shadow: 0 1px 2px rgba(20,30,60,0.04), 0 6px 16px rgba(20,30,60,0.05);
+    box-sizing: border-box;
+    flex-shrink: 0;
+  }
+  .countdown-pill {
+    font-size: 11px;
+    font-weight: 600;
+    color: #2F6BFF;
+    background: #FFFFFF;
+    border: 1px solid #DCE6FF;
+    padding: 3px 9px;
+    border-radius: 999px;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+  }
+  .meter-value { font-size: 12px; color: #6D7693; font-weight: 600; }
+  .meter-value span { font-size: 16px; color: #2F6BFF; font-weight: 800; }
+  .meter-track {
+    position: relative;
+    height: 8px;
+    border-radius: 999px;
+    background: #E4E9F5;
+    overflow: visible;
+  }
+  .meter-fill {
+    height: 100%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #6693FF, #2F6BFF);
+    transition: width .4s ease;
+  }
+  .meter-tick {
+    position: absolute;
+    top: -2px;
+    width: 2px;
+    height: 12px;
+    background: #FFFFFF;
+    transform: translateX(-1px);
+  }
+  .milestone-chip {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    padding: 6px 2px;
+    border-radius: 10px;
+    transition: transform .12s ease;
+  }
+  .milestone-icon { display: flex; align-items: center; justify-content: center; color: #2F6BFF; }
+  .milestone-label { font-size: 10.5px; font-weight: 700; }
+  .milestone-locked { opacity: 0.4; }
+  .milestone-locked .milestone-label { color: #6D7693; }
+  .milestone-ready { background: #2F6BFF; cursor: pointer; box-shadow: 0 4px 10px rgba(47,107,255,0.30); }
+  .milestone-ready .milestone-icon { color: #FFFFFF; }
+  .milestone-ready .milestone-label { color: #FFFFFF; }
+  .milestone-ready:active { transform: scale(0.94); }
+  .milestone-claimed { background: #F0F2F7; }
+  .milestone-claimed .milestone-icon { color: #B7BDCE; }
+  .milestone-claimed .milestone-label { color: #B7BDCE; }
+  .countdown-chip {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    flex-shrink: 0;
+    font-size: 10.5px;
+    font-weight: 700;
+    color: #ED3838;
+    background: #FDEAEA;
+    padding: 3px 7px;
+    border-radius: 999px;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .chip-clock { display: flex; align-items: center; }
+
+  .overview-type-card {
+    background: #FFFFFF;
+    border-radius: 14px;
+    padding: 12px 8px;
+    box-shadow: 0 1px 2px rgba(20,30,60,0.04), 0 4px 12px rgba(20,30,60,0.04);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 7px;
+    text-align: center;
+  }
+  .overview-type-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 11px;
+    background: linear-gradient(180deg,#EEF3FF,#E4ECFF);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: inset 0 0 0 1px rgba(47,107,255,0.08);
+  }
+  .overview-type-name { font-size: 12.5px; font-weight: 700; color: #2B2E3D; }
+  .overview-type-tag { font-size: 10px; color: #9199B0; line-height: 1.3; }
+
+  .overview-detail-card {
+    background: #FFFFFF;
+    border-radius: 16px;
+    padding: 16px;
+    box-shadow: 0 1px 2px rgba(20,30,60,0.04), 0 6px 16px rgba(20,30,60,0.045);
+  }
+  .overview-detail-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .overview-detail-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    background: linear-gradient(180deg,#EEF3FF,#E4ECFF);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-shadow: inset 0 0 0 1px rgba(47,107,255,0.08);
+  }
+  .overview-detail-title { font-size: 15px; font-weight: 700; color: #20232F; }
+  .overview-trait-row { display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap; }
+  .overview-trait-tag {
+    font-size: 10.5px;
+    font-weight: 600;
+    color: #2F6BFF;
+    background: #EAF0FF;
+    padding: 3px 9px;
+    border-radius: 999px;
+  }
+  .overview-detail-desc {
+    font-size: 12.5px;
+    color: #6D7693;
+    line-height: 1.7;
+    margin-top: 10px;
+  }
+
+  .limited-banner {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    background: #FDEAEA;
+    border: 1px solid #FBD4D4;
+    border-radius: 12px;
+    padding: 10px 12px;
+    font-size: 11.5px;
+    color: #C6302F;
+    line-height: 1.4;
+    flex-shrink: 0;
+  }
+
+  .activity-desc {
+    font-size: 11px;
+    color: #9199B0;
+    line-height: 1.5;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px dashed #E4E8F1;
+  }
+</style>
+</head>
+<body>
+
+<div class="frame-wrap">
+<div class="phone-shell">
+  <div class="phone-notch"></div>
+  <div class="frame">
+
+  <!-- Page header -->
+  <div style="flex-shrink:0; height:54px; display:flex; align-items:center; justify-content:center; background:linear-gradient(180deg, #FBFCFE, #F3F6FA);">
+    <div style="font-size:17.5px; font-weight:700; color:#20232F; letter-spacing:0.3px;">优惠活动</div>
+  </div>
+
+  <!-- Secondary tab strip: 活动 / 任务 / VIP / 返水 / 待领取 / 领取记录 -->
+  <div class="sec-tab-row">
+    <div class="sec-tab">活动</div>
+    <div class="sec-tab sec-tab-active">
+      <span class="badge-anchor">任务<span id="badge-tab-task" class="pending-badge hidden"></span></span>
+      <div class="sec-tab-underline"></div>
+    </div>
+    <div class="sec-tab">VIP</div>
+    <div class="sec-tab">返水</div>
+    <div class="sec-tab">待领取</div>
+    <div class="sec-tab">领取记录</div>
+  </div>
+
+  <!-- Filter chips: 新人福利 / 每日任务 / 每周任务 / 限时任务 + 刷新 -->
+  <div style="flex-shrink:0; display:flex; align-items:center; gap:10px; padding:12px 16px; background:#F3F6FA; overflow-x:auto;">
+    <div class="chip active" onclick="selectChip(this,'new')">新人福利<span id="badge-chip-new" class="pending-badge hidden"></span></div>
+    <div class="chip" onclick="selectChip(this,'daily')">每日任务<span id="badge-chip-daily" class="pending-badge hidden"></span></div>
+    <div class="chip" onclick="selectChip(this,'weekly')">每周任务<span id="badge-chip-weekly" class="pending-badge hidden"></span></div>
+    <div class="chip" onclick="selectChip(this,'limited')">限时任务<span id="badge-chip-limited" class="pending-badge hidden"></span></div>
+    <div style="flex-grow:1;"></div>
+    <div style="display:flex; align-items:center; gap:4px; flex-shrink:0; color:#8A93AC;">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 12a9 9 0 1 1 2.64 6.36" />
+        <path d="M3 21v-6h6" />
+      </svg>
+      <span style="font-size:12px;">刷新</span>
+    </div>
+  </div>
+
+  <!-- Panel: 新人福利 task list (one-time tasks), sorted 领取 > 去完成 > 已完成 -->
+  <div id="panel-new" class="panel" style="flex-grow:1; overflow-y:auto; padding:12px 16px 20px; display:flex; flex-direction:column; gap:10px;">
+
+    <div class="task-card" data-state="claim">
+      <div style="width:44px; height:44px; border-radius:13px; background:linear-gradient(180deg,#EEF3FF,#E4ECFF); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; flex-shrink:0; box-shadow:inset 0 0 0 1px rgba(47,107,255,0.08);"><span style="font-size:11px; font-weight:700; color:#2F6BFF; line-height:1;">+2</span><svg width="18" height="18" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#2F6BFF"/><rect x="7" y="7.5" width="10" height="2.2" rx="1.1" fill="#FFFFFF"/><rect x="10.9" y="7.5" width="2.2" height="9" rx="1.1" fill="#FFFFFF"/></svg></div>
+      <div style="flex-grow:1; min-width:0;">
+        <div style="display:flex; align-items:center; gap:6px;">
+          <div class="task-title-text">启用谷歌验证</div>
+          <div class="task-help" onclick="openDescModal(this)" data-desc="绑定谷歌验证器，登录与操作更安心">?</div>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px; margin-top:8px;">
+          <div class="progress-track"><div class="progress-fill" style="width:100%;"></div></div>
+          <div class="progress-pct">100%</div>
+        </div>
+      </div>
+      <div class="task-btn btn-claim" data-reward="2" onclick="claimReward(this)">领取</div>
+    </div>
+
+    <div class="task-card" data-state="claim">
+      <div style="width:44px; height:44px; border-radius:13px; background:linear-gradient(180deg,#EEF3FF,#E4ECFF); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; flex-shrink:0; box-shadow:inset 0 0 0 1px rgba(47,107,255,0.08);"><span style="font-size:11px; font-weight:700; color:#2F6BFF; line-height:1;">+3</span><svg width="18" height="18" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#2F6BFF"/><rect x="7" y="7.5" width="10" height="2.2" rx="1.1" fill="#FFFFFF"/><rect x="10.9" y="7.5" width="2.2" height="9" rx="1.1" fill="#FFFFFF"/></svg></div>
+      <div style="flex-grow:1; min-width:0;">
+        <div style="display:flex; align-items:center; gap:6px;">
+          <div class="task-title-text">下载App并登录</div>
+          <div class="task-help" onclick="openDescModal(this)" data-desc="下载专属App并登录，随时随地畅玩">?</div>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px; margin-top:8px;">
+          <div class="progress-track"><div class="progress-fill" style="width:100%;"></div></div>
+          <div class="progress-pct">100%</div>
+        </div>
+      </div>
+      <div class="task-btn btn-claim" data-reward="3" onclick="claimReward(this)">领取</div>
+    </div>
+
+    <div class="task-card" data-state="claim">
+      <div style="width:44px; height:44px; border-radius:13px; background:linear-gradient(180deg,#EEF3FF,#E4ECFF); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; flex-shrink:0; box-shadow:inset 0 0 0 1px rgba(47,107,255,0.08);"><span style="font-size:11px; font-weight:700; color:#2F6BFF; line-height:1;">+5</span><svg width="18" height="18" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#2F6BFF"/><rect x="7" y="7.5" width="10" height="2.2" rx="1.1" fill="#FFFFFF"/><rect x="10.9" y="7.5" width="2.2" height="9" rx="1.1" fill="#FFFFFF"/></svg></div>
+      <div style="flex-grow:1; min-width:0;">
+        <div style="display:flex; align-items:center; gap:6px;">
+          <div class="task-title-text">首次下注成功</div>
+          <div class="task-help" onclick="openDescModal(this)" data-desc="完成首次下注，开启精彩游戏体验">?</div>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px; margin-top:8px;">
+          <div class="progress-track"><div class="progress-fill" style="width:100%;"></div></div>
+          <div class="progress-pct">100%</div>
+        </div>
+      </div>
+      <div class="task-btn btn-claim" data-reward="5" onclick="claimReward(this)">领取</div>
+    </div>
+
+    <div class="task-card" data-state="todo">
+      <div style="width:44px; height:44px; border-radius:13px; background:linear-gradient(180deg,#EEF3FF,#E4ECFF); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; flex-shrink:0; box-shadow:inset 0 0 0 1px rgba(47,107,255,0.08);"><span style="font-size:11px; font-weight:700; color:#2F6BFF; line-height:1;">+2</span><svg width="18" height="18" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#2F6BFF"/><rect x="7" y="7.5" width="10" height="2.2" rx="1.1" fill="#FFFFFF"/><rect x="10.9" y="7.5" width="2.2" height="9" rx="1.1" fill="#FFFFFF"/></svg></div>
+      <div style="flex-grow:1; min-width:0;">
+        <div style="display:flex; align-items:center; gap:6px;">
+          <div class="task-title-text">设置提款密码</div>
+          <div class="task-help" onclick="openDescModal(this)" data-desc="设置独立提款密码，出款更放心">?</div>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px; margin-top:8px;">
+          <div class="progress-track"><div class="progress-fill" style="width:0%;"></div></div>
+          <div class="progress-pct">0%</div>
+        </div>
+      </div>
+      <div class="task-btn btn-todo">去完成</div>
+    </div>
+
+    <div class="task-card" data-state="todo">
+      <div style="width:44px; height:44px; border-radius:13px; background:linear-gradient(180deg,#EEF3FF,#E4ECFF); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; flex-shrink:0; box-shadow:inset 0 0 0 1px rgba(47,107,255,0.08);"><span style="font-size:11px; font-weight:700; color:#2F6BFF; line-height:1;">+5</span><svg width="18" height="18" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#2F6BFF"/><rect x="7" y="7.5" width="10" height="2.2" rx="1.1" fill="#FFFFFF"/><rect x="10.9" y="7.5" width="2.2" height="9" rx="1.1" fill="#FFFFFF"/></svg></div>
+      <div style="flex-grow:1; min-width:0;">
+        <div style="display:flex; align-items:center; gap:6px;">
+          <div class="task-title-text">首次提款</div>
+          <div class="task-help" onclick="openDescModal(this)" data-desc="完成首次提款，体验轻松出款服务">?</div>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px; margin-top:8px;">
+          <div class="progress-track"><div class="progress-fill" style="width:0%;"></div></div>
+          <div class="progress-pct">0%</div>
+        </div>
+      </div>
+      <div class="task-btn btn-todo">去完成</div>
+    </div>
+
+    <div class="task-card" data-state="todo">
+      <div style="width:44px; height:44px; border-radius:13px; background:linear-gradient(180deg,#EEF3FF,#E4ECFF); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; flex-shrink:0; box-shadow:inset 0 0 0 1px rgba(47,107,255,0.08);"><span style="font-size:11px; font-weight:700; color:#2F6BFF; line-height:1;">+3</span><svg width="18" height="18" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#2F6BFF"/><rect x="7" y="7.5" width="10" height="2.2" rx="1.1" fill="#FFFFFF"/><rect x="10.9" y="7.5" width="2.2" height="9" rx="1.1" fill="#FFFFFF"/></svg></div>
+      <div style="flex-grow:1; min-width:0;">
+        <div style="display:flex; align-items:center; gap:6px;">
+          <div class="task-title-text">将网站添加到桌面</div>
+          <div class="task-help" onclick="openDescModal(this)" data-desc="添加至桌面，下次访问一键直达">?</div>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px; margin-top:8px;">
+          <div class="progress-track"><div class="progress-fill" style="width:0%;"></div></div>
+          <div class="progress-pct">0%</div>
+        </div>
+      </div>
+      <div class="task-btn btn-todo">去完成</div>
+    </div>
+
+    <div class="task-card" data-state="todo">
+      <div style="width:44px; height:44px; border-radius:13px; background:linear-gradient(180deg,#EEF3FF,#E4ECFF); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; flex-shrink:0; box-shadow:inset 0 0 0 1px rgba(47,107,255,0.08);"><span style="font-size:11px; font-weight:700; color:#2F6BFF; line-height:1;">+5</span><svg width="18" height="18" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#2F6BFF"/><rect x="7" y="7.5" width="10" height="2.2" rx="1.1" fill="#FFFFFF"/><rect x="10.9" y="7.5" width="2.2" height="9" rx="1.1" fill="#FFFFFF"/></svg></div>
+      <div style="flex-grow:1; min-width:0;">
+        <div style="display:flex; align-items:center; gap:6px;">
+          <div class="task-title-text">邀请1位好友注册</div>
+          <div class="task-help" onclick="openDescModal(this)" data-desc="邀请1位新用户完成注册并登录，双方均可获得奖励">?</div>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px; margin-top:8px;">
+          <div class="progress-track"><div class="progress-fill" style="width:0%;"></div></div>
+          <div class="progress-pct">0%</div>
+        </div>
+      </div>
+      <div class="task-btn btn-todo">去完成</div>
+    </div>
+
+    <div class="task-card" data-state="done">
+      <div style="width:44px; height:44px; border-radius:13px; background:linear-gradient(180deg,#EEF3FF,#E4ECFF); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; flex-shrink:0; box-shadow:inset 0 0 0 1px rgba(47,107,255,0.08);"><span style="font-size:11px; font-weight:700; color:#2F6BFF; line-height:1;">+2</span><svg width="18" height="18" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#2F6BFF"/><rect x="7" y="7.5" width="10" height="2.2" rx="1.1" fill="#FFFFFF"/><rect x="10.9" y="7.5" width="2.2" height="9" rx="1.1" fill="#FFFFFF"/></svg></div>
+      <div style="flex-grow:1; min-width:0;">
+        <div style="display:flex; align-items:center; gap:6px;">
+          <div class="task-title-text">设置支付密码</div>
+          <div class="task-help" onclick="openDescModal(this)" data-desc="开启支付密码，为您的资金再加一道安全锁">?</div>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px; margin-top:8px;">
+          <div class="progress-track"><div class="progress-fill" style="width:100%;"></div></div>
+          <div class="progress-pct">100%</div>
+        </div>
+      </div>
+      <div class="task-btn btn-done">已完成</div>
+    </div>
+
+    <div class="task-card" data-state="done">
+      <div style="width:44px; height:44px; border-radius:13px; background:linear-gradient(180deg,#EEF3FF,#E4ECFF); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; flex-shrink:0; box-shadow:inset 0 0 0 1px rgba(47,107,255,0.08);"><span style="font-size:11px; font-weight:700; color:#2F6BFF; line-height:1;">+10</span><svg width="18" height="18" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#2F6BFF"/><rect x="7" y="7.5" width="10" height="2.2" rx="1.1" fill="#FFFFFF"/><rect x="10.9" y="7.5" width="2.2" height="9" rx="1.1" fill="#FFFFFF"/></svg></div>
+      <div style="flex-grow:1; min-width:0;">
+        <div style="display:flex; align-items:center; gap:6px;">
+          <div class="task-title-text">首次充值</div>
+          <div class="task-help" onclick="openDescModal(this)" data-desc="完成首次充值，开启您的游戏之旅">?</div>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px; margin-top:8px;">
+          <div class="progress-track"><div class="progress-fill" style="width:100%;"></div></div>
+          <div class="progress-pct">100%</div>
+        </div>
+      </div>
+      <div class="task-btn btn-done">已完成</div>
+    </div>
+
+    <div class="task-card" data-state="done">
+      <div style="width:44px; height:44px; border-radius:13px; background:linear-gradient(180deg,#EEF3FF,#E4ECFF); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; flex-shrink:0; box-shadow:inset 0 0 0 1px rgba(47,107,255,0.08);"><span style="font-size:11px; font-weight:700; color:#2F6BFF; line-height:1;">+8</span><svg width="18" height="18" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#2F6BFF"/><rect x="7" y="7.5" width="10" height="2.2" rx="1.1" fill="#FFFFFF"/><rect x="10.9" y="7.5" width="2.2" height="9" rx="1.1" fill="#FFFFFF"/></svg></div>
+      <div style="flex-grow:1; min-width:0;">
+        <div style="display:flex; align-items:center; gap:6px;">
+          <div class="task-title-text">首次获得一次投注并获奖</div>
+          <div class="task-help" onclick="openDescModal(this)" data-desc="首次投注即中奖，好运连连">?</div>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px; margin-top:8px;">
+          <div class="progress-track"><div class="progress-fill" style="width:100%;"></div></div>
+          <div class="progress-pct">100%</div>
+        </div>
+      </div>
+      <div class="task-btn btn-done">已完成</div>
+    </div>
+
+  </div>
+
+  <!-- Panel: 每日任务 -->
+  <div id="panel-daily" class="panel hidden" style="flex-grow:1; overflow-y:auto; padding:12px 16px 20px; display:flex; flex-direction:column; gap:10px;">
+
+    <div class="activity-card">
+      <div style="display:flex; align-items:center; justify-content:space-between;">
+        <div style="display:flex; align-items:center; gap:6px;">
+          <svg width="14" height="14" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#2F6BFF"/><path d="M13 4 6.5 14h4.2l-1 6.5L17 10h-4.2l1-6z" fill="#FFFFFF"/></svg>
+          <span style="font-size:14px; font-weight:700; color:#20232F;">活跃度</span>
+        </div>
+        <div class="countdown-pill">距 <span id="daily-countdown">--:--:--</span> 后重置</div>
+      </div>
+      <div style="display:flex; align-items:baseline; justify-content:space-between; margin-top:12px;">
+        <div class="meter-value"><span id="daily-current">25</span> / 100 活跃度</div>
+      </div>
+      <div class="meter-track" style="margin-top:6px;">
+        <div class="meter-fill" id="daily-fill" style="width:25%;"></div>
+        <div class="meter-tick" style="left:25%;"></div><div class="meter-tick" style="left:50%;"></div><div class="meter-tick" style="left:75%;"></div><div class="meter-tick" style="left:100%;"></div>
+      </div>
+      <div style="display:flex; gap:6px; margin-top:10px;">
+        <div class="milestone-chip milestone-ready" data-threshold="25" data-reward="2" onclick="claimMilestone(this)">
+          <div class="milestone-icon"><svg width="13" height="13" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="currentColor"/><rect x="7" y="7.5" width="10" height="2.2" rx="1.1" fill="#FFFFFF"/><rect x="10.9" y="7.5" width="2.2" height="9" rx="1.1" fill="#FFFFFF"/></svg></div><div class="milestone-label">领取</div>
+        </div>
+        <div class="milestone-chip milestone-locked" data-threshold="50" data-reward="4">
+          <div class="milestone-icon"><svg width="13" height="13" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="currentColor"/><rect x="7" y="7.5" width="10" height="2.2" rx="1.1" fill="#FFFFFF"/><rect x="10.9" y="7.5" width="2.2" height="9" rx="1.1" fill="#FFFFFF"/></svg></div><div class="milestone-label">+4</div>
+        </div>
+        <div class="milestone-chip milestone-locked" data-threshold="75" data-reward="6">
+          <div class="milestone-icon"><svg width="13" height="13" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="currentColor"/><rect x="7" y="7.5" width="10" height="2.2" rx="1.1" fill="#FFFFFF"/><rect x="10.9" y="7.5" width="2.2" height="9" rx="1.1" fill="#FFFFFF"/></svg></div><div class="milestone-label">+6</div>
+        </div>
+        <div class="milestone-chip milestone-locked" data-threshold="100" data-reward="10">
+          <div class="milestone-icon"><svg width="13" height="13" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="currentColor"/><rect x="7" y="7.5" width="10" height="2.2" rx="1.1" fill="#FFFFFF"/><rect x="10.9" y="7.5" width="2.2" height="9" rx="1.1" fill="#FFFFFF"/></svg></div><div class="milestone-label">+10</div>
+        </div>
+      </div>
+      <div class="activity-desc">完成任务可获得活跃度，活跃度每满25点可领取一次USDT奖励，上限100点。活跃度将于每日00:00重置，已领取的奖励不受影响。</div>
+    </div>
+
+    <div class="task-list" style="display:flex; flex-direction:column; gap:10px;">
+
+    <div class="task-card" data-state="done">
+      <div style="width:44px; height:44px; border-radius:13px; background:linear-gradient(180deg,#EEF3FF,#E4ECFF); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; flex-shrink:0; box-shadow:inset 0 0 0 1px rgba(47,107,255,0.08);"><span style="font-size:11px; font-weight:700; color:#2F6BFF; line-height:1;">+10</span><svg width="18" height="18" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#2F6BFF"/><path d="M13 4 6.5 14h4.2l-1 6.5L17 10h-4.2l1-6z" fill="#FFFFFF"/></svg></div>
+      <div style="flex-grow:1; min-width:0;">
+        <div style="display:flex; align-items:center; gap:6px;">
+          <div class="task-title-text">每日登录</div>
+          <div class="task-help" onclick="openDescModal(this)" data-desc="每日完成登录即可获得活跃度">?</div>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px; margin-top:8px;">
+          <div class="progress-track"><div class="progress-fill" style="width:100%;"></div></div>
+          <div class="progress-pct">100%</div>
+        </div>
+      </div>
+      <div class="task-btn btn-done">已完成</div>
+    </div>
+
+    <div class="task-card" data-state="done">
+      <div style="width:44px; height:44px; border-radius:13px; background:linear-gradient(180deg,#EEF3FF,#E4ECFF); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; flex-shrink:0; box-shadow:inset 0 0 0 1px rgba(47,107,255,0.08);"><span style="font-size:11px; font-weight:700; color:#2F6BFF; line-height:1;">+15</span><svg width="18" height="18" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#2F6BFF"/><path d="M13 4 6.5 14h4.2l-1 6.5L17 10h-4.2l1-6z" fill="#FFFFFF"/></svg></div>
+      <div style="flex-grow:1; min-width:0;">
+        <div style="display:flex; align-items:center; gap:6px;">
+          <div class="task-title-text">单日累计充值50元</div>
+          <div class="task-help" onclick="openDescModal(this)" data-desc="单日累计充值满50元">?</div>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px; margin-top:8px;">
+          <div class="progress-track"><div class="progress-fill" style="width:100%;"></div></div>
+          <div class="progress-pct">100%</div>
+        </div>
+      </div>
+      <div class="task-btn btn-done">已完成</div>
+    </div>
+
+    <div class="task-card" data-state="claim">
+      <div style="width:44px; height:44px; border-radius:13px; background:linear-gradient(180deg,#EEF3FF,#E4ECFF); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; flex-shrink:0; box-shadow:inset 0 0 0 1px rgba(47,107,255,0.08);"><span style="font-size:11px; font-weight:700; color:#2F6BFF; line-height:1;">+15</span><svg width="18" height="18" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#2F6BFF"/><path d="M13 4 6.5 14h4.2l-1 6.5L17 10h-4.2l1-6z" fill="#FFFFFF"/></svg></div>
+      <div style="flex-grow:1; min-width:0;">
+        <div style="display:flex; align-items:center; gap:6px;">
+          <div class="task-title-text">单日投注30局</div>
+          <div class="task-help" onclick="openDescModal(this)" data-desc="单日完成30局有效投注">?</div>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px; margin-top:8px;">
+          <div class="progress-track"><div class="progress-fill" style="width:100%;"></div></div>
+          <div class="progress-pct">100%</div>
+        </div>
+      </div>
+      <div class="task-btn btn-claim" data-points="15" data-meter="daily" onclick="claimActivity(this)">领取</div>
+    </div>
+
+    <div class="task-card" data-state="todo">
+      <div style="width:44px; height:44px; border-radius:13px; background:linear-gradient(180deg,#EEF3FF,#E4ECFF); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; flex-shrink:0; box-shadow:inset 0 0 0 1px rgba(47,107,255,0.08);"><span style="font-size:11px; font-weight:700; color:#2F6BFF; line-height:1;">+20</span><svg width="18" height="18" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#2F6BFF"/><path d="M13 4 6.5 14h4.2l-1 6.5L17 10h-4.2l1-6z" fill="#FFFFFF"/></svg></div>
+      <div style="flex-grow:1; min-width:0;">
+        <div style="display:flex; align-items:center; gap:6px;">
+          <div class="task-title-text">单日有效投注满100</div>
+          <div class="task-help" onclick="openDescModal(this)" data-desc="单日有效投注金额满100元">?</div>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px; margin-top:8px;">
+          <div class="progress-track"><div class="progress-fill" style="width:0%;"></div></div>
+          <div class="progress-pct">0%</div>
+        </div>
+      </div>
+      <div class="task-btn btn-todo">去完成</div>
+    </div>
+
+    <div class="task-card" data-state="todo">
+      <div style="width:44px; height:44px; border-radius:13px; background:linear-gradient(180deg,#EEF3FF,#E4ECFF); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; flex-shrink:0; box-shadow:inset 0 0 0 1px rgba(47,107,255,0.08);"><span style="font-size:11px; font-weight:700; color:#2F6BFF; line-height:1;">+10</span><svg width="18" height="18" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#2F6BFF"/><path d="M13 4 6.5 14h4.2l-1 6.5L17 10h-4.2l1-6z" fill="#FFFFFF"/></svg></div>
+      <div style="flex-grow:1; min-width:0;">
+        <div style="display:flex; align-items:center; gap:6px;">
+          <div class="task-title-text">每日体验指定游戏</div>
+          <div class="task-help" onclick="openDescModal(this)" data-desc="登录后试玩1局平台推荐游戏">?</div>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px; margin-top:8px;">
+          <div class="progress-track"><div class="progress-fill" style="width:0%;"></div></div>
+          <div class="progress-pct">0%</div>
+        </div>
+      </div>
+      <div class="task-btn btn-todo">去完成</div>
+    </div>
+
+    <div class="task-card" data-state="todo">
+      <div style="width:44px; height:44px; border-radius:13px; background:linear-gradient(180deg,#EEF3FF,#E4ECFF); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; flex-shrink:0; box-shadow:inset 0 0 0 1px rgba(47,107,255,0.08);"><span style="font-size:11px; font-weight:700; color:#2F6BFF; line-height:1;">+10</span><svg width="18" height="18" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#2F6BFF"/><path d="M13 4 6.5 14h4.2l-1 6.5L17 10h-4.2l1-6z" fill="#FFFFFF"/></svg></div>
+      <div style="flex-grow:1; min-width:0;">
+        <div style="display:flex; align-items:center; gap:6px;">
+          <div class="task-title-text">单日游戏类型全勤</div>
+          <div class="task-help" onclick="openDescModal(this)" data-desc="电子、视讯、捕鱼各完成1局投注">?</div>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px; margin-top:8px;">
+          <div class="progress-track"><div class="progress-fill" style="width:0%;"></div></div>
+          <div class="progress-pct">0%</div>
+        </div>
+      </div>
+      <div class="task-btn btn-todo">去完成</div>
+    </div>
+
+    <div class="task-card" data-state="todo">
+      <div style="width:44px; height:44px; border-radius:13px; background:linear-gradient(180deg,#EEF3FF,#E4ECFF); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; flex-shrink:0; box-shadow:inset 0 0 0 1px rgba(47,107,255,0.08);"><span style="font-size:11px; font-weight:700; color:#2F6BFF; line-height:1;">+10</span><svg width="18" height="18" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#2F6BFF"/><path d="M13 4 6.5 14h4.2l-1 6.5L17 10h-4.2l1-6z" fill="#FFFFFF"/></svg></div>
+      <div style="flex-grow:1; min-width:0;">
+        <div style="display:flex; align-items:center; gap:6px;">
+          <div class="task-title-text">单日提款成功1次</div>
+          <div class="task-help" onclick="openDescModal(this)" data-desc="完成1次提款操作">?</div>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px; margin-top:8px;">
+          <div class="progress-track"><div class="progress-fill" style="width:0%;"></div></div>
+          <div class="progress-pct">0%</div>
+        </div>
+      </div>
+      <div class="task-btn btn-todo">去完成</div>
+    </div>
+
+    <div class="task-card" data-state="todo">
+      <div style="width:44px; height:44px; border-radius:13px; background:linear-gradient(180deg,#EEF3FF,#E4ECFF); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; flex-shrink:0; box-shadow:inset 0 0 0 1px rgba(47,107,255,0.08);"><span style="font-size:11px; font-weight:700; color:#2F6BFF; line-height:1;">+10</span><svg width="18" height="18" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#2F6BFF"/><path d="M13 4 6.5 14h4.2l-1 6.5L17 10h-4.2l1-6z" fill="#FFFFFF"/></svg></div>
+      <div style="flex-grow:1; min-width:0;">
+        <div style="display:flex; align-items:center; gap:6px;">
+          <div class="task-title-text">每日在线时长满30分钟</div>
+          <div class="task-help" onclick="openDescModal(this)" data-desc="单日累计在线时长满30分钟">?</div>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px; margin-top:8px;">
+          <div class="progress-track"><div class="progress-fill" style="width:0%;"></div></div>
+          <div class="progress-pct">0%</div>
+        </div>
+      </div>
+      <div class="task-btn btn-todo">去完成</div>
+    </div>
+
+    </div>
+  </div>
+
+  <!-- Panel: 每周任务 -->
+  <div id="panel-weekly" class="panel hidden" style="flex-grow:1; overflow-y:auto; padding:12px 16px 20px; display:flex; flex-direction:column; gap:10px;">
+
+    <div class="activity-card">
+      <div style="display:flex; align-items:center; justify-content:space-between;">
+        <div style="display:flex; align-items:center; gap:6px;">
+          <svg width="14" height="14" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#2F6BFF"/><path d="M13 4 6.5 14h4.2l-1 6.5L17 10h-4.2l1-6z" fill="#FFFFFF"/></svg>
+          <span style="font-size:14px; font-weight:700; color:#20232F;">活跃度</span>
+        </div>
+        <div class="countdown-pill">距 <span id="weekly-countdown">--:--:--</span> 后重置</div>
+      </div>
+      <div style="display:flex; align-items:baseline; justify-content:space-between; margin-top:12px;">
+        <div class="meter-value"><span id="weekly-current">30</span> / 100 活跃度</div>
+      </div>
+      <div class="meter-track" style="margin-top:6px;">
+        <div class="meter-fill" id="weekly-fill" style="width:30%;"></div>
+        <div class="meter-tick" style="left:25%;"></div><div class="meter-tick" style="left:50%;"></div><div class="meter-tick" style="left:75%;"></div><div class="meter-tick" style="left:100%;"></div>
+      </div>
+      <div style="display:flex; gap:6px; margin-top:10px;">
+        <div class="milestone-chip milestone-ready" data-threshold="25" data-reward="5" onclick="claimMilestone(this)">
+          <div class="milestone-icon"><svg width="13" height="13" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="currentColor"/><rect x="7" y="7.5" width="10" height="2.2" rx="1.1" fill="#FFFFFF"/><rect x="10.9" y="7.5" width="2.2" height="9" rx="1.1" fill="#FFFFFF"/></svg></div><div class="milestone-label">领取</div>
+        </div>
+        <div class="milestone-chip milestone-locked" data-threshold="50" data-reward="10">
+          <div class="milestone-icon"><svg width="13" height="13" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="currentColor"/><rect x="7" y="7.5" width="10" height="2.2" rx="1.1" fill="#FFFFFF"/><rect x="10.9" y="7.5" width="2.2" height="9" rx="1.1" fill="#FFFFFF"/></svg></div><div class="milestone-label">+10</div>
+        </div>
+        <div class="milestone-chip milestone-locked" data-threshold="75" data-reward="15">
+          <div class="milestone-icon"><svg width="13" height="13" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="currentColor"/><rect x="7" y="7.5" width="10" height="2.2" rx="1.1" fill="#FFFFFF"/><rect x="10.9" y="7.5" width="2.2" height="9" rx="1.1" fill="#FFFFFF"/></svg></div><div class="milestone-label">+15</div>
+        </div>
+        <div class="milestone-chip milestone-locked" data-threshold="100" data-reward="25">
+          <div class="milestone-icon"><svg width="13" height="13" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="currentColor"/><rect x="7" y="7.5" width="10" height="2.2" rx="1.1" fill="#FFFFFF"/><rect x="10.9" y="7.5" width="2.2" height="9" rx="1.1" fill="#FFFFFF"/></svg></div><div class="milestone-label">+25</div>
+        </div>
+      </div>
+      <div class="activity-desc">完成任务可获得活跃度，活跃度每满25点可领取一次USDT奖励，上限100点。活跃度将于每周一00:00重置，已领取的奖励不受影响。</div>
+    </div>
+
+    <div class="task-list" style="display:flex; flex-direction:column; gap:10px;">
+
+    <div class="task-card" data-state="done">
+      <div style="width:44px; height:44px; border-radius:13px; background:linear-gradient(180deg,#EEF3FF,#E4ECFF); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; flex-shrink:0; box-shadow:inset 0 0 0 1px rgba(47,107,255,0.08);"><span style="font-size:11px; font-weight:700; color:#2F6BFF; line-height:1;">+10</span><svg width="18" height="18" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#2F6BFF"/><path d="M13 4 6.5 14h4.2l-1 6.5L17 10h-4.2l1-6z" fill="#FFFFFF"/></svg></div>
+      <div style="flex-grow:1; min-width:0;">
+        <div style="display:flex; align-items:center; gap:6px;">
+          <div class="task-title-text">每周登录3天</div>
+          <div class="task-help" onclick="openDescModal(this)" data-desc="本周内累计登录满3天">?</div>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px; margin-top:8px;">
+          <div class="progress-track"><div class="progress-fill" style="width:100%;"></div></div>
+          <div class="progress-pct">100%</div>
+        </div>
+      </div>
+      <div class="task-btn btn-done">已完成</div>
+    </div>
+
+    <div class="task-card" data-state="done">
+      <div style="width:44px; height:44px; border-radius:13px; background:linear-gradient(180deg,#EEF3FF,#E4ECFF); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; flex-shrink:0; box-shadow:inset 0 0 0 1px rgba(47,107,255,0.08);"><span style="font-size:11px; font-weight:700; color:#2F6BFF; line-height:1;">+20</span><svg width="18" height="18" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#2F6BFF"/><path d="M13 4 6.5 14h4.2l-1 6.5L17 10h-4.2l1-6z" fill="#FFFFFF"/></svg></div>
+      <div style="flex-grow:1; min-width:0;">
+        <div style="display:flex; align-items:center; gap:6px;">
+          <div class="task-title-text">单周累计充值满200U</div>
+          <div class="task-help" onclick="openDescModal(this)" data-desc="本周累计充值满200 USDT">?</div>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px; margin-top:8px;">
+          <div class="progress-track"><div class="progress-fill" style="width:100%;"></div></div>
+          <div class="progress-pct">100%</div>
+        </div>
+      </div>
+      <div class="task-btn btn-done">已完成</div>
+    </div>
+
+    <div class="task-card" data-state="claim">
+      <div style="width:44px; height:44px; border-radius:13px; background:linear-gradient(180deg,#EEF3FF,#E4ECFF); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; flex-shrink:0; box-shadow:inset 0 0 0 1px rgba(47,107,255,0.08);"><span style="font-size:11px; font-weight:700; color:#2F6BFF; line-height:1;">+25</span><svg width="18" height="18" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#2F6BFF"/><path d="M13 4 6.5 14h4.2l-1 6.5L17 10h-4.2l1-6z" fill="#FFFFFF"/></svg></div>
+      <div style="flex-grow:1; min-width:0;">
+        <div style="display:flex; align-items:center; gap:6px;">
+          <div class="task-title-text">单周有效投注满500U</div>
+          <div class="task-help" onclick="openDescModal(this)" data-desc="本周有效投注金额满500 USDT">?</div>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px; margin-top:8px;">
+          <div class="progress-track"><div class="progress-fill" style="width:100%;"></div></div>
+          <div class="progress-pct">100%</div>
+        </div>
+      </div>
+      <div class="task-btn btn-claim" data-points="25" data-meter="weekly" onclick="claimActivity(this)">领取</div>
+    </div>
+
+    <div class="task-card" data-state="todo">
+      <div style="width:44px; height:44px; border-radius:13px; background:linear-gradient(180deg,#EEF3FF,#E4ECFF); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; flex-shrink:0; box-shadow:inset 0 0 0 1px rgba(47,107,255,0.08);"><span style="font-size:11px; font-weight:700; color:#2F6BFF; line-height:1;">+20</span><svg width="18" height="18" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#2F6BFF"/><path d="M13 4 6.5 14h4.2l-1 6.5L17 10h-4.2l1-6z" fill="#FFFFFF"/></svg></div>
+      <div style="flex-grow:1; min-width:0;">
+        <div style="display:flex; align-items:center; gap:6px;">
+          <div class="task-title-text">单周邀请2位好友注册</div>
+          <div class="task-help" onclick="openDescModal(this)" data-desc="邀请2位新用户完成注册并登录">?</div>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px; margin-top:8px;">
+          <div class="progress-track"><div class="progress-fill" style="width:0%;"></div></div>
+          <div class="progress-pct">0%</div>
+        </div>
+      </div>
+      <div class="task-btn btn-todo">去完成</div>
+    </div>
+
+    <div class="task-card" data-state="todo">
+      <div style="width:44px; height:44px; border-radius:13px; background:linear-gradient(180deg,#EEF3FF,#E4ECFF); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; flex-shrink:0; box-shadow:inset 0 0 0 1px rgba(47,107,255,0.08);"><span style="font-size:11px; font-weight:700; color:#2F6BFF; line-height:1;">+5</span><svg width="18" height="18" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#2F6BFF"/><path d="M13 4 6.5 14h4.2l-1 6.5L17 10h-4.2l1-6z" fill="#FFFFFF"/></svg></div>
+      <div style="flex-grow:1; min-width:0;">
+        <div style="display:flex; align-items:center; gap:6px;">
+          <div class="task-title-text">每周体验3款不同游戏</div>
+          <div class="task-help" onclick="openDescModal(this)" data-desc="本周内试玩3款不同游戏">?</div>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px; margin-top:8px;">
+          <div class="progress-track"><div class="progress-fill" style="width:0%;"></div></div>
+          <div class="progress-pct">0%</div>
+        </div>
+      </div>
+      <div class="task-btn btn-todo">去完成</div>
+    </div>
+
+    <div class="task-card" data-state="todo">
+      <div style="width:44px; height:44px; border-radius:13px; background:linear-gradient(180deg,#EEF3FF,#E4ECFF); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; flex-shrink:0; box-shadow:inset 0 0 0 1px rgba(47,107,255,0.08);"><span style="font-size:11px; font-weight:700; color:#2F6BFF; line-height:1;">+10</span><svg width="18" height="18" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#2F6BFF"/><path d="M13 4 6.5 14h4.2l-1 6.5L17 10h-4.2l1-6z" fill="#FFFFFF"/></svg></div>
+      <div style="flex-grow:1; min-width:0;">
+        <div style="display:flex; align-items:center; gap:6px;">
+          <div class="task-title-text">单周游戏类型全勤</div>
+          <div class="task-help" onclick="openDescModal(this)" data-desc="电子、视讯、捕鱼类游戏本周内各完成5局">?</div>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px; margin-top:8px;">
+          <div class="progress-track"><div class="progress-fill" style="width:0%;"></div></div>
+          <div class="progress-pct">0%</div>
+        </div>
+      </div>
+      <div class="task-btn btn-todo">去完成</div>
+    </div>
+
+    <div class="task-card" data-state="todo">
+      <div style="width:44px; height:44px; border-radius:13px; background:linear-gradient(180deg,#EEF3FF,#E4ECFF); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; flex-shrink:0; box-shadow:inset 0 0 0 1px rgba(47,107,255,0.08);"><span style="font-size:11px; font-weight:700; color:#2F6BFF; line-height:1;">+5</span><svg width="18" height="18" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#2F6BFF"/><path d="M13 4 6.5 14h4.2l-1 6.5L17 10h-4.2l1-6z" fill="#FFFFFF"/></svg></div>
+      <div style="flex-grow:1; min-width:0;">
+        <div style="display:flex; align-items:center; gap:6px;">
+          <div class="task-title-text">单周提款成功2次</div>
+          <div class="task-help" onclick="openDescModal(this)" data-desc="本周内完成2次提款操作">?</div>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px; margin-top:8px;">
+          <div class="progress-track"><div class="progress-fill" style="width:0%;"></div></div>
+          <div class="progress-pct">0%</div>
+        </div>
+      </div>
+      <div class="task-btn btn-todo">去完成</div>
+    </div>
+
+    <div class="task-card" data-state="todo">
+      <div style="width:44px; height:44px; border-radius:13px; background:linear-gradient(180deg,#EEF3FF,#E4ECFF); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; flex-shrink:0; box-shadow:inset 0 0 0 1px rgba(47,107,255,0.08);"><span style="font-size:11px; font-weight:700; color:#2F6BFF; line-height:1;">+5</span><svg width="18" height="18" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#2F6BFF"/><path d="M13 4 6.5 14h4.2l-1 6.5L17 10h-4.2l1-6z" fill="#FFFFFF"/></svg></div>
+      <div style="flex-grow:1; min-width:0;">
+        <div style="display:flex; align-items:center; gap:6px;">
+          <div class="task-title-text">单周累计在线时长满3小时</div>
+          <div class="task-help" onclick="openDescModal(this)" data-desc="本周累计在线时长满3小时">?</div>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px; margin-top:8px;">
+          <div class="progress-track"><div class="progress-fill" style="width:0%;"></div></div>
+          <div class="progress-pct">0%</div>
+        </div>
+      </div>
+      <div class="task-btn btn-todo">去完成</div>
+    </div>
+
+    </div>
+  </div>
+
+  <!-- Panel: 限时任务 (event tasks with individual countdowns, direct USDT reward) -->
+  <div id="panel-limited" class="panel hidden" style="flex-grow:1; overflow-y:auto; padding:12px 16px 20px; display:flex; flex-direction:column; gap:10px;">
+
+    <div class="limited-banner">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#ED3838" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.2 2"/></svg>
+      <span>限时任务将在倒计时结束后自动下架，请尽快完成任务领取奖励</span>
+    </div>
+
+    <div class="task-card" data-state="claim">
+      <div style="width:44px; height:44px; border-radius:13px; background:linear-gradient(180deg,#EEF3FF,#E4ECFF); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; flex-shrink:0; box-shadow:inset 0 0 0 1px rgba(47,107,255,0.08);"><span style="font-size:11px; font-weight:700; color:#2F6BFF; line-height:1;">+8</span><svg width="18" height="18" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#2F6BFF"/><rect x="7" y="7.5" width="10" height="2.2" rx="1.1" fill="#FFFFFF"/><rect x="10.9" y="7.5" width="2.2" height="9" rx="1.1" fill="#FFFFFF"/></svg></div>
+      <div style="flex-grow:1; min-width:0;">
+        <div style="display:flex; align-items:center; gap:6px;">
+          <div class="task-title-text">限时充值加送</div>
+          <div class="task-help" onclick="openDescModal(this)" data-desc="活动期间单笔充值满100 USDT，即可额外获得加送奖励">?</div>
+        </div>
+        <div style="display:flex; justify-content:flex-end; margin-top:6px;">
+          <div class="countdown-chip"><span class="chip-clock"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg></span><span class="task-countdown" data-duration="18900">--:--:--</span></div>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px; margin-top:8px;">
+          <div class="progress-track"><div class="progress-fill" style="width:100%;"></div></div>
+          <div class="progress-pct">100%</div>
+        </div>
+      </div>
+      <div class="task-btn btn-claim" data-reward="8" onclick="claimReward(this)">领取</div>
+    </div>
+
+    <div class="task-card" data-state="todo">
+      <div style="width:44px; height:44px; border-radius:13px; background:linear-gradient(180deg,#EEF3FF,#E4ECFF); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; flex-shrink:0; box-shadow:inset 0 0 0 1px rgba(47,107,255,0.08);"><span style="font-size:11px; font-weight:700; color:#2F6BFF; line-height:1;">+25</span><svg width="18" height="18" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#2F6BFF"/><rect x="7" y="7.5" width="10" height="2.2" rx="1.1" fill="#FFFFFF"/><rect x="10.9" y="7.5" width="2.2" height="9" rx="1.1" fill="#FFFFFF"/></svg></div>
+      <div style="flex-grow:1; min-width:0;">
+        <div style="display:flex; align-items:center; gap:6px;">
+          <div class="task-title-text">限时充值满500加送</div>
+          <div class="task-help" onclick="openDescModal(this)" data-desc="活动期间单笔充值满500 USDT，额外获得双倍加送奖励">?</div>
+        </div>
+        <div style="display:flex; justify-content:flex-end; margin-top:6px;">
+          <div class="countdown-chip"><span class="chip-clock"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg></span><span class="task-countdown" data-duration="93600">--:--:--</span></div>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px; margin-top:8px;">
+          <div class="progress-track"><div class="progress-fill" style="width:0%;"></div></div>
+          <div class="progress-pct">0%</div>
+        </div>
+      </div>
+      <div class="task-btn btn-todo">去完成</div>
+    </div>
+
+    <div class="task-card" data-state="todo">
+      <div style="width:44px; height:44px; border-radius:13px; background:linear-gradient(180deg,#EEF3FF,#E4ECFF); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; flex-shrink:0; box-shadow:inset 0 0 0 1px rgba(47,107,255,0.08);"><span style="font-size:11px; font-weight:700; color:#2F6BFF; line-height:1;">+12</span><svg width="18" height="18" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#2F6BFF"/><rect x="7" y="7.5" width="10" height="2.2" rx="1.1" fill="#FFFFFF"/><rect x="10.9" y="7.5" width="2.2" height="9" rx="1.1" fill="#FFFFFF"/></svg></div>
+      <div style="flex-grow:1; min-width:0;">
+        <div style="display:flex; align-items:center; gap:6px;">
+          <div class="task-title-text">限时投注挑战</div>
+          <div class="task-help" onclick="openDescModal(this)" data-desc="活动期间累计有效投注满300 USDT">?</div>
+        </div>
+        <div style="display:flex; justify-content:flex-end; margin-top:6px;">
+          <div class="countdown-chip"><span class="chip-clock"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg></span><span class="task-countdown" data-duration="110400">--:--:--</span></div>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px; margin-top:8px;">
+          <div class="progress-track"><div class="progress-fill" style="width:0%;"></div></div>
+          <div class="progress-pct">0%</div>
+        </div>
+      </div>
+      <div class="task-btn btn-todo">去完成</div>
+    </div>
+
+    <div class="task-card" data-state="todo">
+      <div style="width:44px; height:44px; border-radius:13px; background:linear-gradient(180deg,#EEF3FF,#E4ECFF); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; flex-shrink:0; box-shadow:inset 0 0 0 1px rgba(47,107,255,0.08);"><span style="font-size:11px; font-weight:700; color:#2F6BFF; line-height:1;">+20</span><svg width="18" height="18" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#2F6BFF"/><rect x="7" y="7.5" width="10" height="2.2" rx="1.1" fill="#FFFFFF"/><rect x="10.9" y="7.5" width="2.2" height="9" rx="1.1" fill="#FFFFFF"/></svg></div>
+      <div style="flex-grow:1; min-width:0;">
+        <div style="display:flex; align-items:center; gap:6px;">
+          <div class="task-title-text">限时投注排行榜</div>
+          <div class="task-help" onclick="openDescModal(this)" data-desc="活动期间投注流水进入排行榜前50名，即可瓜分奖金池">?</div>
+        </div>
+        <div style="display:flex; justify-content:flex-end; margin-top:6px;">
+          <div class="countdown-chip"><span class="chip-clock"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg></span><span class="task-countdown" data-duration="345600">--:--:--</span></div>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px; margin-top:8px;">
+          <div class="progress-track"><div class="progress-fill" style="width:0%;"></div></div>
+          <div class="progress-pct">0%</div>
+        </div>
+      </div>
+      <div class="task-btn btn-todo">去完成</div>
+    </div>
+
+    <div class="task-card" data-state="todo">
+      <div style="width:44px; height:44px; border-radius:13px; background:linear-gradient(180deg,#EEF3FF,#E4ECFF); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; flex-shrink:0; box-shadow:inset 0 0 0 1px rgba(47,107,255,0.08);"><span style="font-size:11px; font-weight:700; color:#2F6BFF; line-height:1;">+15</span><svg width="18" height="18" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#2F6BFF"/><rect x="7" y="7.5" width="10" height="2.2" rx="1.1" fill="#FFFFFF"/><rect x="10.9" y="7.5" width="2.2" height="9" rx="1.1" fill="#FFFFFF"/></svg></div>
+      <div style="flex-grow:1; min-width:0;">
+        <div style="display:flex; align-items:center; gap:6px;">
+          <div class="task-title-text">限时邀请奖励</div>
+          <div class="task-help" onclick="openDescModal(this)" data-desc="活动期间成功邀请3位好友完成注册">?</div>
+        </div>
+        <div style="display:flex; justify-content:flex-end; margin-top:6px;">
+          <div class="countdown-chip"><span class="chip-clock"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg></span><span class="task-countdown" data-duration="210000">--:--:--</span></div>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px; margin-top:8px;">
+          <div class="progress-track"><div class="progress-fill" style="width:0%;"></div></div>
+          <div class="progress-pct">0%</div>
+        </div>
+      </div>
+      <div class="task-btn btn-todo">去完成</div>
+    </div>
+
+    <div class="task-card" data-state="todo">
+      <div style="width:44px; height:44px; border-radius:13px; background:linear-gradient(180deg,#EEF3FF,#E4ECFF); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; flex-shrink:0; box-shadow:inset 0 0 0 1px rgba(47,107,255,0.08);"><span style="font-size:11px; font-weight:700; color:#2F6BFF; line-height:1;">+40</span><svg width="18" height="18" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#2F6BFF"/><rect x="7" y="7.5" width="10" height="2.2" rx="1.1" fill="#FFFFFF"/><rect x="10.9" y="7.5" width="2.2" height="9" rx="1.1" fill="#FFFFFF"/></svg></div>
+      <div style="flex-grow:1; min-width:0;">
+        <div style="display:flex; align-items:center; gap:6px;">
+          <div class="task-title-text">限时组队邀请挑战</div>
+          <div class="task-help" onclick="openDescModal(this)" data-desc="活动期间邀请5位好友完成首次充值">?</div>
+        </div>
+        <div style="display:flex; justify-content:flex-end; margin-top:6px;">
+          <div class="countdown-chip"><span class="chip-clock"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg></span><span class="task-countdown" data-duration="259200">--:--:--</span></div>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px; margin-top:8px;">
+          <div class="progress-track"><div class="progress-fill" style="width:0%;"></div></div>
+          <div class="progress-pct">0%</div>
+        </div>
+      </div>
+      <div class="task-btn btn-todo">去完成</div>
+    </div>
+
+    <div class="task-card" data-state="todo">
+      <div style="width:44px; height:44px; border-radius:13px; background:linear-gradient(180deg,#EEF3FF,#E4ECFF); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; flex-shrink:0; box-shadow:inset 0 0 0 1px rgba(47,107,255,0.08);"><span style="font-size:11px; font-weight:700; color:#2F6BFF; line-height:1;">+10</span><svg width="18" height="18" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#2F6BFF"/><rect x="7" y="7.5" width="10" height="2.2" rx="1.1" fill="#FFFFFF"/><rect x="10.9" y="7.5" width="2.2" height="9" rx="1.1" fill="#FFFFFF"/></svg></div>
+      <div style="flex-grow:1; min-width:0;">
+        <div style="display:flex; align-items:center; gap:6px;">
+          <div class="task-title-text">限时连续登录3天</div>
+          <div class="task-help" onclick="openDescModal(this)" data-desc="活动期间连续登录满3天">?</div>
+        </div>
+        <div style="display:flex; justify-content:flex-end; margin-top:6px;">
+          <div class="countdown-chip"><span class="chip-clock"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg></span><span class="task-countdown" data-duration="172800">--:--:--</span></div>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px; margin-top:8px;">
+          <div class="progress-track"><div class="progress-fill" style="width:0%;"></div></div>
+          <div class="progress-pct">0%</div>
+        </div>
+      </div>
+      <div class="task-btn btn-todo">去完成</div>
+    </div>
+
+    <div class="task-card" data-state="done">
+      <div style="width:44px; height:44px; border-radius:13px; background:linear-gradient(180deg,#EEF3FF,#E4ECFF); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; flex-shrink:0; box-shadow:inset 0 0 0 1px rgba(47,107,255,0.08);"><span style="font-size:11px; font-weight:700; color:#2F6BFF; line-height:1;">+5</span><svg width="18" height="18" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#2F6BFF"/><rect x="7" y="7.5" width="10" height="2.2" rx="1.1" fill="#FFFFFF"/><rect x="10.9" y="7.5" width="2.2" height="9" rx="1.1" fill="#FFFFFF"/></svg></div>
+      <div style="flex-grow:1; min-width:0;">
+        <div style="display:flex; align-items:center; gap:6px;">
+          <div class="task-title-text">幸运抽奖任务</div>
+          <div class="task-help" onclick="openDescModal(this)" data-desc="活动期间完成任意1局游戏即可获得1次抽奖机会">?</div>
+        </div>
+        <div style="display:flex; justify-content:flex-end; margin-top:6px;">
+          <div class="countdown-chip"><span class="chip-clock"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg></span><span class="task-countdown" data-duration="11100">--:--:--</span></div>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px; margin-top:8px;">
+          <div class="progress-track"><div class="progress-fill" style="width:100%;"></div></div>
+          <div class="progress-pct">100%</div>
+        </div>
+      </div>
+      <div class="task-btn btn-done">已完成</div>
+    </div>
+
+  </div>
+  <!-- Bottom nav (framework, unchanged) -->
+  <div style="flex-shrink:0; position:relative; height:68px; background:#FFFFFF; border-top:1px solid #EFF1F5; display:flex; align-items:flex-start; padding-top:8px;">
+
+    <div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:4px;">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ADB4C9" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 11.5 12 4l9 7.5"/>
+        <path d="M5.5 10v9a1 1 0 0 0 1 1H10v-6h4v6h3.5a1 1 0 0 0 1-1v-9"/>
+      </svg>
+      <div style="font-size:10.5px; color:#ADB4C9;">首页</div>
+    </div>
+
+    <div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:4px;">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ADB4C9" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="8" width="18" height="10" rx="4"/>
+        <path d="M8 11v4M6 13h4"/>
+        <circle cx="16" cy="12" r="0.8" fill="#ADB4C9"/>
+        <circle cx="18" cy="14" r="0.8" fill="#ADB4C9"/>
+      </svg>
+      <div style="font-size:10.5px; color:#ADB4C9;">游戏</div>
+    </div>
+
+    <div style="flex:1; display:flex; flex-direction:column; align-items:center; position:relative;">
+      <div style="position:absolute; top:-32px; width:56px; height:56px; border-radius:50%; background:linear-gradient(180deg, #4B84FF, #2F6BFF); display:flex; align-items:center; justify-content:center; box-shadow:0 6px 14px rgba(47,107,255,0.38), 0 0 0 4px #FFFFFF;">
+        <span style="font-size:20px; font-weight:800; color:#FFFFFF; font-family:-apple-system, 'Helvetica Neue', Arial, sans-serif; letter-spacing:0.2px;">T</span>
+      </div>
+      <div style="margin-top:26px; font-size:10.5px; color:#2F6BFF; font-weight:500;">充值</div>
+    </div>
+
+    <div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:4px;">
+      <span class="badge-anchor">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2F6BFF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 7.5V19a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7.5"/>
+          <rect x="3" y="4" width="18" height="4.5" rx="1.2"/>
+          <path d="M12 4v16"/>
+        </svg>
+        <span id="badge-nav-activity" class="pending-badge hidden"></span>
+      </span>
+      <div style="font-size:10.5px; color:#2F6BFF; font-weight:500;">活动</div>
+    </div>
+
+    <div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:4px;">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ADB4C9" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="8" r="3.5"/>
+        <path d="M5 20c0-3.6 3.1-6.5 7-6.5s7 2.9 7 6.5"/>
+      </svg>
+      <div style="font-size:10.5px; color:#ADB4C9;">我的</div>
+    </div>
+
+  </div>
+
+  <!-- Task description modal (centered) -->
+  <div id="desc-modal-backdrop" class="modal-backdrop hidden" onclick="closeDescModal()">
+    <div class="modal-card" onclick="event.stopPropagation()">
+      <div id="desc-modal-title" class="modal-title"></div>
+      <div id="desc-modal-text" class="modal-text"></div>
+      <div class="modal-close-btn" onclick="closeDescModal()">知道了</div>
+    </div>
+  </div>
+
+  </div>
+</div>
+
+<div class="phone-shell">
+  <div class="phone-notch"></div>
+  <div class="frame">
+
+  <!-- Page header -->
+  <div style="flex-shrink:0; height:54px; display:flex; align-items:center; justify-content:center; background:linear-gradient(180deg, #FBFCFE, #F3F6FA);">
+    <div style="font-size:17.5px; font-weight:700; color:#20232F; letter-spacing:0.3px;">任务玩法说明</div>
+  </div>
+
+  <div style="flex-grow:1; overflow-y:auto; padding:16px 16px 24px; display:flex; flex-direction:column; gap:16px;">
+
+    <div style="font-size:12.5px; color:#9199B0; line-height:1.6; text-align:center;">四大任务体系，覆盖新手到活跃玩家的不同阶段，选择最适合你的玩法</div>
+
+    <!-- Top: 4 task types -->
+    <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:8px;">
+      <div class="overview-type-card">
+        <div class="overview-type-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2F6BFF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="4" y="9" width="16" height="10.5" rx="1.5"/>
+            <path d="M4 9h16"/>
+            <path d="M12 9v10.5"/>
+            <path d="M9.2 9c-1.3-.1-2.4-1-2.4-2.3C6.8 5.3 7.9 4.3 9.2 4.3c1.6 0 2.8 1.6 2.8 4.7M14.8 9c1.3-.1 2.4-1 2.4-2.3 0-1.4-1.1-2.4-2.4-2.4-1.6 0-2.8 1.6-2.8 4.7"/>
+          </svg></div>
+        <div class="overview-type-name">新人福利</div>
+        <div class="overview-type-tag">一次性</div>
+      </div>
+      <div class="overview-type-card">
+        <div class="overview-type-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2F6BFF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="4.3"/>
+            <path d="M12 3.2v2.3M12 18.5v2.3M4.7 12H2.4M21.6 12h-2.3M6.1 6.1l1.6 1.6M16.3 16.3l1.6 1.6M6.1 17.9l1.6-1.6M16.3 7.7l1.6-1.6"/>
+          </svg></div>
+        <div class="overview-type-name">每日任务</div>
+        <div class="overview-type-tag">每日刷新</div>
+      </div>
+      <div class="overview-type-card">
+        <div class="overview-type-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2F6BFF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3.3" y="5" width="17.4" height="15" rx="2"/>
+            <path d="M3.3 9.8h17.4"/>
+            <path d="M8 3v3.4M16 3v3.4"/>
+            <circle cx="7.6" cy="14.2" r="1" fill="#2F6BFF" stroke="none"/>
+            <circle cx="12" cy="14.2" r="1" fill="#2F6BFF" stroke="none"/>
+            <circle cx="16.4" cy="14.2" r="1" fill="#2F6BFF" stroke="none"/>
+          </svg></div>
+        <div class="overview-type-name">每周任务</div>
+        <div class="overview-type-tag">每周刷新</div>
+      </div>
+      <div class="overview-type-card">
+        <div class="overview-type-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2F6BFF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="9"/>
+            <path d="M12 7v5l3.3 2"/>
+          </svg></div>
+        <div class="overview-type-name">限时任务</div>
+        <div class="overview-type-tag">独立倒计时</div>
+      </div>
+    </div>
+
+    <!-- Detail: pros / characteristics of each type -->
+    <div class="overview-detail-card">
+      <div class="overview-detail-head">
+        <div class="overview-detail-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2F6BFF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="4" y="9" width="16" height="10.5" rx="1.5"/>
+            <path d="M4 9h16"/>
+            <path d="M12 9v10.5"/>
+            <path d="M9.2 9c-1.3-.1-2.4-1-2.4-2.3C6.8 5.3 7.9 4.3 9.2 4.3c1.6 0 2.8 1.6 2.8 4.7M14.8 9c1.3-.1 2.4-1 2.4-2.3 0-1.4-1.1-2.4-2.4-2.4-1.6 0-2.8 1.6-2.8 4.7"/>
+          </svg></div>
+        <div class="overview-detail-title">新人福利</div>
+      </div>
+      <div class="overview-trait-row">
+          <div class="overview-trait-tag">一次性</div>
+          <div class="overview-trait-tag">即做即得</div>
+          <div class="overview-trait-tag">新手专属</div>
+      </div>
+      <div class="overview-detail-desc">面向新注册用户的专属任务合集，涵盖账户安全设置、首次充值、首次投注等关键动作。任务全部一次性，完成后可直接领取USDT奖励，无需活跃度门槛，是新手熟悉平台最快捷的路径。</div>
+    </div>
+
+    <div class="overview-detail-card">
+      <div class="overview-detail-head">
+        <div class="overview-detail-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2F6BFF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="4.3"/>
+            <path d="M12 3.2v2.3M12 18.5v2.3M4.7 12H2.4M21.6 12h-2.3M6.1 6.1l1.6 1.6M16.3 16.3l1.6 1.6M6.1 17.9l1.6-1.6M16.3 7.7l1.6-1.6"/>
+          </svg></div>
+        <div class="overview-detail-title">每日任务</div>
+      </div>
+      <div class="overview-trait-row">
+          <div class="overview-trait-tag">可重复</div>
+          <div class="overview-trait-tag">活跃度</div>
+          <div class="overview-trait-tag">每日00:00刷新</div>
+      </div>
+      <div class="overview-detail-desc">围绕登录、充值、投注等高频行为设计，每天都可重复参与。完成任务累积活跃度，活跃度每满25点即可领取一次USDT奖励，上限100点，帮助用户养成每日打开习惯，长期收益稳定可持续。</div>
+    </div>
+
+    <div class="overview-detail-card">
+      <div class="overview-detail-head">
+        <div class="overview-detail-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2F6BFF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3.3" y="5" width="17.4" height="15" rx="2"/>
+            <path d="M3.3 9.8h17.4"/>
+            <path d="M8 3v3.4M16 3v3.4"/>
+            <circle cx="7.6" cy="14.2" r="1" fill="#2F6BFF" stroke="none"/>
+            <circle cx="12" cy="14.2" r="1" fill="#2F6BFF" stroke="none"/>
+            <circle cx="16.4" cy="14.2" r="1" fill="#2F6BFF" stroke="none"/>
+          </svg></div>
+        <div class="overview-detail-title">每周任务</div>
+      </div>
+      <div class="overview-trait-row">
+          <div class="overview-trait-tag">门槛更高</div>
+          <div class="overview-trait-tag">奖励更丰厚</div>
+          <div class="overview-trait-tag">每周一00:00刷新</div>
+      </div>
+      <div class="overview-detail-desc">任务门槛与奖励均高于每日任务，围绕一周内的累计充值、投注、邀请等行为设置。同样通过活跃度里程碑兑换USDT奖励，更适合中重度活跃玩家在一周内集中冲刺、获取更高回报。</div>
+    </div>
+
+    <div class="overview-detail-card">
+      <div class="overview-detail-head">
+        <div class="overview-detail-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2F6BFF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="9"/>
+            <path d="M12 7v5l3.3 2"/>
+          </svg></div>
+        <div class="overview-detail-title">限时任务</div>
+      </div>
+      <div class="overview-trait-row">
+          <div class="overview-trait-tag">限时开放</div>
+          <div class="overview-trait-tag">独立倒计时</div>
+          <div class="overview-trait-tag">奖励力度大</div>
+      </div>
+      <div class="overview-detail-desc">结合限时充值加送、投注排行榜、组队邀请等玩法，随活动上线、限时开放，每个任务都有独立倒计时。奖励力度通常高于常规任务，适合在活动窗口内制造紧迫感、提升集中参与与转化。</div>
+    </div>
+
+  </div>
+
+  </div>
+</div>
+</div>
+
+<script>
+var PANEL_MAP = { new: 'panel-new', daily: 'panel-daily', weekly: 'panel-weekly', limited: 'panel-limited' };
+
+function selectChip(el, tab) {
+  document.querySelectorAll('.chip').forEach(function(c) { c.classList.remove('active'); });
+  el.classList.add('active');
+  Object.keys(PANEL_MAP).forEach(function(key) {
+    var panel = document.getElementById(PANEL_MAP[key]);
+    if (!panel) return;
+    if (key === tab) panel.classList.remove('hidden');
+    else panel.classList.add('hidden');
+  });
+}
+
+function openDescModal(el) {
+  var card = el.closest('.task-card');
+  var title = card ? card.querySelector('.task-title-text').textContent : '';
+  var desc = el.getAttribute('data-desc') || '';
+  document.getElementById('desc-modal-title').textContent = title;
+  document.getElementById('desc-modal-text').textContent = desc;
+  document.getElementById('desc-modal-backdrop').classList.remove('hidden');
+}
+
+function closeDescModal() {
+  document.getElementById('desc-modal-backdrop').classList.add('hidden');
+}
+
+function spawnRing(cx, cy) {
+  var ring = document.createElement('div');
+  ring.className = 'reward-ring';
+  ring.style.left = cx + 'px';
+  ring.style.top = cy + 'px';
+  document.body.appendChild(ring);
+  setTimeout(function() { ring.remove(); }, 520);
+}
+
+function spawnFloat(cx, top, iconSvg, amount) {
+  var float = document.createElement('div');
+  float.className = 'reward-float';
+  float.innerHTML = iconSvg + '<span>+' + amount + '</span>';
+  float.style.left = cx + 'px';
+  float.style.top = top + 'px';
+  document.body.appendChild(float);
+  setTimeout(function() { float.remove(); }, 900);
+}
+
+var COIN_SVG = '<svg width="14" height="14" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#2F6BFF"/><rect x="7" y="7.5" width="10" height="2.2" rx="1.1" fill="#FFFFFF"/><rect x="10.9" y="7.5" width="2.2" height="9" rx="1.1" fill="#FFFFFF"/></svg>';
+var BOLT_SVG = '<svg width="14" height="14" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#2F6BFF"/><path d="M13 4 6.5 14h4.2l-1 6.5L17 10h-4.2l1-6z" fill="#FFFFFF"/></svg>';
+
+function finishClaimCard(card, btn) {
+  btn.classList.remove('btn-claim', 'btn-pulse');
+  btn.classList.add('btn-done');
+  btn.textContent = '已完成';
+  btn.removeAttribute('onclick');
+  card.dataset.state = 'done';
+  var track = card.querySelector('.progress-fill');
+  var pctLabel = card.querySelector('.progress-pct');
+  if (track) track.style.width = '100%';
+  if (pctLabel) pctLabel.textContent = '100%';
+  card.parentElement.appendChild(card);
+  requestAnimationFrame(function() { card.style.opacity = '1'; });
+  updateAllBadges();
+}
+
+function setBadge(id, count) {
+  var el = document.getElementById(id);
+  if (!el) return;
+  if (count > 0) {
+    el.textContent = count > 99 ? '99+' : count;
+    el.classList.remove('hidden');
+  } else {
+    el.textContent = '';
+    el.classList.add('hidden');
+  }
+}
+
+function countClaimable(panelId) {
+  var panel = document.getElementById(panelId);
+  if (!panel) return 0;
+  var n = panel.querySelectorAll('.task-card[data-state="claim"]').length;
+  n += panel.querySelectorAll('.milestone-chip.milestone-ready').length;
+  return n;
+}
+
+function updateAllBadges() {
+  var total = 0;
+  Object.keys(PANEL_MAP).forEach(function(key) {
+    var c = countClaimable(PANEL_MAP[key]);
+    total += c;
+    setBadge('badge-chip-' + key, c);
+  });
+  setBadge('badge-tab-task', total);
+  setBadge('badge-nav-activity', total);
+}
+
+function claimReward(btn) {
+  var card = btn.closest('.task-card');
+  if (!card || card.dataset.state !== 'claim') return;
+  card.dataset.state = 'claiming';
+
+  var rect = btn.getBoundingClientRect();
+  var cx = rect.left + rect.width / 2;
+  var cy = rect.top + rect.height / 2;
+  spawnRing(cx, cy);
+
+  var reward = btn.getAttribute('data-reward') || '1';
+  spawnFloat(cx, rect.top, COIN_SVG, reward);
+
+  btn.classList.add('btn-pulse');
+  setTimeout(function() {
+    card.style.opacity = '0.35';
+    setTimeout(function() { finishClaimCard(card, btn); }, 220);
+  }, 120);
+}
+
+function claimActivity(btn) {
+  var card = btn.closest('.task-card');
+  if (!card || card.dataset.state !== 'claim') return;
+  card.dataset.state = 'claiming';
+
+  var rect = btn.getBoundingClientRect();
+  var cx = rect.left + rect.width / 2;
+  var cy = rect.top + rect.height / 2;
+  spawnRing(cx, cy);
+
+  var points = parseInt(btn.getAttribute('data-points') || '0', 10);
+  var meter = btn.getAttribute('data-meter');
+  spawnFloat(cx, rect.top, BOLT_SVG, points);
+
+  btn.classList.add('btn-pulse');
+  setTimeout(function() {
+    card.style.opacity = '0.35';
+    setTimeout(function() {
+      finishClaimCard(card, btn);
+      updateMeter(meter, points);
+    }, 220);
+  }, 120);
+}
+
+function updateMeter(meter, addPoints) {
+  var currentEl = document.getElementById(meter + '-current');
+  var fillEl = document.getElementById(meter + '-fill');
+  if (!currentEl || !fillEl) return;
+  var current = parseInt(currentEl.textContent, 10) || 0;
+  current = Math.min(100, current + addPoints);
+  currentEl.textContent = current;
+  fillEl.style.width = current + '%';
+
+  var card = fillEl.closest('.activity-card');
+  if (!card) return;
+  card.querySelectorAll('.milestone-chip.milestone-locked').forEach(function(chip) {
+    var threshold = parseInt(chip.getAttribute('data-threshold'), 10);
+    if (current >= threshold) {
+      chip.classList.remove('milestone-locked');
+      chip.classList.add('milestone-ready');
+      chip.setAttribute('onclick', 'claimMilestone(this)');
+      var label = chip.querySelector('.milestone-label');
+      if (label) label.textContent = '领取';
+    }
+  });
+  updateAllBadges();
+}
+
+function claimMilestone(chip) {
+  if (!chip.classList.contains('milestone-ready')) return;
+  var rect = chip.getBoundingClientRect();
+  var cx = rect.left + rect.width / 2;
+  var cy = rect.top + rect.height / 2;
+  spawnRing(cx, cy);
+  var reward = chip.getAttribute('data-reward') || '0';
+  spawnFloat(cx, rect.top, COIN_SVG, reward);
+
+  chip.classList.remove('milestone-ready');
+  chip.classList.add('milestone-claimed');
+  chip.removeAttribute('onclick');
+  var label = chip.querySelector('.milestone-label');
+  if (label) label.textContent = '已领取';
+  updateAllBadges();
+}
+
+function pad2(n) { return n < 10 ? '0' + n : '' + n; }
+
+function getNextMidnight() {
+  var d = new Date();
+  d.setHours(24, 0, 0, 0);
+  return d;
+}
+
+function getNextMonday() {
+  var d = new Date();
+  var day = d.getDay();
+  var daysUntilMonday = (8 - day) % 7;
+  if (daysUntilMonday === 0) daysUntilMonday = 7;
+  var target = new Date(d);
+  target.setDate(d.getDate() + daysUntilMonday);
+  target.setHours(0, 0, 0, 0);
+  return target;
+}
+
+function formatRemaining(ms) {
+  if (ms < 0) ms = 0;
+  var totalSec = Math.floor(ms / 1000);
+  var h = Math.floor(totalSec / 3600);
+  var m = Math.floor((totalSec % 3600) / 60);
+  var s = totalSec % 60;
+  return pad2(h) + ':' + pad2(m) + ':' + pad2(s);
+}
+
+function tickCountdowns() {
+  var now = new Date();
+  var dailyEl = document.getElementById('daily-countdown');
+  var weeklyEl = document.getElementById('weekly-countdown');
+  if (dailyEl) dailyEl.textContent = formatRemaining(getNextMidnight() - now);
+  if (weeklyEl) weeklyEl.textContent = formatRemaining(getNextMonday() - now);
+}
+
+function formatCountdownLong(ms) {
+  if (ms <= 0) return '已结束';
+  var totalSec = Math.floor(ms / 1000);
+  var days = Math.floor(totalSec / 86400);
+  var h = Math.floor((totalSec % 86400) / 3600);
+  var m = Math.floor((totalSec % 3600) / 60);
+  var s = totalSec % 60;
+  if (days >= 1) return days + '天' + pad2(h) + ':' + pad2(m);
+  return pad2(h) + ':' + pad2(m) + ':' + pad2(s);
+}
+
+function initLimitedCountdowns() {
+  document.querySelectorAll('.task-countdown').forEach(function(el) {
+    if (!el.dataset.target) {
+      var duration = parseInt(el.getAttribute('data-duration') || '0', 10);
+      el.dataset.target = Date.now() + duration * 1000;
+    }
+  });
+}
+
+function tickLimitedCountdowns() {
+  var now = Date.now();
+  document.querySelectorAll('.task-countdown').forEach(function(el) {
+    var target = parseInt(el.dataset.target, 10);
+    el.textContent = formatCountdownLong(target - now);
+  });
+}
+
+initLimitedCountdowns();
+tickLimitedCountdowns();
+setInterval(tickLimitedCountdowns, 1000);
+
+tickCountdowns();
+setInterval(tickCountdowns, 1000);
+
+updateAllBadges();
+</script>
+
+</body>
+</html>
