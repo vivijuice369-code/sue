@@ -68,7 +68,7 @@
     gap:28px;
     padding:24px 12px;
   }
-  .admin-view-wrap{ padding:24px 16px 60px; max-width:1880px; margin:0 auto; display:flex; flex-wrap:wrap; gap:20px; align-items:flex-start; }
+  .admin-view-wrap{ padding:24px 16px 60px; max-width:1880px; margin:0 auto; display:flex; gap:20px; align-items:flex-start; overflow-x:auto; }
   .phone-group{display:flex; flex-direction:column; align-items:center; gap:10px; width:100%; max-width:390px;}
   .phone-label{
     font-size:13px; font-weight:800; color:#fff; padding:5px 16px; border-radius:20px;
@@ -885,6 +885,7 @@
   .dev-notes{
     width:460px;
     max-width:100%;
+    height:734px;
     max-height:80vh;
     overflow-y:auto;
     background:#ffffff;
@@ -1454,10 +1455,10 @@
   .admin-devdoc-drawer{
     flex:0 0 460px; width:460px; max-width:100%; background:#fff; border-radius:10px;
     box-shadow:0 2px 16px rgba(20,30,50,.08);
-    display:flex; flex-direction:column; max-height:calc(100vh - 48px); position:sticky; top:24px;
+    display:flex; flex-direction:column; max-height:calc(100vh - 24px); position:sticky; top:0;
   }
   .admin-devdoc-head{
-    display:flex; align-items:center; justify-content:space-between; padding:18px 22px; border-bottom:1px solid #eef0f4; flex-shrink:0;
+    display:flex; align-items:center; justify-content:space-between; padding:20px 22px; border-bottom:1px solid #eef0f4; flex-shrink:0;
   }
   .admin-devdoc-head h3{font-size:15px; font-weight:700; color:#1c2b3a;}
   .admin-devdoc-head .x{font-size:18px; color:#8b96ab; cursor:pointer;}
@@ -2717,6 +2718,8 @@
 </div>
 </div>
 
+<div class="phone-group">
+<div class="phone-label" style="background:linear-gradient(135deg,#8a94a6,#5c6b82);">📖 开发说明</div>
 <aside class="dev-notes">
   <h2>巅峰争霸赛 · 开发说明</h2>
 
@@ -2797,6 +2800,7 @@
     </ul>
   </div>
 </aside>
+</div>
 </div>
 <!-- /#userViewWrap -->
 
@@ -4873,6 +4877,9 @@
         btnAdmin.classList.remove('active');
         btnUser.classList.add('active');
       }
+      // 切换视图前如果页面已经滚动了一段距离，admin-panel（普通定位）会停在滚动后的位置，
+      // 而admin-devdoc-drawer（position:sticky）会立即吸附到"距视口顶部24px"，两者就会对不齐——切换时统一滚回顶部，从源头避免这种错位
+      window.scrollTo(0, 0);
     }
     function switchAdminTab(el, tab){
       document.querySelectorAll('.admin-tab').forEach(function(t){ t.classList.remove('active'); });
