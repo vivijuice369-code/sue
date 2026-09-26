@@ -41,6 +41,7 @@
   *{box-sizing:border-box;margin:0;padding:0;}
   html,body{
     height:100%;
+    overflow-x:hidden;
     background:radial-gradient(circle at 50% 0%, #eef2f8 0%, #dfe4ec 55%, #d3dae5 100%);
     font-family:"PingFang SC","Microsoft YaHei","Helvetica Neue",Arial,sans-serif;
     -webkit-font-smoothing:antialiased;
@@ -67,12 +68,17 @@
     gap:28px;
     padding:24px 12px;
   }
-  .admin-view-wrap{ padding:24px 16px 60px; max-width:1400px; margin:0 auto; }
+  .admin-view-wrap{ padding:24px 16px 60px; max-width:1880px; margin:0 auto; display:flex; flex-wrap:wrap; gap:20px; align-items:flex-start; }
+  .phone-group{display:flex; flex-direction:column; align-items:center; gap:10px; width:100%; max-width:390px;}
+  .phone-label{
+    font-size:13px; font-weight:800; color:#fff; padding:5px 16px; border-radius:20px;
+    letter-spacing:.5px;
+  }
   .phone{
     width:100%;
-    max-width:430px;
-    height:874px;
-    max-height:92vh;
+    max-width:390px;
+    height:734px;
+    max-height:80vh;
     background:var(--bg-app);
     border-radius:34px;
     box-shadow:0 30px 60px rgba(0,0,0,0.2), 0 6px 18px rgba(0,0,0,0.12), 0 0 0 8px #0a0a0a, inset 0 0 0 1px rgba(255,255,255,0.06);
@@ -877,20 +883,18 @@
 
   /* ---------- 右侧开发说明面板 ---------- */
   .dev-notes{
-    width:820px;
+    width:460px;
     max-width:100%;
-    max-height:874px;
+    max-height:80vh;
+    overflow-y:auto;
     background:#ffffff;
     border-radius:20px;
     border:1px solid var(--line);
     box-shadow:0 12px 30px rgba(31,60,110,0.08);
-    padding:22px 28px 24px;
+    padding:22px 24px 24px;
     color:var(--text-dark);
     font-size:12.5px;
     line-height:1.55;
-    column-count:2;
-    column-gap:32px;
-    overflow:hidden;
   }
   .dev-notes h2{
     font-size:18px;
@@ -925,7 +929,7 @@
     display:inline-flex;align-items:center;justify-content:center;
     flex:0 0 auto;
   }
-  .dev-notes h3 .rule-tag{
+  .dev-notes h3 .rule-tag, .dev-notes .subtitle .rule-tag{
     font-size:10.5px;
     font-weight:700;
     color:#d9660b;
@@ -937,6 +941,15 @@
   .dev-notes ul{
     padding-left:16px;
     margin-bottom:4px;
+  }
+  .dev-notes .subtitle{
+    font-size:12.5px;
+    font-weight:700;
+    color:var(--text-dark);
+    margin:12px 0 6px;
+    display:flex;
+    align-items:center;
+    gap:5px;
   }
   .dev-notes li{
     margin-bottom:5px;
@@ -1068,12 +1081,19 @@
     position:sticky; bottom:0; left:0; right:0; z-index:5;
     padding:12px 20px calc(14px + env(safe-area-inset-bottom));
     background:linear-gradient(180deg, transparent, var(--dp-bg-deep) 30%);
+    display:flex; gap:10px;
   }
   .cta-btn{
-    width:100%; padding:15px; border:none; border-radius:14px; background:var(--dp-grad-gold);
+    flex:1; height:54px; padding:0 15px; border:none; border-radius:14px; background:var(--dp-grad-gold);
     color:#FFFFFF; font-size:15px; font-weight:900; letter-spacing:2px;
     box-shadow:0 8px 24px rgba(47,143,255,.35);
   }
+  .cta-btn-vip{
+    flex:0 0 84px; height:54px; padding:0 8px; border:1.5px solid var(--dp-gold); border-radius:14px;
+    background:var(--dp-bg-panel); color:var(--dp-gold); font-size:12px; font-weight:800;
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px;
+  }
+  .cta-btn-vip .cta-vip-icon{font-size:17px;}
 
   /* ================= PANEL (drawer) — confined to device frame ================= */
   .mask{
@@ -1319,7 +1339,7 @@
     transition:transform .15s ease, box-shadow .15s ease;
   }
   .rules-entry:active{transform:scale(.96);}
-  .dp-claim-btn.can:active, .cta-btn:active{transform:scale(.97);}
+  .dp-claim-btn.can:active, .cta-btn:active, .cta-btn-vip:active{transform:scale(.97);}
 
   @keyframes fadeSlideUp{ from{opacity:0; transform:translateY(14px);} to{opacity:1; transform:translateY(0);} }
   .hero, .countdown, .status-card, .not-qualified, .section-title, .op-table, .closing-banner{
@@ -1341,7 +1361,7 @@
   .lb-row:active{background:rgba(27,43,72,.05);}
 
   /* ==================== 管理后台：新增活动配置表单 ==================== */
-  .admin-panel{background:#fff; border-radius:10px; box-shadow:0 2px 16px rgba(20,30,50,.08); max-width:1400px; margin:0 auto;}
+  .admin-panel{background:#fff; border-radius:10px; box-shadow:0 2px 16px rgba(20,30,50,.08); flex:1 1 auto; min-width:0;}
   .admin-toast{
     position:fixed; top:24px; left:50%; transform:translateX(-50%) translateY(-20px); z-index:999;
     background:#1c2b3a; color:#fff; padding:12px 22px; border-radius:10px; font-size:13px; font-weight:600;
@@ -1373,30 +1393,6 @@
   }
   .admin-input::placeholder{color:#b9c0cd;}
   .admin-input:disabled, .admin-select:disabled{background:#f5f6f9; color:#b9c0cd;}
-  .admin-multiselect{position:relative;}
-  .admin-ms-box{
-    width:100%; min-height:36px; padding:5px 30px 5px 8px; border:1px solid #d7dde8; border-radius:6px;
-    background:#fff; display:flex; flex-wrap:wrap; gap:6px; align-items:center; cursor:pointer; position:relative;
-  }
-  .admin-ms-box.open{border-color:#2f7dfa;}
-  .admin-ms-tags{display:flex; flex-wrap:wrap; gap:6px; flex:1;}
-  .admin-ms-tag{
-    display:inline-flex; align-items:center; gap:5px; background:#f4f8ff; color:#2f7dfa; font-size:12px;
-    padding:3px 6px 3px 10px; border-radius:5px; white-space:nowrap;
-  }
-  .admin-ms-tag-x{cursor:pointer; font-size:13px; color:#8ab4f8; line-height:1;}
-  .admin-ms-tag-x:hover{color:#2f7dfa;}
-  .admin-ms-caret{position:absolute; right:10px; top:50%; transform:translateY(-50%); color:#b9c0cd; font-size:13px; pointer-events:none;}
-  .admin-ms-dropdown{
-    position:absolute; left:0; right:0; top:calc(100% + 4px); background:#fff; border:1px solid #e7ebf2; border-radius:8px;
-    box-shadow:0 8px 24px rgba(20,30,50,.12); z-index:20; max-height:260px; overflow-y:auto; padding:6px 0;
-  }
-  .admin-ms-option{
-    padding:9px 14px; font-size:12.5px; color:#1c2b3a; cursor:pointer; display:flex; align-items:center; justify-content:space-between;
-  }
-  .admin-ms-option:hover{background:#f7f9fc;}
-  .admin-ms-option.selected{color:#2f7dfa; font-weight:700;}
-  .admin-ms-check{color:#2f7dfa; font-weight:700;}
   .admin-textarea{
     width:100%; padding:9px 12px; border:1px solid #d7dde8; border-radius:6px; font-size:12.5px; color:#1c2b3a;
     min-height:64px; resize:vertical; font-family:inherit; line-height:1.6;
@@ -1454,23 +1450,12 @@
   .admin-img-box .spec{font-size:10.5px;}
   .admin-img-note{background:#f7f9fc; border-radius:8px; padding:16px; font-size:11px; color:#8b96ab; line-height:1.9;}
 
-  /* ---- 管理后台：开发文档侧边抽屉 ---- */
-  .admin-devdoc-btn{
-    padding:7px 16px; border-radius:20px; border:1px solid #2f7dfa; background:#f4f8ff; color:#2f7dfa;
-    font-size:12.5px; font-weight:700; cursor:pointer; white-space:nowrap;
-  }
-  .admin-devdoc-btn:active{transform:scale(.96);}
-  .admin-devdoc-mask{
-    position:fixed; inset:0; background:rgba(20,30,50,.45); z-index:200;
-    opacity:0; pointer-events:none; transition:opacity .25s;
-  }
-  .admin-devdoc-mask.show{opacity:1; pointer-events:auto;}
+  /* ---- 管理后台：开发文档常驻侧栏 ---- */
   .admin-devdoc-drawer{
-    position:fixed; top:0; right:0; bottom:0; width:420px; max-width:88vw; background:#fff; z-index:201;
-    box-shadow:-8px 0 30px rgba(20,30,50,.18); transform:translateX(100%); transition:transform .3s cubic-bezier(.2,.8,.3,1);
-    display:flex; flex-direction:column;
+    flex:0 0 460px; width:460px; max-width:100%; background:#fff; border-radius:10px;
+    box-shadow:0 2px 16px rgba(20,30,50,.08);
+    display:flex; flex-direction:column; max-height:calc(100vh - 48px); position:sticky; top:24px;
   }
-  .admin-devdoc-drawer.show{transform:translateX(0);}
   .admin-devdoc-head{
     display:flex; align-items:center; justify-content:space-between; padding:18px 22px; border-bottom:1px solid #eef0f4; flex-shrink:0;
   }
@@ -1502,6 +1487,288 @@
 </div>
 
 <div id="userViewWrap" class="user-view-wrap">
+<div class="phone-group">
+<div class="phone-label" style="background:linear-gradient(135deg,#ffb648,#ff9800);">🔔 预热阶段</div>
+<div class="phone">
+
+  <!-- ==================== 巅峰争霸赛详情页（预热阶段，独立展示，无活动列表框架，因为预热期不产生任何待领取/领取记录） ==================== -->
+  <div class="home" id="homeW">
+    <div class="dp-topbar">
+      <div class="brand">
+        <div class="brand-mark"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAC4AAAAzCAYAAADo8TpyAAAACXBIWXMAAAsTAAALEwEAmpwYAAAGS0lEQVRoge2ZW2wUVRjHfzOzu91u71faAoUKCEShlCjhokFNUDDBcBEIRvTBwAuJ+KZpiALhAS/RBzQEn0zE8OQFkDQmIkioICkIBqSUUmihdyjttrvtXmbGhzO7OzN0Ly1YJOmXnMy0PfPN7/zPd77znamk67rOY2jyowYYrY2Dj7WNg4+1jYOPtY2Dj7U5HrZDVQVFGd2zug63u6G+Gf5qhCvNsH0TTJt4f98HAg+EoP0uNHXA3zegIAs2vACpcodVaO2GGx1QdxVqL0FnH2gahDXITBP3w9mIwP1B6O6Fm11w6gqcrgfvIDgVWFEF65eCMwWPHT1w8Dgcuwhev4BUwxAKC9UjpkuANErwth5o7IBfL8LZ6zAUgmBYNFUFDZhVAluWQ5ozNQEy3NDUCa29NkVlQBcXzQCPVwEmBX97P/iGIBiCkGpSRAckyHDB8nmQmW597lobHPgdhoKw+RWYUiRmBsCTBmuXwOlG0FSsdLqARidh6kgK3jkAuqGKJN//Eo8blj4NshQbj9cPH3wHLXfFQC+3wr4tMLlQ9FEUKJ8gBtA3dL/PqMUJExKPyfAjG71kcW9vLpeYevOLu73Q0gsBDYI6tHuhz2f163KA4rT6tzdNjg+fHFyygtqdD6nQPxTrL0kwIQcqikBxCHXL8iEv0+o3GBaDQgZdiQmDEvMtJ6BLvgFFIBURKnbF/WE4cQU00xRnpUP1aphZCrmZ8OEaKMyO/V1VoalLDDoiRvRqEkpTeHDFkWyKSOLq16DmskiLZps3BXavg6lFcKIeBkOxwfUNwqFzJsWlYWYzQSpMCTwCqku2phiqSNDSB18eA3/A+uj0Eti5Fi60widHoWcA+gfhUB38cdMqgF3taGiOVnGzY3PYRBWRwK/CT5dg/0mxSZmtvAC+2Aid/bDrEOw/Dl/XQkC3rpt4izReHk89xu3TaFtIg2H4tg721Ah48w5YnA171onnDp6H/pDVhxk+2hRj5xwtuJYgXZmbwwlTC6DhDuw+CgMBK3xRFuxYBa/NFWVBokxlFicee0qKa6aG7R5ZpLyqifDNJti3EW57YfsR6PFb4fMz4L1lsKoSZNMi120LNKq4HF/1pOAOh1UJ+wxoMpTlwqerITsdcj3w1QaRz6sPQ/eAFT47Hd55TtQ3lnAz53Jj7chKfMCk4PkekwqmKdQlkVFcTlhSAQUZor8EZLrh/WXQ7oNtP8Ct3lgqlIDSbHhrgVFCxFv8stgP0tNGCT6twNjBzNNqWlSZblj5VKxWAVFnf/QL3PTC5Tuw7UehfMQUBZ4sNkoFc862xXdBJmSZy4mRgM8tBdkRiztsyrtdUGLaFXUdmu7CuQ4I6RAEmrzQNWD1m+EWZXCitTMpD9xxSuWk4AsnmxaSOe8aiocRCkdNgsIMcDqJTbkbPDYAVYeQQWD2jyTgZQVWV4IjDmFKik/MAsnkXJNFfCODT4Uztyzc5Hlgz8vwTBlUlcKOl6AsJ9ZH06HNK56NgEaVNt4zoxBmFIMShzBpPe5xwub5sKsWBiIbB0S3NJ8Kh6/Bq7NiqsoSPF8hUmTER+QQAWKDqmmI1SrRERs+FQlWzBJnzniWPI8DL1bAzAJRQ9tTYRj4pxeONlhDRpEhxy2aGTqgQm0z1DTF34AqS+H1SnAlOHWnBJ7rhurFkJdufHqwvag/DJ+dhZpG6A8OX1/oOviCcPIGfH4GvGEs6ybS8jNg6yLIShN7QTyTUv2PhKrBz9fg4zroCYifY1SCweOAlU/AmplQkgnpRiAOhkVWOdIAR67DvSER57LxbMSynPDus7B+DriTBHHK4ABBFb6/Cnsvwr0AhHWMk62AiMC4FShKh2yniPfeAPQMgS9Sk9vOmLIkoLdWwRuVkJbCh5kRgYM46Z+6DTvPQvegiFkzhGS6x34/zO9cEuS4oHohLJ8OjhS/Jo0YHIRqzX2w9wKcaINBFUJaDEZCxLRkABpfMqLAMkJljwxzCmH7YpiWn/DA83DAIxZQ4VI3HLgKv7WJuFd18ZFHM+AjsyBLIOngkMAlw4JieHM2LJoUP1f/Z+AR03To9MOf7XC+C+p7ocUn1oGmQ64Lyj0wOw/mF8H8CVCeY61vHgn4o7BRTNL/w8bBx9rGwcfaxsHH2sbBx9oeW/B/AaZhYH7GN8TxAAAAAElFTkSuQmCC" alt="U8 logo"></div>
+        <div class="brand-name">U8-S1巅峰赛</div>
+      </div>
+      <div class="rules-entry" onclick="openPanel('panel-rules-w')">📜 规则</div>
+    </div>
+
+    <div class="hero">
+      <div class="hero-eyebrow">S1 · 巅峰争霸赛</div>
+      <div class="hero-title">王者之争<br>经验称尊</div>
+      <div class="hero-sub">累计有效VIP经验值，冲击巅峰排名，解锁全部奖励</div>
+    </div>
+
+    <div class="countdown" style="border-color:rgba(255,166,0,.35);">
+      <div class="countdown-label" style="color:#B87400;">预热中 · 距活动开始</div>
+      <div class="countdown-clock num" style="color:#B87400;">
+        <span class="cd-box" style="background:rgba(255,166,0,.14);">03</span> <span class="cd-sep" style="color:#B87400;">天</span>
+        <span class="cd-box" style="background:rgba(255,166,0,.14);">12</span><span class="cd-sep" style="color:#B87400;">:</span>
+        <span class="cd-box" style="background:rgba(255,166,0,.14);">33</span><span class="cd-sep" style="color:#B87400;">:</span>
+        <span class="cd-box" style="background:rgba(255,166,0,.14);">41</span>
+      </div>
+    </div>
+
+    <div class="status-card" onclick="openPanel('panel-leaderboard-w')" style="opacity:.75;">
+      <div class="status-info" style="flex:1;">
+        <div class="status-name">当前总榜排名</div>
+        <div class="status-row">
+          <div class="status-item"><div class="num">0</div><div class="lbl">累计VIP经验值</div></div>
+          <div class="status-item"><div class="num">10,000</div><div class="lbl">经验值可上榜</div></div>
+        </div>
+      </div>
+      <div class="op-row-arrow">›</div>
+    </div>
+
+    <div class="op-table">
+      <div class="op-row" onclick="openPanel('panel-tiers-w')">
+        <div class="op-row-icon">🎯</div>
+        <div class="op-row-mid"><div class="title">阶梯达标奖励</div></div>
+        <div class="op-row-badge">未开始</div>
+        <div class="op-row-arrow">›</div>
+      </div>
+      <div class="op-row" onclick="openPanel('panel-lucky-w')">
+        <div class="op-row-icon">🎁</div>
+        <div class="op-row-mid"><div class="title">幸运抽奖</div></div>
+        <div class="op-row-badge">未开始</div>
+        <div class="op-row-arrow">›</div>
+      </div>
+    </div>
+
+    <div class="closing-banner">
+      <div class="q1">谁能成为本次争霸赛的最终王者？</div>
+      <div class="q2">无论你是冲击冠军，还是挑战自己的经验值目标<br>都有机会获得属于你的奖励</div>
+      <div class="q3">巅峰之战 · 敬请期待</div>
+    </div>
+  </div>
+
+  <div class="cta-fixed">
+    <button class="cta-btn" style="background:var(--bg-panel-3); color:var(--ink-faint);" disabled>活动未开启</button>
+    <button class="cta-btn-vip" onclick="goToVipPage('w')"><span class="cta-vip-icon">🚀</span>查看VIP</button>
+  </div>
+
+  <!-- ================= PANEL: 总经验值争霸榜（预热态：无排名数据） ================= -->
+  <div class="panel" id="panel-leaderboard-w">
+    <div class="panel-grip" onclick="closePanel('panel-leaderboard-w')"></div>
+    <div class="panel-head">
+      <div><h2>总经验值争霸榜</h2><div class="sub">活动开始后开始统计排名</div></div>
+      <div class="panel-close" onclick="closePanel('panel-leaderboard-w')">✕</div>
+    </div>
+    <div class="panel-body">
+      <div class="source-note" style="margin-top:0;">📌 活动尚未开始，暂无排名数据，以下为奖励区间预告：</div>
+      <div class="reward-zone-list" id="rewardZoneListW">
+        <div class="rz"><span class="rz-range">第1名</span><span class="rz-reward">88,888 USDT</span></div>
+        <div class="rz"><span class="rz-range">第2-3名</span><span class="rz-reward">18,888 USDT</span></div>
+        <div class="rz"><span class="rz-range">第4-10名</span><span class="rz-reward">5,888 USDT</span></div>
+        <div class="rz"><span class="rz-range">第11-30名</span><span class="rz-reward">1,888 USDT</span></div>
+        <div class="rz"><span class="rz-range">第31-100名</span><span class="rz-reward">888 USDT</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= PANEL: 经验值阶梯达标奖励（预热态：全部未解锁，进度为0） ================= -->
+  <div class="panel" id="panel-tiers-w">
+    <div class="panel-grip" onclick="closePanel('panel-tiers-w')"></div>
+    <div class="panel-head">
+      <div><h2>经验值阶梯达标奖励</h2><div class="sub">活动开始后开始累计经验值</div></div>
+      <div class="panel-close" onclick="closePanel('panel-tiers-w')">✕</div>
+    </div>
+    <div class="panel-body">
+      <div class="ladder">
+        <div class="lstep">
+          <div class="dot">🔒</div>
+          <div class="lcard">
+            <div class="lhead"><span class="lname">入门礼包</span><span class="lthresh">满 10,000经验值</span></div>
+            <div class="lreward">8 USDT<span class="lreward-lucky">+1次抽奖机会</span></div>
+            <div class="lfoot"><span>未开始</span><span>0/10,000</span></div>
+            <div class="lprog-wrap"><div class="lprog-fill" style="width:0%"></div></div>
+          </div>
+        </div>
+        <div class="lstep">
+          <div class="dot">🔒</div>
+          <div class="lcard">
+            <div class="lhead"><span class="lname">进阶奖励</span><span class="lthresh">满 50,000经验值</span></div>
+            <div class="lreward">88 USDT<span class="lreward-lucky">+1次抽奖机会</span></div>
+            <div class="lfoot"><span>未开始</span><span>0/50,000</span></div>
+            <div class="lprog-wrap"><div class="lprog-fill" style="width:0%"></div></div>
+          </div>
+        </div>
+        <div class="lstep">
+          <div class="dot">🔒</div>
+          <div class="lcard">
+            <div class="lhead"><span class="lname">里程碑奖励</span><span class="lthresh">满 100,000经验值</span></div>
+            <div class="lreward">188 USDT<span class="lreward-lucky">+2次抽奖机会</span></div>
+            <div class="lfoot"><span>未开始</span><span>0/100,000</span></div>
+            <div class="lprog-wrap"><div class="lprog-fill" style="width:0%"></div></div>
+          </div>
+        </div>
+        <div class="lstep">
+          <div class="dot">🔒</div>
+          <div class="lcard">
+            <div class="lhead"><span class="lname">精英奖励</span><span class="lthresh">满 300,000经验值</span></div>
+            <div class="lreward">388 USDT<span class="lreward-lucky">+2次抽奖机会</span></div>
+            <div class="lfoot"><span>未开始</span><span>0/300,000</span></div>
+            <div class="lprog-wrap"><div class="lprog-fill" style="width:0%"></div></div>
+          </div>
+        </div>
+        <div class="lstep">
+          <div class="dot">🔒</div>
+          <div class="lcard">
+            <div class="lhead"><span class="lname">王者奖励</span><span class="lthresh">满 500,000经验值</span></div>
+            <div class="lreward">688 USDT<span class="lreward-lucky">+3次抽奖机会</span></div>
+            <div class="lfoot"><span>未开始</span><span>0/500,000</span></div>
+            <div class="lprog-wrap"><div class="lprog-fill" style="width:0%"></div></div>
+          </div>
+        </div>
+        <div class="lstep">
+          <div class="dot">🔒</div>
+          <div class="lcard">
+            <div class="lhead"><span class="lname">至尊奖励</span><span class="lthresh">满 1,000,000经验值</span></div>
+            <div class="lreward">1,888 USDT<span class="lreward-lucky">+5次抽奖机会</span></div>
+            <div class="lfoot"><span>未开始</span><span>0/1,000,000</span></div>
+            <div class="lprog-wrap"><div class="lprog-fill" style="width:0%"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= PANEL: 幸运抽奖（预热态：无抽奖机会，转盘按钮禁用） ================= -->
+  <div class="panel" id="panel-lucky-w">
+    <div class="panel-grip" onclick="closePanel('panel-lucky-w')"></div>
+    <div class="panel-head">
+      <div><h2>幸运抽奖</h2><div class="sub">活动开始后，达标即可参与</div></div>
+      <div class="panel-close" onclick="closePanel('panel-lucky-w')">✕</div>
+    </div>
+    <div class="panel-body">
+      <div class="draw-chance"><div class="num">0</div><div class="lbl">剩余抽奖机会</div></div>
+      <div class="lucky-wheel-outer">
+        <div class="wheel-glow"></div>
+        <div class="lucky-wheel-pointer">💎</div>
+        <div class="wheel-gem" style="transform:rotate(0deg) translateY(-122px);"></div>
+        <div class="wheel-gem" style="transform:rotate(36deg) translateY(-122px);"></div>
+        <div class="wheel-gem" style="transform:rotate(72deg) translateY(-122px);"></div>
+        <div class="wheel-gem" style="transform:rotate(108deg) translateY(-122px);"></div>
+        <div class="wheel-gem" style="transform:rotate(144deg) translateY(-122px);"></div>
+        <div class="wheel-gem" style="transform:rotate(180deg) translateY(-122px);"></div>
+        <div class="wheel-gem" style="transform:rotate(216deg) translateY(-122px);"></div>
+        <div class="wheel-gem" style="transform:rotate(252deg) translateY(-122px);"></div>
+        <div class="wheel-gem" style="transform:rotate(288deg) translateY(-122px);"></div>
+        <div class="wheel-gem" style="transform:rotate(324deg) translateY(-122px);"></div>
+        <div class="wheel-bulb" style="transform:rotate(0deg) translateY(-138px);"></div>
+        <div class="wheel-bulb" style="transform:rotate(18deg) translateY(-138px);"></div>
+        <div class="wheel-bulb" style="transform:rotate(36deg) translateY(-138px);"></div>
+        <div class="wheel-bulb" style="transform:rotate(54deg) translateY(-138px);"></div>
+        <div class="wheel-bulb" style="transform:rotate(72deg) translateY(-138px);"></div>
+        <div class="wheel-bulb" style="transform:rotate(90deg) translateY(-138px);"></div>
+        <div class="wheel-bulb" style="transform:rotate(108deg) translateY(-138px);"></div>
+        <div class="wheel-bulb" style="transform:rotate(126deg) translateY(-138px);"></div>
+        <div class="wheel-bulb" style="transform:rotate(144deg) translateY(-138px);"></div>
+        <div class="wheel-bulb" style="transform:rotate(162deg) translateY(-138px);"></div>
+        <div class="wheel-bulb" style="transform:rotate(180deg) translateY(-138px);"></div>
+        <div class="wheel-bulb" style="transform:rotate(198deg) translateY(-138px);"></div>
+        <div class="wheel-bulb" style="transform:rotate(216deg) translateY(-138px);"></div>
+        <div class="wheel-bulb" style="transform:rotate(234deg) translateY(-138px);"></div>
+        <div class="wheel-bulb" style="transform:rotate(252deg) translateY(-138px);"></div>
+        <div class="wheel-bulb" style="transform:rotate(270deg) translateY(-138px);"></div>
+        <div class="wheel-bulb" style="transform:rotate(288deg) translateY(-138px);"></div>
+        <div class="wheel-bulb" style="transform:rotate(306deg) translateY(-138px);"></div>
+        <div class="wheel-bulb" style="transform:rotate(324deg) translateY(-138px);"></div>
+        <div class="wheel-bulb" style="transform:rotate(342deg) translateY(-138px);"></div>
+        <div class="wheel-flame" style="transform:rotate(45deg) translateY(-146px);"><span class="flame-inner">🔥</span></div>
+        <div class="wheel-flame" style="transform:rotate(135deg) translateY(-146px);"><span class="flame-inner">🔥</span></div>
+        <div class="wheel-flame" style="transform:rotate(225deg) translateY(-146px);"><span class="flame-inner">🔥</span></div>
+        <div class="wheel-flame" style="transform:rotate(315deg) translateY(-146px);"><span class="flame-inner">🔥</span></div>
+        <div class="lucky-wheel">
+          <div class="wheel-seg seg-double" style="transform:rotate(18deg) translateY(-98px);"><span class="wheel-text">双倍奖励</span><span class="wheel-em">✨</span></div>
+          <div class="wheel-seg" style="transform:rotate(54deg) translateY(-98px);"><span class="wheel-text">8</span><span class="wheel-em">🧧</span></div>
+          <div class="wheel-seg" style="transform:rotate(90deg) translateY(-98px);"><span class="wheel-text">18</span><span class="wheel-em">🧧</span></div>
+          <div class="wheel-seg" style="transform:rotate(126deg) translateY(-98px);"><span class="wheel-text">再抽一次</span><span class="wheel-em">🔄</span></div>
+          <div class="wheel-seg" style="transform:rotate(162deg) translateY(-98px);"><span class="wheel-text">38</span><span class="wheel-em">🧧</span></div>
+          <div class="wheel-seg" style="transform:rotate(198deg) translateY(-98px);"><span class="wheel-text">谢谢惠顾</span><span class="wheel-em">🙏</span></div>
+          <div class="wheel-seg" style="transform:rotate(234deg) translateY(-98px);"><span class="wheel-text">58</span><span class="wheel-em">🧧</span></div>
+          <div class="wheel-seg seg-vip" style="transform:rotate(270deg) translateY(-98px);"><span class="wheel-text">VIP加速30%</span><span class="wheel-text2">持续24小时</span><span class="wheel-em">🚀</span></div>
+          <div class="wheel-seg" style="transform:rotate(306deg) translateY(-98px);"><span class="wheel-text">188</span><span class="wheel-em">🧧</span></div>
+          <div class="wheel-seg" style="transform:rotate(342deg) translateY(-98px);"><span class="wheel-text">888</span><span class="wheel-em">🧧</span></div>
+        </div>
+        <button class="lucky-wheel-center" disabled style="opacity:.5; cursor:not-allowed;">未<br>开始</button>
+      </div>
+      <div class="source-note">
+        📌 抽奖机会获取方式：<br>
+        · 每日充值达标 → 当日累计充值满100 USDT，获得1次机会（每日限1次，次日重置）<br>
+        · 每日经验值达标 → 当日累计有效VIP经验值满100，获得1次机会（每日限1次，次日重置）<br>
+        · 阶梯奖励达标 → 解锁指定经验值阶梯即赠送机会，每个阶梯在本期活动内限触发1次<br>
+        · VIP升级达标 → 活动期间VIP等级每提升1级，获得1次机会，无上限
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= PANEL: 活动规则（内容与正式规则一致，预热期即可完整查看） ================= -->
+  <div class="panel" id="panel-rules-w">
+    <div class="panel-grip" onclick="closePanel('panel-rules-w')"></div>
+    <div class="panel-head">
+      <div><h2>活动规则</h2><div class="sub">巅峰争霸赛 · 完整说明</div></div>
+      <div class="panel-close" onclick="closePanel('panel-rules-w')">✕</div>
+    </div>
+    <div class="panel-body">
+      <div class="rule-sec">
+        <h3>🗓️ 活动周期</h3>
+        <p>活动共14天，全平台自动开启，无需手动报名。活动期间产生的有效VIP经验值由系统自动统计记录，活动结束后统一结算发奖。</p>
+      </div>
+      <div class="rule-sec">
+        <h3>🎟️ 怎么参赛</h3>
+        <ul>
+          <li>无需点击"报名"，只要产生VIP经验值，即视为参赛</li>
+          <li>累计有效VIP经验值满10,000，自动解锁排行榜排名和各项奖励资格</li>
+          <li>未满10,000经验值前，经验值同样正常累计，达标后自动生效，无需额外操作</li>
+          <li>撤单、退款订单不计入经验值</li>
+        </ul>
+      </div>
+      <div class="rule-sec">
+        <h3>🏆 总榜怎么排</h3>
+        <p>按活动期间累计有效VIP经验值从高到低排名。不止前3名有奖——共设5个获奖区间，第1名到第100名均有机会获奖。</p>
+      </div>
+      <div class="rule-sec">
+        <h3>🎯 阶梯奖励</h3>
+        <p>经验值达到对应档位即可领取那一档的奖励，与排名无关。从10,000到1,000,000经验值，共6个档位，达标后随时可以领取。</p>
+      </div>
+      <div class="rule-sec">
+        <h3>🎁 幸运抽奖</h3>
+        <p>每日充值、每日经验值达标、解锁阶梯奖励、VIP升级，均可获得抽奖机会。转盘10个分区含6档现金红包，同时设有「谢谢惠顾」（本次未中奖）、「再抽一次」（返还本次机会）、「双倍奖励」（下一次必中现金红包/VIP加速且效果翻倍）、「VIP加速」（限时提升VIP获取速度，效果将在VIP界面展示）四种特殊结果。</p>
+      </div>
+      <div class="rule-sec">
+        <h3>💰 奖励什么时候到账</h3>
+        <ul>
+          <li><b>总榜排名奖励</b>：活动结束、最终排名公布后方可领取，需进入总榜面板手动点击"立即领取"，系统不会自动发放；如遇审核环节，将在审核通过后到账</li>
+          <li><b>阶梯奖励</b>：无需等待活动结束，达标后即可随时领取；系统自动审核时领取后立即到账，如遇审核环节，将在审核通过后到账；活动结束后页面仍会保留一段时间，未领取的奖励可以补领，但页面下架后将无法找回，请及时领取</li>
+          <li><b>幸运抽奖</b>：开奖结果即时可见；现金红包/VIP加速实时到账，如遇审核环节，将在审核通过后到账</li>
+        </ul>
+      </div>
+      <div class="rule-foot">本活动最终解释权归平台所有</div>
+    </div>
+  </div>
+
+  <div class="mask" id="maskW" onclick="closeAllIn(this)"></div>
+  <div class="toast" id="toastW">
+    <div class="em">🎉</div>
+    <div class="t1">恭喜获得</div>
+    <div class="t2">现金红包 58 USDT</div>
+  </div>
+  <div class="scroll-hint">⌄</div>
+
+</div>
+</div>
+
+<div class="phone-group">
+<div class="phone-label" style="background:linear-gradient(135deg,#4a9eff,#2f7dfa);">🎮 活动进行中</div>
 <div class="phone">
 
   <!-- ==================== 巅峰争霸赛详情页（嵌入活动列表框架内，默认隐藏） ==================== -->
@@ -1563,6 +1830,7 @@
 
   <div class="cta-fixed" id="ctaFixedB" style="display:none;">
     <button class="cta-btn" onclick="goToLobby(this)">🎮 去下注 · 冲刺经验值</button>
+    <button class="cta-btn-vip" onclick="goToVipPage('b')"><span class="cta-vip-icon">🚀</span>查看VIP</button>
   </div>
 
   <!-- ================= PANEL: 总经验值争霸榜 ================= -->
@@ -1578,9 +1846,9 @@
         <div class="pod rank1"><div class="avatar">👑</div><div class="pname">138****88</div><div class="pval">526,800</div><div class="base">1</div></div>
         <div class="pod rank3"><div class="avatar">👤</div><div class="pname">186****47</div><div class="pval">311,500</div><div class="base">3</div></div>
       </div>
-      <div class="reward-zone-list">
+      <div class="reward-zone-list" id="rewardZoneListB">
         <div class="rz"><span class="rz-range">第1名</span><span class="rz-reward">88,888 USDT</span></div>
-        <div class="rz"><span class="rz-range">第2-3名</span><span class="rz-reward">18,888-38,888 USDT</span></div>
+        <div class="rz"><span class="rz-range">第2-3名</span><span class="rz-reward">18,888 USDT</span></div>
         <div class="rz"><span class="rz-range">第4-10名</span><span class="rz-reward">5,888 USDT</span></div>
         <div class="rz"><span class="rz-range">第11-30名</span><span class="rz-reward">1,888 USDT</span></div>
         <div class="rz"><span class="rz-range">第31-100名</span><span class="rz-reward">888 USDT</span></div>
@@ -1738,20 +2006,18 @@
         </div>
         <button class="lucky-wheel-center" onclick="doDraw(this)">立即<br>抽奖</button>
       </div>
-      <button class="vip-quicklink-btn" onclick="goToVipPage()">🚀 查看VIP</button>
       <div class="source-note">
         📌 抽奖机会获取方式：<br>
-        · 每日充值达标 → 当日累计充值满100 USDT，获得1次机会（每日限1次，次日重置）<br>
-        · 每日经验值达标 → 当日累计有效VIP经验值满100，获得1次机会（每日限1次，次日重置）<br>
+        · 每日充值达标 → 当日累计充值满<span id="ruleDepositThreshold">100</span> USDT，获得<span id="ruleDepositChances">1</span>次机会（每日限<span id="ruleDepositDailyLimit">1</span>次，次日重置）<br>
+        · 每日经验值达标 → 当日累计有效VIP经验值满<span id="ruleExpThreshold">100</span>，获得<span id="ruleExpChances">1</span>次机会（每日限<span id="ruleExpDailyLimit">1</span>次，次日重置）<br>
         · 阶梯奖励达标 → 解锁指定经验值阶梯即赠送机会，每个阶梯在本期活动内限触发1次<br>
-        · VIP升级达标 → 活动期间VIP等级每提升1级，获得1次机会，无上限
+        · VIP升级达标 → 活动期间VIP等级每提升1级，获得<span id="ruleVipLevelChances">1</span>次机会，无上限
       </div>
       <div class="mini-list-title">最近战绩</div>
       <div id="luckyRecentListB">
         <div class="mini-row"><span class="mini-time">08-23 14:20</span><span class="mini-name">58 USDT</span><span class="mini-status">已到账</span></div>
-        <div class="mini-row"><span class="mini-time">08-22 09:05</span><span class="mini-name">优惠券</span><span class="mini-status">已到账</span></div>
+        <div class="mini-row"><span class="mini-time">08-22 09:05</span><span class="mini-name">谢谢惠顾</span><span class="mini-status miss">未中奖</span></div>
       </div>
-      <div class="source-note">💡 奖励为现金红包，审核通过后实时自动到账。</div>
     </div>
   </div>
 
@@ -1801,7 +2067,7 @@
   </div>
 
   <div class="mask" id="maskB" onclick="closeAllIn(this)"></div>
-  <div class="toast">
+  <div class="toast" id="toastB">
     <div class="em">🎉</div>
     <div class="t1">恭喜获得</div>
     <div class="t2">现金红包 58 USDT</div>
@@ -1834,7 +2100,7 @@
         <span class="coin-badge">T</span>
         <span class="balance-amt">0.00</span>
         <span class="balance-refresh" id="pendingRefreshIcon" title="刷新">↻</span>
-        <button class="claim-all-btn" id="claimAllBtn" type="button">一键领取</button>
+        <button class="claim-all-btn" id="claimAllBtn" type="button" onclick="claimAllPendingItems()">一键领取</button>
       </div>
 
       <div id="pendingList" class="records-list" hidden>
@@ -2003,7 +2269,10 @@
   </nav>
 
 </div>
+</div>
 
+<div class="phone-group">
+<div class="phone-label" style="background:linear-gradient(135deg,#ff5b7a,#ff2f57);">🏁 活动已结束</div>
 <div class="phone">
 
   <!-- ==================== 巅峰争霸赛详情页（嵌入活动列表框架内，默认隐藏） ==================== -->
@@ -2054,7 +2323,7 @@
         <div class="op-row-icon">🎯</div>
         <div class="op-row-mid"><div class="title">阶梯达标奖励</div></div>
         <div id="tierBadgeEnded">
-          <button class="dp-claim-all-btn op-badge-btn" onclick="event.stopPropagation(); claimAllTiersEnded(this);">全部领取</button>
+          <button class="dp-claim-all-btn op-badge-btn" onclick="event.stopPropagation(); quickClaimPeakTiersEnded();">全部领取</button>
         </div>
         <div class="op-row-arrow">›</div>
       </div>
@@ -2075,6 +2344,7 @@
 
   <div class="cta-fixed" id="ctaFixedEnded" style="display:none;">
     <button class="cta-btn" style="background:var(--bg-panel-3); color:var(--ink-faint);" disabled>🏆 敬请期待下一赛季</button>
+    <button class="cta-btn-vip" onclick="goToVipPage('ended')"><span class="cta-vip-icon">🚀</span>查看VIP</button>
   </div>
 
   <!-- ================= PANEL(已结束): 总经验值争霸榜 ================= -->
@@ -2100,9 +2370,9 @@
         <div class="lfoot"><span>已达标 ✓</span></div>
         <button class="dp-claim-btn can" data-key="rank-ended" data-reward="1,888 USDT" onclick="peakClaimByKeyEnded('rank-ended', this)">立即领取</button>
       </div>
-      <div class="reward-zone-list">
+      <div class="reward-zone-list" id="rewardZoneListEnded">
         <div class="rz"><span class="rz-range">第1名</span><span class="rz-reward">88,888 USDT</span></div>
-        <div class="rz"><span class="rz-range">第2-3名</span><span class="rz-reward">18,888-38,888 USDT</span></div>
+        <div class="rz"><span class="rz-range">第2-3名</span><span class="rz-reward">18,888 USDT</span></div>
         <div class="rz"><span class="rz-range">第4-10名</span><span class="rz-reward">5,888 USDT</span></div>
         <div class="rz"><span class="rz-range">第11-30名</span><span class="rz-reward">1,888 USDT</span></div>
         <div class="rz"><span class="rz-range">第31-100名</span><span class="rz-reward">888 USDT</span></div>
@@ -2180,7 +2450,6 @@
       <div class="panel-close" onclick="closePanel('panel-lucky-ended')">✕</div>
     </div>
     <div class="panel-body">
-      <button class="vip-quicklink-btn" onclick="goToVipPage()">🚀 查看VIP</button>
       <div class="mini-list-title">最终战绩</div>
       <div>
         <div class="mini-row"><span class="mini-time">08-23</span><span class="mini-name">58 USDT</span><span class="mini-status">已到账</span></div>
@@ -2240,6 +2509,11 @@
   </div>
 
   <div class="mask" id="maskEnded" onclick="closeAllIn(this)"></div>
+  <div class="toast" id="toastEnded">
+    <div class="em">🎉</div>
+    <div class="t1">恭喜获得</div>
+    <div class="t2">现金红包 58 USDT</div>
+  </div>
   <div class="scroll-hint">⌄</div>
 
   <div class="topbar">
@@ -2267,7 +2541,7 @@
         <span class="coin-badge">T</span>
         <span class="balance-amt">0.00</span>
         <span class="balance-refresh" id="pendingRefreshIconEnded" title="刷新">↻</span>
-        <button class="claim-all-btn" id="claimAllBtnEnded" type="button">一键领取</button>
+        <button class="claim-all-btn" id="claimAllBtnEnded" type="button" onclick="claimAllPendingItemsEnded()">一键领取</button>
       </div>
 
       <div id="pendingListEnded" class="records-list" hidden>
@@ -2441,6 +2715,7 @@
   </nav>
 
 </div>
+</div>
 
 <aside class="dev-notes">
   <h2>巅峰争霸赛 · 开发说明</h2>
@@ -2448,18 +2723,20 @@
   <div class="dev-section">
     <h3><span class="num">1</span>活动周期 &amp; 参赛门槛</h3>
     <ul>
-      <li>活动共14天，全平台自动开放，<b>无需手动报名</b>，产生有效VIP经验值即自动计入累计成绩。</li>
+      <li>活动共14天（<b>起止日期后台配置</b>），全平台自动开放，<b>无需手动报名</b>，产生有效VIP经验值即自动计入累计成绩。</li>
       <li>累计有效VIP经验值达到10,000，自动解锁排行榜排名展示及各项奖励评选资格；未达标期间经验值仍正常累计，达标后自动解锁。</li>
       <li>有效经验值计算口径与平台现有规则一致，撤单/退款订单不计入。</li>
-      <li><b>活动正式开始前设有预热阶段</b>（对应后台"活动预热日期"配置）：预热期内活动卡片、详情页UI已按正式上线的展示效果提前对客户可见，方便预览页面内容，但<b>此时不可参与活动</b>（不计入经验值、不可领取任何奖励），需等到活动正式开始日期到达后才正式开放参与。</li>
+      <li><b>活动正式开始前设有预热阶段</b>：预热时长由后台配置，可选<b>不预热 / 提前一日 / 提前三日 / 提前七日</b>预览；预热期内活动卡片、详情页UI已按正式上线的展示效果提前对客户可见，方便预览页面内容，但<b>此时不可参与活动</b>（不计入经验值、不可领取任何奖励），需等到活动正式开始日期到达后才正式开放参与。</li>
+      <li><b>预热阶段的具体页面表现</b>（本原型用独立的"预热阶段"设备完整演示）：顶部用橙色倒计时条展示"预热中 · 距活动开始"，样式与"距活动结束""距页面下架"两个倒计时保持一致，仅颜色区分；"总榜""阶梯达标奖励""幸运抽奖"三个入口都可以点开预览完整UI（含转盘、阶梯档位卡片），但所有可操作的按钮（领取、抽奖、转盘中心按钮）均为禁用状态，阶梯进度统一显示为0；底部固定按钮由"去下注"变为置灰禁用的"活动未开启"，右侧"查看VIP"按钮不受影响、仍可点击；活动规则可以随时正常查看，内容与正式上线后一致。</li>
+      <li>首页状态卡右侧的数据展示<b>会根据是否已上榜切换</b>：客户累计经验值未达到10,000（尚未上榜）时，展示"10,000经验值可上榜"这类门槛提示；一旦达标上榜，切换为正常的"较昨日排名"涨跌数据。</li>
     </ul>
   </div>
 
   <div class="dev-section">
     <h3><span class="num">2</span>总经验值争霸榜</h3>
-    <p>按活动期间累计有效VIP经验值排名，设置5个获奖区间（第1名到第100名均有机会获奖），避免奖励只集中在头部客户。排行榜每5分钟刷新一次；首页状态卡仅展示当前排名、累计经验值、较昨日排名变化，完整数据（与上一名差距、距下一奖励区间/档位差距）展示在榜单详情面板底部的悬浮"我的排名"卡片中。</p>
+    <p>按活动期间累计有效VIP经验值排名，设置多个获奖区间（<b>区间数量、名次范围、金额均为后台配置</b>），避免奖励只集中在头部客户。排行榜每5分钟刷新一次；首页状态卡仅展示当前排名、累计经验值、较昨日排名变化，完整数据（与上一名差距、距下一奖励区间/档位差距）展示在榜单详情面板底部的悬浮"我的排名"卡片中。<b>累计经验值并列的客户，按达标时间先后排序，先达标者排名靠前。</b></p>
     <div class="rule-box">
-      <b>奖励为手动领取</b>：活动进行中排名尚未定型，暂不可领取；活动结束、最终排名公布后，客户需自行进入榜单面板点击"立即领取"，系统不再自动发放，领取时限与阶梯奖励一致（下架前均可领，下架后作废）。原型内"活动已结束"设备已包含完整的手动领取界面演示（状态卡悬浮领取按钮+榜单面板内领取卡片，两处共享同一状态）。
+      <b>总榜排名奖励需要客户手动领取，不会自动到账</b>：活动进行中，最终排名尚未定型，暂不可领取；活动结束、最终排名公布后，客户需自行进入榜单面板点击"立即领取"才能到账；领取时限与阶梯奖励一致，页面下架前均可补领，下架后未领取的作废。<b>这里的"手动领取"指的是何时能点击领取，跟发放是自动到账还是需要人工审核是两个独立的维度</b>：点击"立即领取"后，如果后台设置的是自动审核，会立即到账；如果是人工审核，则会先进入"审核中"，等后台审核通过后才到账，具体规则见下方"人工审核模式"说明。
     </div>
   </div>
 
@@ -2469,43 +2746,52 @@
       <li>累计经验值达到对应档位即可解锁奖励，与排名无关，从10,000到1,000,000经验值共6个档位；<b>每档的"满XX经验值"都是后台各自独立配置的累计总门槛（从活动开始算起的总经验值），门槛本身不是相对上一档的增量</b>——比如精英奖励配置的门槛就是30万，跟里程碑奖励的10万、王者奖励的50万都是各自独立设定的总量。</li>
       <li>卡片上"A/B"这个进度分数，展示的就是<b>当前累计总经验值 / 该档配置的总门槛</b>，跟其他档位互不干扰；档位的完成（✓）/进行中（●）/未解锁（🔒）状态，看的是同一个累计总经验值有没有达到各自的门槛，逐档判断。</li>
       <li>达标后由客户主动领取，不设领取时限——活动进行中可以领，活动结束后到页面下架前仍可补领，下架后未领取的过期作废。</li>
-      <li>领取入口有两个：详情页"经验值阶梯达标奖励"面板内的单项领取，以及首页列表行上的"全部领取"快捷按钮，二者共享同一状态，任一处领取后另一处同步更新。</li>
+      <li>领取入口有三个：详情页"经验值阶梯达标奖励"面板内的单项领取、首页列表行上的"全部领取"快捷按钮、以及<b>活动列表「待领取」tab顶部的"一键领取"按钮</b>（把当前列表里所有可见待领取条目依次领取，不需要进入活动详情页），三者共享同一状态，任一处操作后其余处同步更新。</li>
+      <li>首页"阶梯达标奖励"这一行右侧会显示一个跟你当前进度对应的提示：还有能领的奖励时是个按钮，一键就能全部领走；申请人工审核后还没等到结果，会显示"审核中"；<b>能领的都领完了，但更高档位还没达到门槛，会显示"还差XXX"</b>，提醒你继续冲经验值；等6个档位全都搞定（含已领取），才会变成"已全部领取"。<b>"活动已结束"的情况不一样</b>：因为经验值已经不会再涨了，未达标的档位永远也够不着了，所以只要当前能领的都处理完，直接显示"已全部领取"，不会像进行中那样继续提示"还差多少"——反正提示了也没用。</li>
     </ul>
   </div>
 
+
   <div class="dev-section">
     <h3><span class="num">4</span>幸运抽奖</h3>
-    <p>抽奖机会来源改为3类独立规则并行赠送，加上阶梯奖励达标额外赠送，客户满足任一规则即可获得对应次数，多条规则互不冲突、当日/当期均可叠加：</p>
+    <div class="subtitle">🎫 抽奖机会获取规则</div>
+    <p>抽奖机会来源改为3类独立规则并行赠送，加上阶梯奖励达标额外赠送，客户满足任一规则即可获得对应次数，多条规则互不冲突、当日/当期均可叠加；<b>前3类规则的门槛、赠送次数、每日限制次数均由后台配置真正驱动</b>，点击后台"确定提交"后，幸运抽奖面板"抽奖机会获取方式"说明文字会同步更新为最新数值：</p>
     <ul>
       <li><b>每日充值达标</b>：当日累计充值满后台配置金额，赠送对应次数，每日限触发指定次数，次日重置。</li>
       <li><b>每日经验值达标</b>：当日累计有效VIP经验值满后台配置门槛，赠送对应次数，每日限触发指定次数，次日重置。</li>
       <li><b>VIP升级达标</b>：活动期间VIP等级每提升1级即赠送次数，不限触发上限。</li>
       <li><b>阶梯奖励达标</b>：解锁指定经验值阶梯即一次性赠送对应次数（配置在"经验值阶梯达标奖励设置"表内，与该档位是否领取奖励无关，只看是否达标解锁），每个阶梯在本期活动内限触发1次。</li>
     </ul>
-    <p>转盘固定10个扇形分区，含6档现金红包（8/18/38/58/188/888 USDT），另设4种特殊结果：<b>「谢谢惠顾」</b>本次未中奖；<b>「再抽一次」</b>本次不发放奖励，系统立即返还1次抽奖机会（总次数不变）；<b>「双倍奖励」</b>本次不发放奖励，下一次抽奖自动进入"必中现金红包/VIP加速/再抽一次且效果翻倍"的状态，若当前无剩余次数则保留至下次抽奖时生效；<b>「VIP加速」</b>限时提升VIP获取速度（速率与持续时间后台配置），<b>效果在VIP界面展示</b>，抽奖面板内仅弹出到账提示，不展示实时倒计时，若搭配双倍奖励，速率不翻倍、仅持续时间翻倍。转盘10个格子仿真实大转盘外观，金色宝石+灯泡装饰环绕，点击中心"立即抽奖"按钮转盘旋转后精准停在中奖分区，「双倍奖励」「VIP加速」分区用深色底+金色文字突出显示；<b>每个分区内文字排在外圈、图标排在内圈</b>，跟随转盘整体刚性旋转，转动时不会出现文字和转盘不同步的别扭感。<b>4个特殊分区在转盘上打散穿插排列</b>（不是集中挨在一起）：「双倍奖励」作为转盘最大奖，左右各2格都是现金档位；其余3个特殊分区左右各1格是现金档位；转盘上的现金分区只显示裸数字，不带"USDT"字样，<b>"VIP加速"分区为两行文字："VIP加速XX%"+"持续XX小时"，均直接读取后台配置的速率与持续时间</b>，让客户抽奖前就能看到具体加速幅度和时长，不是只显示笼统的"VIP加速"文字；若当前处于双倍状态，第二行会临时展示翻倍后的小时数（如"持续48小时(双倍)"），跟实际抽中后的结算效果保持一致；其余位置仍完整显示金额单位。<b>这是本活动里为数不多真正做到"后台一改、转盘立刻同步"的配置项</b>（另一处是幸运抽奖权重），点击后台"确定提交"后即时生效。</p>
-    <p>幸运抽奖面板转盘/最终战绩下方新增<b>"🚀 查看VIP"快捷按钮</b>（进行中/已结束两台设备均有），点击弹出"即将为您跳转，前往我的VIP页面"提示，<b>本原型仅做按钮+提示，不做真实跳转</b>。承接这个入口的VIP页面本身不在本次原型范围内，但落地时需要包含：<b>跳转游戏的快捷按钮</b>（方便客户看完加速效果直接回游戏）、以及<b>展示当前VIP加速倍率与剩余持续时间的元素</b>（如"当前VIP获取速度 +30%，剩余23小时41分"），这部分只在此处记录需求，不包含具体页面设计。</p>
-    <p><b>抽中"双倍奖励"后转盘的完整变化</b>：顶部出现"双倍生效中"提示条的同时，转盘外圈亮起<b>火焰特效</b>（四角火焰+发光呼吸动画）；<b>"谢谢惠顾"分区变灰</b>（双倍状态下不会再被抽中）；<b>6个现金分区文字变为"数字 X2"</b>（如"8"变"8 X2"），预告到账金额翻倍；<b>"再抽一次"分区文字变为"再抽2次"</b>——双倍效果同样能作用在"再抽一次"上，命中后净返还的抽奖机会从1次变成2次。这套视觉会在下一次真正结算（现金到账/VIP加速生效/再抽一次触发翻倍返还）后自动恢复原样。机会数为0时面板内抽奖按钮置灰。</p>
-    <p><b>幸运抽奖同样支持人工审核</b>：若后台把幸运抽奖设为"人工审核"，抽中"现金红包"或"VIP加速"（含双倍加持）不会立即到账/生效，中奖弹窗改为"申请已提交，待人工审核"，"最近战绩"列表对应条目展示"申请中"，等后台审核通过后才变成"已到账"（VIP加速为"已生效"）。「谢谢惠顾」「再抽一次」「双倍奖励」这3项本身不发放实际奖励，不受此流程影响，抽中后照常即时显示结果；抽奖机会的扣减/返还同样不受影响，审核只影响"奖励是否已到账"这一步。若为自动审核，则维持原有的即时到账体验。</p>
+
+    <div class="subtitle">🎡 转盘规则 <span class="rule-tag">重点规则</span></div>
+    <div class="rule-box">
+      <b>转盘抽奖的基础流程</b>：点击转盘中心"立即抽奖"按钮消耗1次抽奖机会，转盘旋转数圈后精准停在中奖分区；<b>自动审核</b>下弹窗直接提示中奖结果并到账（现金红包、VIP加速）或提示未中奖，<b>人工审核</b>下弹窗提示"申请已提交，待人工审核"；无论哪种审核方式，抽奖后"最近战绩"列表都会新增一条对应记录。抽奖机会数为0时，转盘中心的抽奖按钮置灰、不可点击。
+    </div>
+    <p><b>转盘外观与布局</b>：转盘固定10个扇形分区环绕排列，仿真实大转盘外观，外圈金色宝石+灯泡装饰环绕，中心是"立即抽奖"按钮；分区内<b>文字排在外圈、图标排在内圈</b>，跟随转盘整体刚性旋转，转动时不会出现文字和转盘不同步的别扭感；「双倍奖励」「VIP加速」两个分区用深色底+金色文字突出显示。<b>4个特殊分区在转盘上打散穿插排列</b>（不是集中挨在一起），10个位置按顺时针依次是：双倍奖励、8、18、再抽一次、38、谢谢惠顾、58、VIP加速、188、888——「双倍奖励」作为转盘最大奖，左右各2格都是现金档位；其余3个特殊分区左右各1格是现金档位。转盘现金分区只显示裸数字，不带"USDT"字样；其余位置（详情页卡片、待领取、领取记录、中奖弹窗、最近战绩）仍完整显示金额单位。</p>
+    <p><b>转盘10个格子对应的结果</b>：6档现金红包（8/18/38/58/188/888 USDT，<b>金额与权重均为后台配置</b>），另设4种特殊结果：<b>「谢谢惠顾」</b>本次未中奖；<b>「再抽一次」</b>本次不发放奖励，系统立即返还1次抽奖机会（总次数不变）；<b>「双倍奖励」</b>本次不发放奖励，下一次抽奖自动进入"必中现金红包/VIP加速/再抽一次且效果翻倍"的状态，若当前无剩余次数则保留至下次抽奖时生效；<b>「VIP加速」</b>限时提升VIP获取速度（<b>速率与持续时间后台配置</b>），<b>效果在VIP界面展示</b>，抽奖面板内仅弹出到账提示，不展示实时倒计时，若搭配双倍奖励，速率不翻倍、仅持续时间翻倍。<b>"VIP加速"分区为两行文字："VIP加速XX%"+"持续XX小时"，均直接读取后台配置的速率与持续时间</b>，让客户抽奖前就能看到具体加速幅度和时长，不是只显示笼统的"VIP加速"文字；若当前处于双倍状态，第二行会临时展示翻倍后的小时数（如"持续48小时(双倍)"），跟实际抽中后的结算效果保持一致。<b>幸运抽奖权重、VIP加速速率/时长、抽奖机会获取规则这几处配置，都是"后台一改、点确定提交、C端立刻同步"的真联动</b>，不是需要人工对照维护的静态文案。</p>
+    <p><b>抽中"双倍奖励"后转盘的完整变化</b>：顶部出现"双倍生效中"提示条的同时，转盘外圈亮起<b>火焰特效</b>（四角火焰+发光呼吸动画）；<b>"谢谢惠顾"分区变灰</b>（双倍状态下不会再被抽中）；<b>6个现金分区文字变为"数字 X2"</b>（如"8"变"8 X2"），预告到账金额翻倍；<b>"再抽一次"分区文字变为"再抽2次"</b>——双倍效果同样能作用在"再抽一次"上，命中后净返还的抽奖机会从1次变成2次。这套视觉会在下一次真正结算（现金到账/VIP加速生效/再抽一次触发翻倍返还）后自动恢复原样。</p>
+    <p><b>幸运抽奖同样支持人工审核</b>：若后台把幸运抽奖设为"人工审核"，抽中"现金红包"或"VIP加速"（含双倍加持）不会立即到账/生效，中奖弹窗提示为"申请已提交，待人工审核"，"最近战绩"列表对应条目展示"申请中"，等后台审核通过后才变成"已到账"（VIP加速为"已生效"）。「谢谢惠顾」「再抽一次」「双倍奖励」这3项本身不发放实际奖励，不受此流程影响，抽中后照常即时显示结果；抽奖机会的扣减/返还同样不受影响，审核只影响"奖励是否已到账"这一步。若为自动审核，则中奖即时到账。</p>
+    <p><b>多次命中VIP加速怎么算</b>：只累加持续时间，速率不会跟着变——比如你手上还有一段加速剩10小时没用完，这时候又抽到一次24小时的加速，剩余时长会直接累加成34小时。</p>
   </div>
 
   <div class="dev-section">
     <h3><span class="num">5</span>接入活动列表框架 <span class="rule-tag">本版重点</span></h3>
     <div class="rule-box">
-      巅峰争霸赛的待领取奖励，跟活动列表最外层的「待领取」页签、「领取记录」页签、以及顶部/侧边栏/底部导航的红点数字，<b>共用同一份真实数据</b>，不是分开渲染的两套状态。
+      巅峰争霸赛的待领取奖励，跟活动列表最外层的「待领取」页签、「领取记录」页签、以及顶部/侧边栏/底部导航的红点数字，<b>共用同一份真实数据</b>，不是分开渲染的两套状态——这里说的"待领取奖励"指的是<b>阶梯奖励、总榜奖励</b>这两类，幸运抽奖走的是独立的"最近战绩"列表，不会出现在「待领取」页签里，不受这套联动影响。
     </div>
     <ul>
       <li>「阶梯达标奖励」里的"进阶奖励""里程碑奖励"，同时也是「待领取」页签里的两条真实记录。</li>
       <li>不管从「待领取」页签点"立即领取"，还是从详情页阶梯奖励面板里点，都会触发同一个领取函数：详情页卡片状态、列表待领取行、领取记录、所有红点数字都会同步刷新（<b>仅限自动审核场景</b>；人工审核场景见下方单独说明，领取记录不会同步写入）。</li>
       <li>巅峰赛的奖励统一为现金红包，领取记录直接展示到账金额，不需要额外的类型判断逻辑。</li>
       <li>点击活动列表里的巅峰赛卡片，直接进入完整详情子页面（总榜/阶梯奖励/幸运抽奖/规则），详情页顶部有独立的返回箭头，可退回活动列表。</li>
-      <li><b>人工审核模式</b>：阶梯奖励、总榜奖励若在后台被设为"人工审核"，"立即领取"按钮会先变成"申请领取"；点击后按钮变灰显示"审核中"并禁用，弹出"申请已提交"提示，<b>该奖励立即从待领取列表和红点数字里消失</b>（不再是"等客户领取"，而是"等后台审核"）。后台审核通过后，详情页按钮变为"已领取"，<b>但这条记录不会出现在「领取记录」里——领取记录只保留自动审核直接到账的部分</b>。</li>
+      <li>活动详情页底部固定操作区为<b>2个并排按钮</b>：客户看到的主按钮是"🎮 去下注·冲刺经验值"（活动已结束时变为置灰的"敬请期待下一赛季"，不可点），右侧是较窄的次要按钮<b>"🚀 查看VIP"</b>，两者高度一致；即便活动已结束、主按钮不可点，"查看VIP"依然可以点击。客户点击"查看VIP"会看到"即将为您跳转，前往我的VIP页面"的提示，<b>本原型只做到这一步，不会真的跳转过去</b>——因为这只是个跳转入口，点了不会像"阶梯达标奖励""幸运抽奖"那样展开新内容，所以没有把它跟那两个入口摆在一起，避免客户误以为点了也能看到什么。真正的VIP页面还没有做，客户点了看到的只是一个提示。</li>
+      <li><b>人工审核模式</b>：阶梯奖励、总榜奖励若在后台被设为"人工审核"，<b>该类别下所有已达标未处理的奖励会立即从「待领取」消失</b>（不是等客户点击才消失，而是从审核开关切换的那一刻起就不出现），红点数字与待领取金额同步减少；切回"自动审核"则重新出现在「待领取」。客户仍可在活动详情页对应卡片上看到"申请领取"按钮，点击后按钮变灰显示"审核中"并禁用，弹出"申请已提交"提示；后台审核通过后，详情页按钮变为"已领取"，<b>但这条记录不会出现在「领取记录」里——领取记录只保留自动审核直接到账的部分</b>。这个变化也会体现在首页"阶梯达标奖励"行——原本的"全部领取"按钮会跟着变成"全部申请"；但活动列表「待领取」页签顶部的"一键领取"按钮不受影响，还是叫"一键领取"，<b>因为人工审核的奖励压根就不会出现在这个列表里</b>，能被这个按钮领到的永远都是自动审核的，不会出现"点了变成申请"这种情况；也正因为如此，点击这个按钮时不需要逐条进入详情页，会直接对列表里当前所有可见条目按各自配置的审核方式统一处理一遍。</li>
     </ul>
   </div>
 
   <div class="dev-section">
     <h3><span class="num">6</span>异常处理</h3>
     <ul>
-      <li>总榜同经验值并列：按达标时间先后排序，先达标者靠前。</li>
       <li>排行榜数据存在最长5分钟延迟，前端展示"实时更新"字样而非精确到秒。</li>
       <li>疑似异常经验值（如刷量/套利）由风控系统标记后暂停其奖励资格，人工复核。</li>
     </ul>
@@ -2519,10 +2805,7 @@
 <div class="admin-panel">
   <div class="admin-header">
     <h2>新增活动（巅峰争霸赛模版）</h2>
-    <div style="display:flex; align-items:center; gap:14px;">
-      <button class="admin-devdoc-btn" onclick="openAdminDevDoc()">📋 开发文档</button>
-      <span class="x">✕</span>
-    </div>
+    <span class="x">✕</span>
   </div>
   <div class="admin-subtitle">巅峰争霸赛活动模版</div>
   <div class="admin-tabs">
@@ -2539,25 +2822,17 @@
         <div class="admin-row">
           <div class="admin-label"><span class="req">*</span>活动类型</div>
           <div class="admin-field">
-            <div class="admin-multiselect">
-              <div class="admin-ms-box" id="typeMsBox" onclick="toggleTypeDropdown(event)">
-                <div class="admin-ms-tags" id="typeMsTags">
-                  <span class="admin-ms-tag" data-value="巅峰赛">巅峰赛<span class="admin-ms-tag-x" onclick="removeTypeTag(event, this)">×</span></span>
-                </div>
-                <span class="admin-ms-caret">⌄</span>
-              </div>
-              <div class="admin-ms-dropdown" id="typeMsDropdown" style="display:none;">
-                <div class="admin-ms-option selected" data-value="巅峰赛" onclick="toggleTypeOption(event, this)">巅峰赛<span class="admin-ms-check">✓</span></div>
-                <div class="admin-ms-option" data-value="砸金蛋" onclick="toggleTypeOption(event, this)">砸金蛋</div>
-                <div class="admin-ms-option" data-value="多语言" onclick="toggleTypeOption(event, this)">多语言</div>
-                <div class="admin-ms-option" data-value="体育赛事" onclick="toggleTypeOption(event, this)">体育赛事</div>
-                <div class="admin-ms-option" data-value="亏损返现" onclick="toggleTypeOption(event, this)">亏损返现</div>
-                <div class="admin-ms-option" data-value="流水活动" onclick="toggleTypeOption(event, this)">流水活动</div>
-                <div class="admin-ms-option" data-value="彩票娱乐" onclick="toggleTypeOption(event, this)">彩票娱乐</div>
-                <div class="admin-ms-option" data-value="真人视讯" onclick="toggleTypeOption(event, this)">真人视讯</div>
-                <div class="admin-ms-option" data-value="电子游戏" onclick="toggleTypeOption(event, this)">电子游戏</div>
-              </div>
-            </div>
+            <select class="admin-select">
+              <option selected>巅峰赛</option>
+              <option>砸金蛋</option>
+              <option>多语言</option>
+              <option>体育赛事</option>
+              <option>亏损返现</option>
+              <option>流水活动</option>
+              <option>彩票娱乐</option>
+              <option>真人视讯</option>
+              <option>电子游戏</option>
+            </select>
           </div>
         </div>
         <div class="admin-row">
@@ -2606,8 +2881,8 @@
         <div class="admin-section-title" style="margin-top:6px;">总榜排名奖励区间设置</div>
         <div class="admin-audit-toggle">
           <span class="admin-audit-label">发放审核形式：</span>
-          <label class="admin-radio-item"><input type="radio" name="audit-rank" checked onchange="syncClaimButtonLabels('audit-rank', ['rank-ended'])">自动审核</label>
-          <label class="admin-radio-item"><input type="radio" name="audit-rank" onchange="syncClaimButtonLabels('audit-rank', ['rank-ended'])">人工审核</label>
+          <label class="admin-radio-item"><input type="radio" name="audit-rank" checked onchange="syncClaimButtonLabels('audit-rank', ['rank-ended']); syncPendingItemsForAudit();">自动审核</label>
+          <label class="admin-radio-item"><input type="radio" name="audit-rank" onchange="syncClaimButtonLabels('audit-rank', ['rank-ended']); syncPendingItemsForAudit();">人工审核</label>
           <span class="admin-audit-label" style="margin-left:10px;">提取流水倍数要求：</span>
           <input class="admin-input" type="number" min="0" step="0.1" style="width:70px;" value="1">
           <button class="admin-simulate-btn" type="button" onclick="approveManualClaimPeakEnded('rank-ended');">模拟审核通过</button>
@@ -2665,8 +2940,8 @@
         <div class="admin-section-title">经验值阶梯达标奖励设置</div>
         <div class="admin-audit-toggle">
           <span class="admin-audit-label">发放审核形式：</span>
-          <label class="admin-radio-item"><input type="radio" name="audit-tier" checked onchange="syncClaimButtonLabels('audit-tier', ['tier2-b','tier3-b','tier3-ended'])">自动审核</label>
-          <label class="admin-radio-item"><input type="radio" name="audit-tier" onchange="syncClaimButtonLabels('audit-tier', ['tier2-b','tier3-b','tier3-ended'])">人工审核</label>
+          <label class="admin-radio-item"><input type="radio" name="audit-tier" checked onchange="syncClaimButtonLabels('audit-tier', ['tier2-b','tier3-b','tier3-ended']); syncPendingItemsForAudit(); updateTierBadge(); updateTierBadgeEnded();">自动审核</label>
+          <label class="admin-radio-item"><input type="radio" name="audit-tier" onchange="syncClaimButtonLabels('audit-tier', ['tier2-b','tier3-b','tier3-ended']); syncPendingItemsForAudit(); updateTierBadge(); updateTierBadgeEnded();">人工审核</label>
           <span class="admin-audit-label" style="margin-left:10px;">提取流水倍数要求：</span>
           <input class="admin-input" type="number" min="0" step="0.1" style="width:70px;" value="1">
           <button class="admin-simulate-btn" type="button" onclick="approveManualClaimPeak('tier2-b'); approveManualClaimPeak('tier3-b'); approveManualClaimPeakEnded('tier3-ended');">模拟审核通过</button>
@@ -2831,27 +3106,27 @@
         <div class="admin-audit-toggle">
           <span class="admin-audit-label" style="font-weight:700; color:#1c2b3a;">1. 每日充值达标</span>
           <span class="admin-audit-label">充值金额门槛：</span>
-          <input class="admin-input" type="number" min="100" step="0.01" style="width:90px;" value="100" onchange="restrictMoneyInput(this)">
+          <input class="admin-input" id="depositThresholdInput" type="number" min="100" step="0.01" style="width:90px;" value="100" onchange="restrictMoneyInput(this)">
           <span class="admin-audit-label">赠送次数：</span>
-          <input class="admin-input" type="number" min="1" style="width:60px;" value="1">
+          <input class="admin-input" id="depositChancesInput" type="number" min="1" style="width:60px;" value="1">
           <span class="admin-audit-label">每日限制次数：</span>
-          <input class="admin-input" type="number" min="1" style="width:60px;" value="1">
+          <input class="admin-input" id="depositDailyLimitInput" type="number" min="1" style="width:60px;" value="1">
         </div>
 
         <div class="admin-audit-toggle">
           <span class="admin-audit-label" style="font-weight:700; color:#1c2b3a;">2. 每日经验值达标</span>
           <span class="admin-audit-label">经验值门槛：</span>
-          <input class="admin-input" type="number" min="100" style="width:90px;" value="100">
+          <input class="admin-input" id="expThresholdInput" type="number" min="100" style="width:90px;" value="100">
           <span class="admin-audit-label">赠送次数：</span>
-          <input class="admin-input" type="number" min="1" style="width:60px;" value="1">
+          <input class="admin-input" id="expChancesInput" type="number" min="1" style="width:60px;" value="1">
           <span class="admin-audit-label">每日限制次数：</span>
-          <input class="admin-input" type="number" min="1" style="width:60px;" value="1">
+          <input class="admin-input" id="expDailyLimitInput" type="number" min="1" style="width:60px;" value="1">
         </div>
 
         <div class="admin-audit-toggle">
           <span class="admin-audit-label" style="font-weight:700; color:#1c2b3a;">3. VIP升级达标</span>
           <span class="admin-audit-label">每升1级赠送次数：</span>
-          <input class="admin-input" type="number" min="1" style="width:60px;" value="1">
+          <input class="admin-input" id="vipLevelChancesInput" type="number" min="1" style="width:60px;" value="1">
           <span class="admin-hint">活动期间不限触发上限</span>
         </div>
       </div>
@@ -3004,11 +3279,9 @@
   </div>
 </div>
 
-<div class="admin-devdoc-mask" id="adminDevDocMask" onclick="closeAdminDevDoc()"></div>
 <aside class="admin-devdoc-drawer" id="adminDevDocDrawer">
   <div class="admin-devdoc-head">
     <h3>巅峰争霸赛 · 后台开发文档</h3>
-    <span class="x" onclick="closeAdminDevDoc()">✕</span>
   </div>
   <div class="admin-devdoc-body">
 
@@ -3018,87 +3291,75 @@
 
     <div class="admin-devdoc-section">
       <h4>1. 文档范围说明</h4>
-      <p>活动列表页的整体框架（页签切换、分类侧边栏、活动卡片展示、待领取/领取记录页的交互与红点数字联动机制）沿用平台现有活动模版，本文档不再重复说明。</p>
-      <p>本文档仅描述<b>巅峰争霸赛</b>这一活动类型，在"新增活动"配置表单里，相较于其他已有活动模版（如砸金蛋类），新增或调整了哪些配置项，以及这些配置项如何驱动C端页面的展示与交互。</p>
-      <p>配置表单里的<b>活动参与对象、其它设置、活动图片设定</b>这几块，字段与交互均沿用现有活动模版功能，本文档不再展开描述。</p>
-      <p><b>关于"确定提交"按钮</b>：目前本原型里，只有<b>幸运抽奖的权重配置</b>做了"保存后才真正生效"的完整闭环——输入框改动只更新即时预览的"预计概率"，转盘实际抽奖用的是点击"确定提交"后保存的快照。其余配置项（阶梯奖励金额、总榜名次区间、审核开关等）目前仍是静态展示，尚未接入保存后生效的逻辑，点击"确定提交"不会对它们产生实际影响，仅会重新保存一次幸运抽奖权重快照。</p>
+      <p>活动列表页整体框架沿用平台现有活动模版，本文档不涉及。本文档描述<b>巅峰争霸赛</b>活动类型的专属配置项及其对C端页面的影响；<b>活动参与对象、其它设置、活动图片设定</b>为系统标准功能，本文档不展开。</p>
     </div>
 
     <div class="admin-devdoc-section">
-      <h4>2. 新增活动类型<span class="admin-devdoc-tag">巅峰争霸赛模版</span></h4>
-      <p>在"活动类型"下拉里新增一个模版选项。与砸金蛋等模版的核心差异：奖励结构从"随机比例区间抽成"改为"确定性阶梯达标 + 总榜排名区间 + 权重抽奖"三段式，C端对应总榜、阶梯奖励、幸运抽奖三大功能入口。<b>本活动所有奖励统一为现金红包（彩金），不涉及积分、实物礼品、VIP权益等其他奖励形态</b>，配置表单也按此做了简化，不含奖励类型选择。<b>奖励币种统一为USDT</b>（C端所有金额展示、开发文档、活动规则条款均按此标注）；后台配置表单内的金额输入框不重复标注币种单位，纯数字录入。</p>
+      <h4>2. 活动类型：巅峰争霸赛</h4>
+      <p>奖励结构为"阶梯达标 + 排名区间 + 权重抽奖"，对应C端总榜、阶梯奖励、幸运抽奖三个入口。<b>奖励统一为现金红包（彩金），币种为USDT</b>，配置表单不含奖励类型选择，金额输入框不重复标注币种单位。</p>
     </div>
 
     <div class="admin-devdoc-section">
-      <h4>3. 活动基本配置调整</h4>
+      <h4>3. 活动基本配置</h4>
       <ul>
-        <li><b>活动类型</b>改为多选标签形式，可同时勾选多个分类（如"巅峰赛"+"流水活动"），当前配置默认勾选"巅峰赛"，支持后续追加其他分类标签。</li>
-        <li><b>活动预热日期</b>改为预设时长下拉：不预热 / 提前一日预览 / 提前三日预览 / 提前七日预览，不再是具体日期选择器。</li>
-        <li><b>活动简介文案、本活动统计范围</b>两个字段已移除，巅峰赛模版不需要单独配置这两项。</li>
-        <li><b>消息通知与页面提示</b>做了针对性调整：移除了"抽奖机会用尽页面提示""奖励申领限时提示""奖励已提交审核提示"这三个字段，新增"预热期提示文案""活动结束提示文案""活动下架提示文案"，分别对应C端预热期、活动自然结束、页面下架前三个阶段的提示语配置，其余字段沿用原有内容与规则。</li>
+        <li><b>活动类型</b>：单选，当前为"巅峰赛"。</li>
+        <li><b>活动预热日期</b>：预设时长下拉，具体可选项与预热期页面表现见C端开发说明。</li>
+        <li><b>本活动统计范围</b>：不单独配置，统计口径为客户获取的有效VIP经验值，与游戏场馆无关，全场馆通用。</li>
+        <li><b>消息通知与页面提示</b>：含活动开始、奖励领取失败、奖励到账、成功提交申请、预热期、活动结束、活动下架共7类提示语。</li>
       </ul>
     </div>
 
     <div class="admin-devdoc-section">
       <h4>4. 总榜排名奖励区间设置</h4>
       <ul>
-        <li>区间用<b>起始名次、结束名次</b>两个数字字段定义（替代砸金蛋模版里没有的"名次"概念），加上<b>奖励金额</b>，共用同一套"＋新增区间"交互。</li>
-        <li>该区间奖励为客户手动领取（活动结束、最终排名公布后在C端"总经验值争霸榜"面板内点击领取），不同于阶梯奖励可在活动进行中随时领取。</li>
-        <li><b>区间校验</b>：起始名次不能大于结束名次，且任意两行的区间不能相同或互相穿插重叠，否则该行标红并提示具体冲突的行号，编辑/新增/删除行都会重新校验一遍。</li>
-        <li>金额输入同样只能填正数、最多2位小数；区域顶部同样带有独立的<b>发放审核形式</b>+<b>提取流水倍数要求</b>+<b>模拟审核通过</b>按钮，人工审核模式下的C端交互（申请领取→审核中→已领取）与阶梯奖励一节所述完全一致。</li>
+        <li>区间以起始名次、结束名次定义，配合奖励金额，行数可增减；起始名次不能大于结束名次，起始与结束名次均须为正整数，且任意两行区间不能相同或重叠，否则标红提示。</li>
+        <li>客户手动领取，需活动结束后在C端"总经验值争霸榜"面板点击领取。<b>领取时机（手动/随时）与发放审核形式（自动/人工）是两个独立维度</b>，互不影响。</li>
+        <li>金额限正数、最多2位小数，输入框失焦时校验：非正数或非法值清空，合法值自动四舍五入到2位小数；顶部含<b>发放审核形式</b>+<b>提取流水倍数要求</b>，阶梯、总榜、幸运抽奖三处配置各自独立：
+          <ul>
+            <li><b>自动审核（默认）</b>：点击"立即领取"，奖励即时到账，写入「领取记录」，同步移出待领取列表。</li>
+            <li><b>人工审核</b>：按钮显示"申请领取"，点击后变为"审核中"并移出待领取列表；点击"模拟审核通过"后到账，<b>不写入「领取记录」</b>（领取记录只保留自动审核到账的记录，用于区分自动发放与人工核实）。审核期间恰逢活动页面下架的处理方式超出本原型范围，需另行确认。</li>
+          </ul>
+        </li>
+        <li><b>C端展示的奖励区间列表与后台本表格真正联动</b>：起始名次、结束名次、奖励金额、行数（增减区间）均由本表格实时驱动，点击"确定提交"后立即同步；名次范围显示规则为"起始=结束时显示'第X名'，否则显示'第X-Y名'"。</li>
+        <li>名次落在已配置区间之外（如超出第100名）的客户不获得总榜奖励；<b>未上榜样式需UI另行设计，可直接显示"上榜所需0/10,000"</b>这类差额提示。</li>
+        <li><b>排名并列规则</b>：系统按达标时间戳排序，累计经验值相同时先达标者排名靠前，<b>这是固定的排序逻辑，后台无需也不提供额外配置</b>；C端"总经验值争霸榜"面板对此有对应文字说明。</li>
       </ul>
     </div>
 
     <div class="admin-devdoc-section">
       <h4>5. 经验值阶梯达标奖励设置</h4>
       <ul>
-        <li>每档配置：<b>档位名称、累计经验值门槛、奖励金额、赠送抽奖次数</b>，支持"＋新增档位"/删除，行数不固定。</li>
-        <li><b>门槛校验</b>：每档门槛不能低于10,000，且必须严格大于上一档，否则该输入框标红并提示具体错误原因，编辑/新增/删除行都会重新校验一遍顺序。</li>
-        <li><b>各档门槛均为累计总量</b>：<b>"累计经验值门槛"</b>这个字段名本身已经点明了口径——每档填的都是从活动开始算起的累计总量，不是相对上一档的增量，比如精英奖励填30万，就是要求累计总经验值达到30万，跟里程碑奖励的10万、王者奖励的50万各自独立，互不叠加折算。C端每档卡片上的"A/B"进度分数，展示的就是"当前累计总经验值 / 该档配置门槛"，与其他档位互不干扰；达标解锁的判断也是逐档拿同一个累计总经验值去比对各自门槛。</li>
-        <li><b>金额输入限制</b>：奖励金额只能填正数，最多保留2位小数，失焦时自动校正（负数清空、超过2位小数自动四舍五入）。</li>
-        <li><b>赠送抽奖次数</b>：客户解锁该档位时一次性赠送对应次数的幸运抽奖机会，<b>填0则该档位不赠送抽奖机会，C端也不会为该档位展示任何抽奖次数相关的提示</b>；每个阶梯在本期活动内仅可触发1次，与该档位奖励是否已领取无关（只看是否达标解锁）。</li>
-        <li>区域顶部新增<b>发放审核形式</b>（自动审核/人工审核）+<b>提取流水倍数要求</b>，独立于总榜、幸运抽奖各自的配置，互不影响。原先集中在"预算与风控"里的单一审核开关和流水倍数字段已移除，"预算与风控"这个分组标题也已取消。</li>
-        <li><b>人工审核模式下的C端交互</b>（阶梯奖励、总榜奖励均适用）：切到"人工审核"后，客户端所有尚未领取的"立即领取"按钮文案自动变为<b>"申请领取"</b>；客户点击后按钮立即变灰置为"审核中"并禁用，同时弹出"申请已提交"的提示，<b>该奖励会立即从待领取列表移除、活动列表页的待领取红点数字同步减少</b>（因为此时是"等后台审核"，不再是"等客户自己领取"）。切回"自动审核"时，尚未点击的按钮文案会自动改回"立即领取"。审核开关本身也带有<b>"模拟审核通过"</b>按钮，点击后会把当前处于"审核中"的对应奖励一次性放行，详情页按钮变为"已领取"；<b>但人工审核通过的奖励不会写入「领取记录」——领取记录只保留自动审核直接到账的记录</b>，这是本活动的既定业务规则，用于区分自动发放与人工核实两类不同性质的到账。</li>
+        <li>每档含<b>档位名称、累计经验值门槛、奖励金额、赠送抽奖次数</b>，行数可增减；门槛不低于10,000且严格递增，否则标红提示；金额限正数、最多2位小数，输入框失焦时校验。</li>
+        <li>门槛为<b>累计总量</b>，各档独立、互不叠加；C端进度展示为"当前累计经验值 / 该档门槛"。</li>
+        <li><b>赠送抽奖次数</b>为0时该档不赠送抽奖机会、C端不展示相关提示；每档在活动周期内限触发1次，与奖励是否已领取无关。</li>
+        <li>顶部含<b>发放审核形式</b>+<b>提取流水倍数要求</b>，阶梯、总榜、幸运抽奖三处配置各自独立，<b>自动/人工审核两种模式下的C端交互与总榜奖励一节一致</b>。</li>
       </ul>
     </div>
 
     <div class="admin-devdoc-section">
       <h4>6. 幸运抽奖奖池设置<span class="admin-devdoc-tag">红包奖励</span></h4>
       <ul>
-        <li><b>概率改为权重配置</b>：后台每个奖品填一个相对权重数字（非概率百分比），系统按"该奖品权重 ÷ 全部奖品权重之和"自动实时计算并展示"预计概率（只读）"，运营不需要自己心算所有奖品概率总和是否等于100%，改任意一个权重，所有奖品的预计概率都会联动刷新。<b>但这只是即时预览</b>：权重输入框改动后立刻算出的百分比，跟"转盘实际抽奖时用的概率"是两回事，只有点击页面底部<b>"确定提交"</b>按钮，当前权重值才会被保存成一份生效快照，之后转盘的每一次抽奖才会按这份快照做真正的加权随机（权重越高，落在这一格的概率越高）；不点保存，抽奖结果不受本次输入框改动影响，仍按上一次保存的快照抽取。</li>
-        <li>每个奖品新增<b>奖品图标</b>上传位，用于C端大转盘对应扇形分区里展示该奖品的图标。</li>
-        <li>新增<b>奖品名称</b>列，明确标注每行是"谢谢惠顾""再抽一次""双倍奖励""VIP加速"还是"现金红包"，避免仅靠图标辨识造成混淆；现金红包行的配置字段是<b>金额（限正数且最多2位小数）+ 权重</b>，"谢谢惠顾""再抽一次""双倍奖励"这3项金额固定禁用为0，只需配置权重；"VIP加速"这一行单独换成<b>加速速率（%）+ 持续时间（小时）</b>两个字段，同样另配权重。</li>
-        <li>奖池<b>固定为10项，不支持增减</b>（表格已取消"操作"列和"＋新增奖品"按钮）：<b>前4行为系统保留项</b>——双倍奖励、再抽一次、谢谢惠顾、VIP加速，<b>后6行为现金红包档位</b>（8/18/38/58/188/888 USDT），对应C端大转盘固定的10个扇形分区，运营只能调整已有项的数值与权重，不能新增或删除分区：
-          <ul>
-            <li>「谢谢惠顾」：本次未中奖，C端展示"未中奖"状态。</li>
-            <li>「再抽一次」：本次不发放奖励，<b>系统立即返还1次抽奖机会</b>（该次抽奖净不消耗剩余次数）。</li>
-            <li>「双倍奖励」：本次不发放奖励，<b>下一次抽奖自动进入"必中现金红包/VIP加速且效果翻倍"的双倍状态</b>，奖池临时收窄为仅含6档现金红包与VIP加速共7项，<b>「谢谢惠顾」「再抽一次」「双倍奖励」这3项在双倍状态下不会再被抽中</b>；若命中双倍状态时会员暂无剩余抽奖次数，该状态会持续保留，直到会员获得新次数并使用后才结算，期间C端详情页顶部会展示"双倍生效中"的持久提示条。</li>
-            <li>「VIP加速」：命中后限时提升会员VIP获取速度，速率与持续时间均为后台配置；<b>转盘该分区为两行文字（"VIP加速XX%"+"持续XX小时"），且是真正联动的</b>——后台"加速速率""持续时间"这两个输入框改动后，点击"确定提交"会同时把新值写回<code>prizes</code>数组并重新渲染转盘文字，抽奖结算时也会读取这份最新数据，不是写死的静态文案，也不需要人工同步。<b>效果不在幸运抽奖面板内展示，客户需前往VIP界面查看当前加速状态与剩余时长</b>，抽奖面板内仅通过弹窗提示到账，不做实时倒计时。<b>若命中时正处于双倍状态，速率不翻倍，仅持续时间翻倍</b>（因VIP加速没有可翻倍的金额，双倍效果改为体现在时长上），转盘该分区的"持续XX小时"这一行在双倍状态激活期间会临时展示翻倍后的数值并标注"(双倍)"，双倍状态在这次结算后同样正常结束、转盘展示也会同步复原。</li>
-            <li><b>"查看VIP"快捷入口</b>：幸运抽奖面板（进行中/已结束两台设备均有）在转盘/最终战绩下方新增一个"🚀 查看VIP"按钮，点击后弹出"即将为您跳转，前往我的VIP页面"的提示，<b>本原型仅做按钮+提示，不做真实跳转</b>，方便客户在了解VIP加速效果或双倍状态后快速联想到"该去VIP页面确认"这个动作。</li>
-            <li><b>VIP页面配套需求（超出本原型范围，仅记录需求）</b>：承接幸运抽奖"VIP加速"效果的VIP页面本身不在本次原型内，但落地时需要包含——① <b>跳转游戏的快捷按钮</b>，方便客户查看完加速效果后直接回到游戏继续消费/冲经验值，形成"抽奖→看VIP效果→回游戏"的闭环；② <b>展示当前VIP加速倍率与剩余持续时间的元素</b>（比如"当前VIP获取速度 +30%，剩余23小时41分"这类实时倒计时展示），这部分内容本次仅在文档里提出需求，不包含具体UI设计与实现。</li>
-          </ul>
+        <li><b>权重驱动概率</b>：每项填相对权重，"预计概率"按占比自动计算展示；<b>点击"确定提交"后权重才写入生效快照</b>，转盘按该快照做加权随机，未保存的改动不影响实际抽奖概率。<b>若全部权重配置为0，转盘退回等概率随机</b>，不会报错或无法抽奖，"预计概率"列也会如实按等概率百分比展示，不显示占位符号。</li>
+        <li>奖池<b>固定10项，不支持增减</b>：双倍奖励、再抽一次、谢谢惠顾、VIP加速4个系统保留项，加6档现金红包（8/18/38/58/188/888 USDT）；现金项配置金额+权重，谢谢惠顾/再抽一次/双倍奖励这3项金额固定为0、只配置权重，VIP加速配置速率(%)+时长(小时)+权重，速率与时长仅有下限（不低于1），无上限限制。各项具体的中奖效果、转盘视觉排布见C端开发说明，此处不重复列出。</li>
+        <li>
+          <div class="admin-hint" style="display:block; white-space:normal; margin:0; padding:8px 10px; background:#fff8ec; border:1px dashed #ffb648; border-radius:6px; color:#8a5a1a;">
+            ⚠️ <b>需求记录，非本原型演示内容</b>：承接"查看VIP"入口的VIP页面需包含①<b>跳转游戏大厅的按钮</b>、②<b>VIP加速倍率与剩余倒计时的展示元素</b>（如"当前VIP获取速度 +30%，剩余23小时41分"，展示时长需体现多段加速叠加后的结果）。这些仅在此处作为需求提出，VIP页面本身的设计与实现不在本次巅峰争霸赛原型范围内。
+          </div>
         </li>
-        <li>C端抽奖界面改为<b>大转盘样式</b>：固定10个扇形分区环绕排列，转盘外圈带金色宝石装饰+环形灯泡点缀，中心是渐变蓝色宝石质感的"立即抽奖"按钮，正上方是宝石造型指针，点击后转盘旋转数圈并精准停在中奖分区；「双倍奖励」「VIP加速」两个分区用深色底+金色文字突出显示，与其余分区区分开，不需要额外的发光动画即可一眼识别。<b>每个分区内图标+文字沿半径方向排列（从外圈到内核），跟随转盘整体刚性旋转</b>，而非保持水平正读后再叠加反向旋转——避免了转动时文字与转盘不同步造成的视觉别扭感。</li>
-        <li><b>转盘分区排布</b>：10个分区不是"4个特殊项集中一段+6个现金档位集中一段"，而是<b>打散穿插排列</b>——双倍奖励、8、18、再抽一次、38、谢谢惠顾、58、VIP加速、188、888。其中<b>"双倍奖励"作为转盘最大奖，左右各2格都是现金档位</b>（左邻188、888，右邻8、18）；其余3个特殊分区（再抽一次、谢谢惠顾、VIP加速）左右各1格是现金档位，10个道具正好错开，不会出现特殊分区连续挨在一起的情况。<b>转盘上的现金分区只显示裸数字（如"8""888"），不带"USDT"字样</b>，靠🧧图标本身传达"这是现金红包"，避免格子内文字过长；其余位置（详情页阶梯/总榜卡片、待领取、领取记录、中奖弹窗、最近战绩）仍完整显示"XX USDT"。此排布仅影响转盘视觉呈现，后台"幸运抽奖奖池设置"表格的行顺序（4个系统保留项在前、6个现金档位在后）保持不变，两者互相独立，权重数值也不受影响。每个分区内<b>文字排在外圈、图标排在内圈</b>（与此前版本的内外顺序相反）。</li>
-        <li><b>人工审核模式下的C端交互</b>：区域顶部同样带有独立的<b>发放审核形式</b>+<b>提取流水倍数要求</b>+<b>模拟审核通过</b>按钮。切到"人工审核"后，抽中"现金红包"或"VIP加速"（含双倍加持的情况）不会立即到账/生效，中奖弹窗改为"申请已提交，待人工审核"，"最近战绩"列表对应条目展示<b>"申请中"</b>状态；点击"模拟审核通过"按钮，会把当前"最近战绩"里所有处于"申请中"的记录一次性放行，改为"已到账"（VIP加速改为"已生效"）。「谢谢惠顾」「再抽一次」「双倍奖励」这3项本身不发放实际奖励，不受此审核流程影响，抽中后照常即时显示对应状态。抽奖机会的扣减/返还也不受审核影响——机会在抽奖那一刻就已经结算，审核只影响"奖励有没有真的到账"这一步。</li>
-        <li><b>双倍状态下的转盘完整联动</b>：命中"双倍奖励"后，除了顶部"双倍生效中"提示条，转盘本身也会同步变化——① 转盘外圈出现<b>火焰特效</b>（四角火焰图标+外圈发光呼吸动画），静态提示"下一次抽奖已进入翻倍状态"；② <b>"谢谢惠顾"分区变灰</b>（降低透明度+去色），因为双倍状态下这一格不会再被抽中，其权重在这次抽奖里也不参与计算；③ <b>6个现金分区文字从裸数字变为"数字 X2"</b>（如"8"变"8 X2"），直观预告"这一格若被抽中，到账金额翻倍"；④ <b>"再抽一次"分区文字变为"再抽2次"</b>——双倍效果同样可以作用在"再抽一次"上，命中后返还的抽奖次数从1次变成2次（本次消耗1次、双倍返还2次，净增加1次机会）。这一整套视觉与"必中现金红包/VIP加速/再抽一次"的可抽中范围联动一致，任意一次真正结算（现金到账、VIP加速生效、或再抽一次触发翻倍返还）后，双倍状态结束，转盘视觉自动恢复原样。</li>
-        <li>区域顶部同样带有独立的<b>发放审核形式</b>+<b>提取流水倍数要求</b>。</li>
-        <li><b>抽奖机会获取规则</b>：本区域配置"每日充值达标"（金额门槛+赠送次数+每日限制次数）、"每日经验值达标"（经验值门槛+赠送次数+每日限制次数）、"VIP升级达标"（每升1级赠送次数，不限上限）这3类；<b>阶梯奖励达标赠送的抽奖次数改为直接在"经验值阶梯达标奖励设置"表里配置</b>（每档新增了"赠送抽奖次数"这一列），不再单独重复维护档位信息。各规则相互独立、可同时生效，客户满足任意一类即可获得对应次数。</li>
+        <li>顶部含<b>发放审核形式</b>+<b>提取流水倍数要求</b>+<b>模拟审核通过</b>：
+          <ul>
+            <li><b>自动审核（默认）</b>：中奖立即到账/生效。</li>
+            <li><b>人工审核</b>：中奖后展示"申请中"，点击"模拟审核通过"后到账；谢谢惠顾、再抽一次、双倍奖励不发放实际奖励，不受此流程影响。</li>
+          </ul>
+          抽奖机会的扣减/返还不受审核方式影响，只在抽奖那一刻结算。
+        </li>
+        <li><b>抽奖机会获取规则</b>：每日充值达标（金额门槛+赠送次数+每日限制次数）、每日经验值达标（同上）、VIP升级达标（每级赠送次数，不限上限）；"每日"以平台统一的每日结算时间点计算，具体时区规则以平台通用逻辑为准。阶梯奖励达标赠送的次数在"经验值阶梯达标奖励设置"表内配置。以上字段与C端"抽奖机会获取方式"说明文字真正联动。</li>
       </ul>
     </div>
 
     <div class="admin-devdoc-section">
-      <h4>7. C端联动与到账方式说明</h4>
-      <ul>
-        <li>阶梯奖励、总榜奖励区间的配置数据，直接驱动C端"活动列表－待领取"页签里对应的条目，以及活动详情页内各自面板的展示与领取按钮，两处共享同一份领取状态，任一入口领取后另一处同步更新，不是分开维护的两套数据。</li>
-        <li>幸运抽奖中奖后，红包金额<b>实时自动到账</b>，无需人工审核或线下登记，C端不含自助登记表单一类的额外交互；抽中"谢谢惠顾""再抽一次""双倍奖励"这3项时不发放任何现金红包，各自的次数/状态联动效果详见上一节说明；抽中"VIP加速"（同为系统保留项）时按后台配置的速率与时长生效，不涉及金额发放。</li>
-      </ul>
-    </div>
-
-    <div class="admin-devdoc-section">
-      <h4>8. 与现有报表系统的关系</h4>
-      <p>本活动所有已发放的现金类奖励（阶梯奖励、总榜排名奖励、幸运抽奖现金红包），均计入平台现有的<b>彩金审核</b>与<b>彩金记录</b>报表体系，走原有的审核与流水记录流程，本活动不新增独立的审核报表页面。运营在原有报表入口即可查询、审核本活动产生的彩金数据，无需额外培训或切换系统。</p>
-      <p><b>需要区分</b>：本活动阶梯奖励、总榜奖励区域顶部的"发放审核形式"开关，是本活动<b>C端交互层面</b>的功能（决定客户点击领取后是直接到账，还是先进入"申请领取→审核中"状态等运营在后台确认），与上述平台通用的"彩金审核"报表体系是两回事，互不替代——不管本活动的审核开关选择自动还是人工，最终真正发放出去的彩金仍会计入平台"彩金记录"报表；但本活动"人工审核通过"这个动作本身，是在活动详情页用"模拟审核通过"按钮完成的（仅用于原型演示交互流程），并不等同于走了平台"彩金审核"报表的审核操作。</p>
+      <h4>7. 与现有报表系统的关系</h4>
+      <p>已发放的现金类奖励计入平台<b>彩金审核</b>与<b>彩金记录</b>报表体系，本活动不新增独立报表页面。本活动"发放审核形式"开关是C端交互层面的功能，与平台"彩金审核"报表体系是两回事，互不替代；本活动"模拟审核通过"仅用于原型演示交互流程，不等同于平台彩金审核操作。</p>
     </div>
 
   </div>
@@ -3107,9 +3368,10 @@
 <!-- /#adminViewWrap -->
 
 <script>
-    var topTabs = Array.prototype.slice.call(document.querySelectorAll('.toptabs button[data-tab]'));
-    var catBtns = Array.prototype.slice.call(document.querySelectorAll('.cat[data-cat]'));
-    var cards = Array.prototype.slice.call(document.querySelectorAll('.promo-card2'));
+    var phoneB = document.getElementById('homeB').closest('.phone');
+    var topTabs = Array.prototype.slice.call(phoneB.querySelectorAll('.toptabs button[data-tab]'));
+    var catBtns = Array.prototype.slice.call(phoneB.querySelectorAll('.cat[data-cat]'));
+    var cards = Array.prototype.slice.call(phoneB.querySelectorAll('.promo-card2'));
 
     var pendingBalance = document.getElementById('pendingBalance');
     var pendingList = document.getElementById('pendingList');
@@ -3117,7 +3379,7 @@
     var navActivityBadge = document.getElementById('navActivityBadge');
     var tabBadgeActivity = document.getElementById('tabBadgeActivity');
     var tabBadgePending = document.getElementById('tabBadgePending');
-    var catBadges = Array.prototype.slice.call(document.querySelectorAll('[data-cat-badge]'));
+    var catBadges = Array.prototype.slice.call(phoneB.querySelectorAll('[data-cat-badge]'));
     function setBadge(el, count){
       if (!el) return;
       el.textContent = count > 99 ? '99+' : String(count);
@@ -3126,7 +3388,13 @@
     var phoneEl = document.querySelector('.phone');
     var coinBadgeEl = document.querySelector('.coin-badge');
     function getPendingItems(){
-      return Array.prototype.slice.call(pendingList.querySelectorAll('.pending-item'));
+      // 人工审核的类别，其待领取条目会被隐藏（display:none）而不是删除，这里过滤掉不可见的，让统计/红点只反映真正"待客户领取"的数量
+      return Array.prototype.slice.call(pendingList.querySelectorAll('.pending-item')).filter(function(item){ return item.style.display !== 'none'; });
+    }
+    // 活动列表"待领取"tab顶部的"一键领取"按钮：把当前列表里所有可见的待领取条目依次走一遍各自的领取函数，不需要跳进活动详情页逐个点
+    function claimAllPendingItems(){
+      var keys = getPendingItems().map(function(item){ return item.dataset.peakKey; }).filter(Boolean);
+      keys.forEach(function(key){ peakClaimByKey(key); });
     }
     var activityList = document.getElementById('activityList');
     var pendingEmpty = document.getElementById('pendingEmpty');
@@ -3610,8 +3878,8 @@
     function goToLobby(){
       showToast('🎮','即将为您跳转','前往游戏大厅，继续冲刺经验值');
     }
-    function goToVipPage(){
-      showToast('🚀','即将为您跳转','前往我的VIP页面，查看当前加速效果');
+    function goToVipPage(device){
+      showToast('🚀','即将为您跳转','前往我的VIP页面，查看当前加速效果', device);
     }
     // 判断某个奖励区块当前是"自动审核"还是"人工审核"：读取对应审核开关分组里被选中的那个radio，看文字是不是"人工审核"
     function isManualAudit(groupName){
@@ -3653,13 +3921,33 @@
       return true;
     }
     function updateTierBadge(){
-      // 首页"阶梯达标奖励"这一行的徽章——达标可领时显示"全部领取"按钮，领完后变回"还差多少"的进度提示
-      var claimableCount = document.querySelectorAll('#homeB .dp-claim-btn.can').length;
+      // 首页"阶梯达标奖励"这一行的徽章——按当前面板里的真实状态判断该显示什么
+      // 阶梯奖励按钮实际位于独立的"panel-tiers-b"面板里（是#homeB的兄弟节点，不是子节点），不能用"#homeB .dp-claim-btn.can"这种选择器去数，会永远数出0——这里直接按key精确查找，跟quickClaimPeakTiers用同一套key列表
+      var claimableCount = 0, pendingReviewCount = 0;
+      ['tier2-b','tier3-b'].forEach(function(k){
+        var btn = document.querySelector('[data-key="'+k+'"].dp-claim-btn');
+        if(!btn) return;
+        if(btn.classList.contains('can')) claimableCount++;
+        else if(btn.classList.contains('pending-review')) pendingReviewCount++;
+      });
+      var tiersPanel = document.getElementById('panel-tiers-b');
+      // 活动仍在进行中，经验值还可能继续增长，所以"是否已全部完成"要看全部6档是不是都done了，而不是只看当前能不能领——只要还有档位因经验值不够被锁着，就应该继续展示"还差多少"这个进度提示，鼓励客户继续冲经验值
+      var allDone = tiersPanel ? tiersPanel.querySelectorAll('.lstep:not(.done)').length === 0 : false;
       var badgeSlot = document.getElementById('tierBadgeB');
       if(badgeSlot){
-        badgeSlot.innerHTML = claimableCount > 0
-          ? '<button class="dp-claim-all-btn op-badge-btn" onclick="event.stopPropagation(); quickClaimPeakTiers();">全部领取</button>'
-          : '<div class="op-row-badge">还差17.4万</div>';
+        // 人工审核模式下这个批量按钮点击后走的是"提交申请"而不是"立即到账"，文案要跟单个卡片按钮（申请领取）保持一致，不能一直显示"全部领取"造成误导
+        var batchLabel = isManualAudit('audit-tier') ? '全部申请' : '全部领取';
+        if(claimableCount > 0){
+          badgeSlot.innerHTML = '<button class="dp-claim-all-btn op-badge-btn" onclick="event.stopPropagation(); quickClaimPeakTiers();">'+batchLabel+'</button>';
+        } else if(pendingReviewCount > 0){
+          badgeSlot.innerHTML = '<div class="op-row-badge">审核中</div>'; // 还有条目在等人工审核，暂时既不算"全部领取完毕"也不该展示"还差多少"
+        } else if(allDone){
+          badgeSlot.innerHTML = '<div class="op-row-badge">已全部领取</div>'; // 6档全部完成，没有更高档位可以冲了
+        } else {
+          // 还有更高档位因经验值不够被锁着：直接读取面板里"当前进行中"那一档卡片上的"还差XXX"文字，跟面板内展示保持一致，不再是首页单独写死的固定数字
+          var currentStepGap = tiersPanel ? tiersPanel.querySelector('.lstep.current .lfoot span:first-child') : null;
+          badgeSlot.innerHTML = '<div class="op-row-badge">'+(currentStepGap ? currentStepGap.textContent : '还差17.4万')+'</div>';
+        }
       }
       // 活动列表里巅峰赛卡片左上角的"待领取"丝带，跟真实待领取数量同步，全部领完就收起
       var flag = document.getElementById('peakClaimFlag');
@@ -3675,6 +3963,21 @@
           if(btn.classList.contains('can') || btn.classList.contains('op-badge-btn')) btn.textContent = manual ? '申请领取' : '立即领取';
         });
       });
+    }
+    // 人工审核的奖励从达标那一刻起就不出现在「待领取」列表——不是等客户点了领取才消失，而是达标后压根不进入这个列表
+    // 用display隐藏而不是从DOM删除，这样审核开关切回自动时能把条目原样显示回来，不需要重新生成HTML
+    function syncPendingItemsForAudit(){
+      document.querySelectorAll('.pending-item[data-peak-key]').forEach(function(item){
+        var key = item.dataset.peakKey;
+        var auditGroup = (key === 'rank-ended') ? 'audit-rank' : 'audit-tier';
+        item.style.display = isManualAudit(auditGroup) ? 'none' : '';
+      });
+      // 红点数字（导航栏/tab/分类）不受当前tab影响，任何时候都要刷新；「待领取」tab容器本身该不该显示，只能交给render/renderEnded
+      // 按各自内部维护的currentTab/currentTabEnded重新计算——绝不能自己直接写pendingList.hidden，那样会导致待领取内容在"活动"tab下也冒出来
+      updatePendingBalance();
+      if(typeof updatePendingBalanceEnded === 'function') updatePendingBalanceEnded();
+      if(typeof render === 'function') render();
+      if(typeof renderEnded === 'function') renderEnded();
     }
     function quickClaimPeakTiers(){
       ['tier2-b','tier3-b'].forEach(function(k){
@@ -4033,8 +4336,9 @@
         }
       }, 4000);
     }
-    function showToast(em,t1,t2){
-      var toast = document.querySelector('.toast');
+    function showToast(em,t1,t2,device){
+      var toastId = device === 'ended' ? 'toastEnded' : (device === 'w' ? 'toastW' : 'toastB');
+      var toast = document.getElementById(toastId);
       if(!toast) return;
       toast.querySelector('.em').textContent = em;
       toast.querySelector('.t1').textContent = t1;
@@ -4081,7 +4385,7 @@
 
     // ==================== "活动已结束"第二台手机：完整独立的一套列表逻辑 ====================
     // 所有查询都通过 phoneEnded 限定范围，或者用带Ended后缀的专属id，跟"进行中"手机的同名变量/元素完全隔离，互不污染
-    var phoneEnded = document.querySelectorAll('.phone')[1];
+    var phoneEnded = document.getElementById('homeEnded').closest('.phone');
     var topTabsEnded = Array.prototype.slice.call(phoneEnded.querySelectorAll('.toptabs button[data-tab]'));
     var catBtnsEnded = Array.prototype.slice.call(phoneEnded.querySelectorAll('.cat[data-cat]'));
     var cardsEnded = Array.prototype.slice.call(phoneEnded.querySelectorAll('.promo-card2'));
@@ -4098,7 +4402,12 @@
       el.hidden = count === 0;
     }
     function getPendingItemsEnded(){
-      return Array.prototype.slice.call(pendingListEndedEl.querySelectorAll('.pending-item'));
+      return Array.prototype.slice.call(pendingListEndedEl.querySelectorAll('.pending-item')).filter(function(item){ return item.style.display !== 'none'; });
+    }
+    // 与claimAllPendingItems同理，已结束设备"待领取"tab的一键领取
+    function claimAllPendingItemsEnded(){
+      var keys = getPendingItemsEnded().map(function(item){ return item.dataset.peakKey; }).filter(Boolean);
+      keys.forEach(function(key){ peakClaimByKeyEnded(key); });
     }
     var activityListEndedEl = document.getElementById('activityListEnded');
     var pendingEmptyEndedEl = document.getElementById('pendingEmptyEnded');
@@ -4392,15 +4701,30 @@
     }
     function updateTierBadgeEnded(){
       var tiersPanel = document.getElementById('panel-tiers-ended');
-      var remaining = tiersPanel ? tiersPanel.querySelectorAll('.dp-claim-btn.can').length : 0;
+      var remaining = 0, pendingReviewCount = 0;
+      if(tiersPanel){
+        tiersPanel.querySelectorAll('.dp-claim-btn').forEach(function(btn){
+          if(btn.classList.contains('can')) remaining++;
+          else if(btn.classList.contains('pending-review')) pendingReviewCount++;
+        });
+      }
       var badgeSlot = document.getElementById('tierBadgeEnded');
       if(badgeSlot){
-        badgeSlot.innerHTML = remaining > 0
-          ? '<button class="dp-claim-all-btn op-badge-btn" onclick="event.stopPropagation(); quickClaimPeakTiersEnded();">全部领取</button>'
-          : '<div class="op-row-badge">已全部领取</div>';
+        var batchLabel = isManualAudit('audit-tier') ? '全部申请' : '全部领取';
+        if(remaining > 0){
+          badgeSlot.innerHTML = '<button class="dp-claim-all-btn op-badge-btn" onclick="event.stopPropagation(); quickClaimPeakTiersEnded();">'+batchLabel+'</button>';
+        } else if(pendingReviewCount > 0){
+          badgeSlot.innerHTML = '<div class="op-row-badge">审核中</div>';
+        } else {
+          // 活动已结束，经验值不会再变化，只要当前能领的都处理完了（不管是真到账还是没审核完），不用像"进行中"设备那样考虑更高档位是否达成——那些档位既然经验值已经冻结就永远不可能达成，直接算作"已全部领取"
+          badgeSlot.innerHTML = '<div class="op-row-badge">已全部领取</div>';
+        }
       }
+      // "待领取"丝带要覆盖阶梯+总榜两类：阶梯按钮在panel-tiers-ended面板里（remaining已经算过了），总榜的悬浮按钮是.dp-claim-all-btn（不是.dp-claim-btn），且就位于#homeEnded内——两个来源的class和所在容器都不一样，不能用同一个笼统的"#homeEnded .dp-claim-btn.can"选择器去数，之前这样数永远是0
       var flag = document.getElementById('peakClaimFlagEnded');
-      var totalRemaining = document.querySelectorAll('#homeEnded .dp-claim-btn.can').length; // 含总榜+阶梯两类，任一还没领完就继续显示"待领取"丝带
+      var rankBtn = document.getElementById('rankClaimBtnEnded');
+      var rankRemaining = rankBtn && !rankBtn.classList.contains('done') && !rankBtn.classList.contains('pending-review') && rankBtn.style.display !== 'none' ? 1 : 0;
+      var totalRemaining = remaining + rankRemaining;
       if(flag) flag.style.display = totalRemaining > 0 ? '' : 'none';
     }
     function quickClaimPeakTiersEnded(){
@@ -4471,11 +4795,13 @@
           });
           if(!pendingReviewDataEnded[key]) pendingReviewDataEnded[key] = { name: '巅峰争霸赛奖励', rewardText: rewardText };
           updateTierBadgeEnded();
-          showToast('⏳','申请已提交','请等待人工审核，审核通过后将自动到账');
+          showToast('⏳','申请已提交','请等待人工审核，审核通过后将自动到账', 'ended');
           return;
         }
       }
       finalizeClaimPeakEnded(key, fromEl);
+      var rewardText = innerBtn ? (innerBtn.dataset.reward || '') : '';
+      showToast('🎁','领取成功', rewardText, 'ended');
     }
     // 后台"模拟审核通过"按钮调用：把处于人工审核中的总榜/阶梯（已结束设备）奖励真正放行到账
     function approveManualClaimPeakEnded(key){
@@ -4499,7 +4825,7 @@
       var saved = pendingReviewDataEnded[key] || { rewardText: innerBtn.dataset.reward || '' };
       delete pendingReviewDataEnded[key];
       updateTierBadgeEnded();
-      showToast('✅','审核通过','奖励已到账：'+saved.rewardText);
+      showToast('✅','审核通过','奖励已到账：'+saved.rewardText, 'ended');
     }
 
     // ---- "距页面下架"倒计时：同时驱动详情页内的大倒计时 和 活动列表卡片上的小倒计时 ----
@@ -4528,6 +4854,7 @@
     updateWheelDoubleVisual(); // 页面加载时按初始双倍状态（默认关闭）同步一遍转盘视觉，保持状态一致
     syncClaimButtonLabels('audit-tier', ['tier2-b','tier3-b','tier3-ended']); // 页面加载时按当前审核开关状态同步一遍按钮文案，避免默认值以后被改动导致不一致
     syncClaimButtonLabels('audit-rank', ['rank-ended']);
+    syncPendingItemsForAudit(); // 页面加载时按当前审核开关状态同步一遍待领取列表的显示/隐藏
 
     // ==================== 顶部"用户端 / 管理后台"切换 ====================
     function switchView(view){
@@ -4552,67 +4879,6 @@
       el.classList.add('active');
       document.getElementById('adminTabParams').style.display = (tab==='params') ? '' : 'none';
       document.getElementById('adminTabImages').style.display = (tab==='images') ? '' : 'none';
-    }
-    // 活动类型多选标签下拉：点击打开/关闭下拉，点选项加/去勾选并同步生成或移除对应标签
-    function toggleTypeDropdown(e){
-      e.stopPropagation();
-      var dd = document.getElementById('typeMsDropdown');
-      var box = document.getElementById('typeMsBox');
-      var open = dd.style.display !== 'none';
-      dd.style.display = open ? 'none' : 'block';
-      box.classList.toggle('open', !open);
-    }
-    function toggleTypeOption(e, el){
-      e.stopPropagation();
-      var value = el.dataset.value;
-      var tagsWrap = document.getElementById('typeMsTags');
-      var existingTag = tagsWrap.querySelector('[data-value="'+value+'"]');
-      if(existingTag){
-        existingTag.remove();
-        el.classList.remove('selected');
-        var check = el.querySelector('.admin-ms-check');
-        if(check) check.remove();
-      } else {
-        el.classList.add('selected');
-        var newCheck = document.createElement('span');
-        newCheck.className = 'admin-ms-check';
-        newCheck.textContent = '✓';
-        el.appendChild(newCheck);
-        var tag = document.createElement('span');
-        tag.className = 'admin-ms-tag';
-        tag.dataset.value = value;
-        tag.innerHTML = value+'<span class="admin-ms-tag-x" onclick="removeTypeTag(event, this)">×</span>';
-        tagsWrap.appendChild(tag);
-      }
-    }
-    function removeTypeTag(e, xEl){
-      e.stopPropagation();
-      var tag = xEl.closest('.admin-ms-tag');
-      var value = tag.dataset.value;
-      tag.remove();
-      var option = document.querySelector('#typeMsDropdown [data-value="'+value+'"]');
-      if(option){
-        option.classList.remove('selected');
-        var check = option.querySelector('.admin-ms-check');
-        if(check) check.remove();
-      }
-    }
-    document.addEventListener('click', function(e){
-      var dd = document.getElementById('typeMsDropdown');
-      var box = document.getElementById('typeMsBox');
-      if(dd && dd.style.display !== 'none' && !e.target.closest('.admin-multiselect')){
-        dd.style.display = 'none';
-        box.classList.remove('open');
-      }
-    });
-    // 管理后台开发文档：右侧滑出抽屉
-    function openAdminDevDoc(){
-      document.getElementById('adminDevDocMask').classList.add('show');
-      document.getElementById('adminDevDocDrawer').classList.add('show');
-    }
-    function closeAdminDevDoc(){
-      document.getElementById('adminDevDocMask').classList.remove('show');
-      document.getElementById('adminDevDocDrawer').classList.remove('show');
     }
     // 档位/区间/奖池都是可以自行增删的配置列表：复制表格最后一行的结构，清空数值，插到表格末尾
     function adminAddRow(btn){
@@ -4648,11 +4914,13 @@
       if(!table) return;
       var weightInputs = Array.prototype.slice.call(table.querySelectorAll('.lucky-weight'));
       var total = weightInputs.reduce(function(sum, inp){ return sum + (parseFloat(inp.value) || 0); }, 0);
+      // 权重全部为0时，实际抽奖会退回等概率随机（见weightedRandomPick），这里的"预计概率"也要如实展示成等概率百分比，不能显示"—"让人误以为算不出来/无效
+      var equalProb = weightInputs.length > 0 ? (100/weightInputs.length).toFixed(2)+'%' : '—';
       weightInputs.forEach(function(inp){
         var probCell = inp.closest('tr').querySelector('.lucky-prob');
         if(!probCell) return;
         var w = parseFloat(inp.value) || 0;
-        probCell.textContent = total > 0 ? (w/total*100).toFixed(2)+'%' : '—';
+        probCell.textContent = total > 0 ? (w/total*100).toFixed(2)+'%' : equalProb;
       });
     }
     // 幸运抽奖真正生效的权重快照：只有点击"确定提交"后才会更新，输入框改了但没保存之前，转盘实际抽奖概率不受影响
@@ -4674,6 +4942,47 @@
       if(rateInput) vipPrize.rate = parseFloat(rateInput.value) || vipPrize.rate;
       if(hoursInput) vipPrize.hours = parseFloat(hoursInput.value) || vipPrize.hours;
       updateVipWheelDisplay();
+    }
+    // 把后台"总榜排名奖励区间设置"表格的当前行数据，同步渲染成C端"总经验值争霸榜"面板里的奖励区间列表：行数、名次范围、金额都跟后台实时保持一致，增删行也会同步反映
+    function syncRankRewardsDisplay(){
+      var table = document.getElementById('rankRangeTable');
+      if(!table) return;
+      var rows = Array.prototype.slice.call(table.rows).slice(1); // 跳过表头
+      var html = rows.map(function(row){
+        var startInp = row.cells[0].querySelector('input[type="number"]');
+        var endInp = row.cells[1].querySelector('input[type="number"]');
+        var amountInp = row.cells[2].querySelector('input[type="number"]');
+        var start = parseInt(startInp.value, 10);
+        var end = parseInt(endInp.value, 10);
+        var amount = parseFloat(amountInp.value) || 0;
+        if(isNaN(start) || isNaN(end)) return '';
+        var rangeLabel = start === end ? ('第'+start+'名') : ('第'+start+'-'+end+'名');
+        var amountLabel = amount.toLocaleString() + ' USDT';
+        return '<div class="rz"><span class="rz-range">'+rangeLabel+'</span><span class="rz-reward">'+amountLabel+'</span></div>';
+      }).join('');
+      var listB = document.getElementById('rewardZoneListB');
+      var listEnded = document.getElementById('rewardZoneListEnded');
+      if(listB) listB.innerHTML = html;
+      if(listEnded) listEnded.innerHTML = html;
+    }
+    // 把后台"抽奖机会获取规则"三类配置（每日充值/每日经验值/VIP升级）的当前输入框数值，同步进C端"抽奖机会获取方式"说明文字对应的几个span里
+    function syncLuckyChanceRulesDisplay(){
+      var map = {
+        ruleDepositThreshold: 'depositThresholdInput',
+        ruleDepositChances: 'depositChancesInput',
+        ruleDepositDailyLimit: 'depositDailyLimitInput',
+        ruleExpThreshold: 'expThresholdInput',
+        ruleExpChances: 'expChancesInput',
+        ruleExpDailyLimit: 'expDailyLimitInput',
+        ruleVipLevelChances: 'vipLevelChancesInput'
+      };
+      Object.keys(map).forEach(function(displayId){
+        var display = document.getElementById(displayId);
+        var input = document.getElementById(map[displayId]);
+        if(display && input && input.value !== ''){
+          display.textContent = input.value;
+        }
+      });
     }
     // 转盘上"VIP加速"格子的两行文字，按prizes里当前的rate/hours重新渲染；处于双倍状态时持续时间翻倍展示，跟实际抽中后的结算效果保持一致
     function updateVipWheelDisplay(){
@@ -4716,10 +5025,14 @@
     function saveAdminConfig(){
       captureLuckyWeights();
       captureVipConfig();
-      showAdminToast('✅','保存成功，幸运抽奖权重与VIP加速配置已生效');
+      syncLuckyChanceRulesDisplay();
+      syncRankRewardsDisplay();
+      showAdminToast('✅','保存成功，幸运抽奖权重、VIP加速配置、抽奖机会获取规则与总榜排名奖励已生效');
     }
     captureLuckyWeights(); // 页面加载时先按表单里的默认权重值生成一份初始快照，避免管理员还没点过"确定提交"之前转盘完全没有权重数据可用（此处必须放在savedLuckyWeights声明和captureLuckyWeights函数定义之后，否则会因为var提升只提升声明、不提升赋值而报错，导致整个脚本后续初始化代码全部中断执行）
     captureVipConfig(); // 同上，页面加载时先按表单默认值同步一次VIP加速的速率/时长到转盘展示
+    syncLuckyChanceRulesDisplay(); // 同上，页面加载时先按表单默认值同步一次抽奖机会获取规则的展示文字
+    syncRankRewardsDisplay(); // 同上，页面加载时先按表单默认行数据同步一次总榜排名奖励区间列表
     // 阶梯达标经验值校验：不能低于10,000，且必须严格大于上一档，否则该输入框标红并显示错误提示
     function validateTierThresholds(input){
       var table = input ? input.closest('table') : document.querySelectorAll('.admin-table')[0];
